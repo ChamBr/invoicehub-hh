@@ -51,6 +51,166 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          description: string
+          id: string
+          priority: string | null
+          resolved_at: string | null
+          status: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          description: string
+          id?: string
+          priority?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          description?: string
+          id?: string
+          priority?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_items: {
+        Row: {
+          description: string
+          id: string
+          invoice_id: string
+          price: number
+          product_id: string | null
+          quantity: number
+          total: number
+        }
+        Insert: {
+          description: string
+          id?: string
+          invoice_id: string
+          price: number
+          product_id?: string | null
+          quantity?: number
+          total: number
+        }
+        Update: {
+          description?: string
+          id?: string
+          invoice_id?: string
+          price?: number
+          product_id?: string | null
+          quantity?: number
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          created_at: string
+          customer_id: string
+          due_date: string
+          id: string
+          notes: string | null
+          status: string | null
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          due_date: string
+          id?: string
+          notes?: string | null
+          status?: string | null
+          total?: number
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          due_date?: string
+          id?: string
+          notes?: string | null
+          status?: string | null
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          billing_period: string
+          created_at: string
+          description: string | null
+          features: Json | null
+          id: string
+          name: string
+          price: number
+          status: string | null
+        }
+        Insert: {
+          billing_period: string
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          name: string
+          price: number
+          status?: string | null
+        }
+        Update: {
+          billing_period?: string
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          name?: string
+          price?: number
+          status?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           created_at: string
@@ -86,6 +246,90 @@ export type Database = {
           type?: string
         }
         Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          preferences: Json | null
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          preferences?: Json | null
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          preferences?: Json | null
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          billing_period: string
+          created_at: string
+          customer_id: string
+          end_date: string | null
+          id: string
+          plan_id: string
+          renewal_date: string | null
+          start_date: string
+          status: string | null
+        }
+        Insert: {
+          billing_period: string
+          created_at?: string
+          customer_id: string
+          end_date?: string | null
+          id?: string
+          plan_id: string
+          renewal_date?: string | null
+          start_date?: string
+          status?: string | null
+        }
+        Update: {
+          billing_period?: string
+          created_at?: string
+          customer_id?: string
+          end_date?: string | null
+          id?: string
+          plan_id?: string
+          renewal_date?: string | null
+          start_date?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

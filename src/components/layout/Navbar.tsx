@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Users, Package } from "lucide-react";
+import { Users, Package, FileText, CreditCard, MessageSquare, UserCircle } from "lucide-react";
 
 const Navbar = () => {
   return (
@@ -11,7 +11,7 @@ const Navbar = () => {
               InvoiceHub
             </Link>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             <Link
               to="/customers"
               className="flex items-center gap-2 text-gray-600 hover:text-primary"
@@ -24,7 +24,35 @@ const Navbar = () => {
               className="flex items-center gap-2 text-gray-600 hover:text-primary"
             >
               <Package className="h-4 w-4" />
-              Produtos/Serviços
+              Produtos
+            </Link>
+            <Link
+              to="/invoices"
+              className="flex items-center gap-2 text-gray-600 hover:text-primary"
+            >
+              <FileText className="h-4 w-4" />
+              Faturas
+            </Link>
+            <Link
+              to="/plans"
+              className="flex items-center gap-2 text-gray-600 hover:text-primary"
+            >
+              <CreditCard className="h-4 w-4" />
+              Planos
+            </Link>
+            <Link
+              to="/feedback"
+              className="flex items-center gap-2 text-gray-600 hover:text-primary"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Feedback
+            </Link>
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 text-gray-600 hover:text-primary"
+            >
+              <UserCircle className="h-4 w-4" />
+              Perfil
             </Link>
           </div>
         </div>

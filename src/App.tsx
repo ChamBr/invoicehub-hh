@@ -7,6 +7,10 @@ import Navbar from "./components/layout/Navbar";
 import Index from "./pages/Index";
 import CustomersIndex from "./pages/customers/Index";
 import ProductsIndex from "./pages/products/Index";
+import InvoicesIndex from "./pages/invoices/Index";
+import PlansIndex from "./pages/plans/Index";
+import FeedbackIndex from "./pages/feedback/Index";
+import ProfileIndex from "./pages/profile/Index";
 
 const queryClient = new QueryClient();
 
@@ -16,12 +20,18 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/customers" element={<CustomersIndex />} />
-          <Route path="/products" element={<ProductsIndex />} />
-        </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/customers" element={<CustomersIndex />} />
+            <Route path="/products" element={<ProductsIndex />} />
+            <Route path="/invoices" element={<InvoicesIndex />} />
+            <Route path="/plans" element={<PlansIndex />} />
+            <Route path="/feedback" element={<FeedbackIndex />} />
+            <Route path="/profile" element={<ProfileIndex />} />
+          </Routes>
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
