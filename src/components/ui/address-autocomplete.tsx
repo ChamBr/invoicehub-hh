@@ -1,5 +1,5 @@
 import * as React from "react"
-import { AddressAutofill } from '@mapbox/search-js-react';
+import { AddressAutofill, AddressAutofillProps } from '@mapbox/search-js-react';
 import { Input } from "./input"
 import { Label } from "./label"
 
@@ -30,16 +30,17 @@ export function AddressAutocomplete({ onAddressSelect }: AddressAutocompleteProp
   return (
     <div className="space-y-2">
       <Label htmlFor="address">Street Address</Label>
-      <div>
-        <AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''}>
-          <Input
-            id="address"
-            placeholder="Start typing your address..."
-            autoComplete="street-address"
-            className="w-full"
-          />
-        </AddressAutofill>
-      </div>
+      <AddressAutofill 
+        accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''}
+        onRetrieve={handleAddressSelect}
+      >
+        <Input
+          id="address"
+          placeholder="Start typing your address..."
+          autoComplete="street-address"
+          className="w-full"
+        />
+      </AddressAutofill>
     </div>
   );
 }
