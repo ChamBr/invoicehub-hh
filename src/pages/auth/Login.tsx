@@ -60,7 +60,7 @@ const Login = () => {
                 fontWeight: '500',
                 backgroundColor: '#10B981',
                 color: 'white',
-                '&:hover': {
+                ':hover': {
                   backgroundColor: '#065F46'
                 }
               },
@@ -70,7 +70,7 @@ const Login = () => {
                 fontSize: '0.875rem',
                 backgroundColor: 'white',
                 border: '1px solid #E5E7EB',
-                '&:focus': {
+                ':focus': {
                   borderColor: '#10B981',
                   boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.1)'
                 }
