@@ -1,7 +1,6 @@
 import * as React from "react"
-import { AddressAutofill, AddressAutofillProps } from '@mapbox/search-js-react';
+import { AddressAutofill } from '@mapbox/search-js-react';
 import { Input } from "./input"
-import { Label } from "./label"
 import { FormControl, FormField, FormItem, FormLabel } from "./form"
 import { UseFormReturn } from "react-hook-form"
 import { CustomerFormValues } from "@/components/customers/types"
