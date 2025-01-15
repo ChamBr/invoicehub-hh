@@ -30,9 +30,6 @@ const Login = () => {
           <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
             InvoiceHub
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Faça login para continuar
-          </p>
         </div>
 
         <Auth
@@ -60,9 +57,8 @@ const Login = () => {
                 fontWeight: '500',
                 backgroundColor: '#10B981',
                 color: 'white',
-                ':hover': {
-                  backgroundColor: '#065F46'
-                }
+                transition: 'background-color 0.2s ease',
+                cursor: 'pointer'
               },
               input: {
                 borderRadius: '0.5rem',
@@ -70,15 +66,18 @@ const Login = () => {
                 fontSize: '0.875rem',
                 backgroundColor: 'white',
                 border: '1px solid #E5E7EB',
-                ':focus': {
-                  borderColor: '#10B981',
-                  boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.1)'
-                }
+                transition: 'all 0.2s ease',
+                outline: 'none'
               },
               label: {
                 fontSize: '0.875rem',
                 color: '#4B5563',
                 marginBottom: '0.5rem'
+              },
+              anchor: {
+                color: '#10B981',
+                textDecoration: 'none',
+                transition: 'color 0.2s ease'
               }
             }
           }}
