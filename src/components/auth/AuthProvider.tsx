@@ -28,12 +28,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Verificar modo de desenvolvimento
     const checkDevMode = async () => {
-      const { data: devConfig } = await supabase
+      const { data: devConfigs, error: configError } = await supabase
         .from("configurations")
         .select("*")
         .eq("name", "dev_auto_login")
-        .single();
+        .limit(1);
 
+      if (configError) {
+        console.error("Erro ao buscar configuração de desenvolvimento:", configError);
+        return;
+      }
+
+      const devConfig = devConfigs?.[0];
+      
       if (devConfig?.is_enabled) {
         console.log("Modo desenvolvimento ativo - tentando auto-login");
         const { data: { session }, error } = await supabase.auth.signInWithPassword({
