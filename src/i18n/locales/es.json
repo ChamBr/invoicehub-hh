@@ -9,8 +9,8 @@
     "profile": "Perfil",
     "admin": "Administración",
     "feedback": {
-      "submit": "Enviar Comentario",
-      "list": "Lista de Comentarios"
+      "submit": "Enviar Feedback",
+      "list": "Lista de Feedback"
     }
   },
   "dashboard": {
@@ -34,6 +34,11 @@
       "mode": "Modo Admin",
       "enabled": "Activado",
       "disabled": "Desactivado"
+    },
+    "errors": {
+      "auth": "Usuario no autenticado",
+      "update": "No se pudo actualizar el perfil",
+      "unexpected": "Ocurrió un error inesperado"
     }
   }
 }

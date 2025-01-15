@@ -34,6 +34,11 @@
       "mode": "Modo Admin",
       "enabled": "Ativado",
       "disabled": "Desativado"
+    },
+    "errors": {
+      "auth": "Usuário não autenticado",
+      "update": "Não foi possível atualizar o perfil",
+      "unexpected": "Ocorreu um erro inesperado"
     }
   }
 }

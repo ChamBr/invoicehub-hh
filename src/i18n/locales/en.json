@@ -34,6 +34,11 @@
       "mode": "Admin Mode",
       "enabled": "Enabled",
       "disabled": "Disabled"
+    },
+    "errors": {
+      "auth": "User not authenticated",
+      "update": "Could not update profile",
+      "unexpected": "An unexpected error occurred"
     }
   }
 }

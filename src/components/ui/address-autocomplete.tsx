@@ -28,6 +28,7 @@ export function AddressAutocomplete({
 
   return (
     <div className="w-full">
+      {/* @ts-ignore */}
       <AddressAutofill accessToken={accessToken} onRetrieve={handleRetrieve}>
         <Input
           placeholder="Digite seu endereço"
