@@ -10,12 +10,12 @@ import { Navigate } from "react-router-dom";
 import { PlansManagement } from "./PlansManagement";
 import { PaymentIntegrations } from "./PaymentIntegrations";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import DebugModeSwitch from "@/components/admin/DebugModeSwitch";
 
 const AdminIndex = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Verificar autenticação e perfil admin
   const { data: profile, isLoading: isLoadingProfile, error: profileError } = useQuery({
     queryKey: ["admin-profile"],
     queryFn: async () => {
@@ -125,6 +125,7 @@ const AdminIndex = () => {
             <TabsTrigger value="features">Recursos</TabsTrigger>
             <TabsTrigger value="plans">Planos</TabsTrigger>
             <TabsTrigger value="payments">Integrações de Pagamento</TabsTrigger>
+            <TabsTrigger value="debug">Debug</TabsTrigger>
           </TabsList>
 
           <TabsContent value="features">
@@ -160,6 +161,13 @@ const AdminIndex = () => {
 
           <TabsContent value="payments">
             <PaymentIntegrations />
+          </TabsContent>
+
+          <TabsContent value="debug">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Modo Debug</h2>
+              <DebugModeSwitch />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
