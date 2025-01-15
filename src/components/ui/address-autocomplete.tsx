@@ -27,18 +27,18 @@ export function AddressAutocomplete({ onAddressSelect }: AddressAutocompleteProp
     onAddressSelect(formattedAddress);
   };
 
-  const RenderInputComponent = React.forwardRef<
-    HTMLInputElement,
-    { ref: React.Ref<HTMLInputElement> }
-  >((props, ref) => (
-    <Input
-      ref={ref}
-      id="address"
-      placeholder="Digite seu endereço..."
-      autoComplete="street-address"
-      className="w-full"
-    />
-  ));
+  const InputComponent = React.forwardRef<HTMLInputElement, React.ComponentPropsWithRef<'input'>>(
+    (props, ref) => (
+      <Input
+        ref={ref}
+        id="address"
+        placeholder="Digite seu endereço..."
+        autoComplete="street-address"
+        className="w-full"
+        {...props}
+      />
+    )
+  );
 
   return (
     <div className="space-y-2">
@@ -47,7 +47,7 @@ export function AddressAutocomplete({ onAddressSelect }: AddressAutocompleteProp
         accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''}
         onRetrieve={handleAddressSelect}
       >
-        {RenderInputComponent}
+        <InputComponent />
       </AddressAutofill>
     </div>
   );
