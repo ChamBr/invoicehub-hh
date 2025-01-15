@@ -14,27 +14,29 @@ import ProfileIndex from "./pages/profile/Index";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/customers" element={<CustomersIndex />} />
-            <Route path="/products" element={<ProductsIndex />} />
-            <Route path="/invoices" element={<InvoicesIndex />} />
-            <Route path="/plans" element={<PlansIndex />} />
-            <Route path="/feedback" element={<FeedbackIndex />} />
-            <Route path="/profile" element={<ProfileIndex />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="min-h-screen bg-gray-50">
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/customers" element={<CustomersIndex />} />
+              <Route path="/products" element={<ProductsIndex />} />
+              <Route path="/invoices" element={<InvoicesIndex />} />
+              <Route path="/plans" element={<PlansIndex />} />
+              <Route path="/feedback" element={<FeedbackIndex />} />
+              <Route path="/profile" element={<ProfileIndex />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
