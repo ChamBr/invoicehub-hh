@@ -13,12 +13,66 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
   const { t } = useTranslation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Buscar perfil do usuário
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Erro ao buscar perfil:", error);
+        return null;
+      }
+
+      return data;
+    },
+  });
+
+  const handleAdminToggle = async (checked: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ role: checked ? "admin" : "user" })
+      .eq("id", user.id);
+
+    if (error) {
+      console.error("Erro ao atualizar perfil:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível atualizar o perfil.",
+      });
+      return;
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
+    toast({
+      title: "Perfil atualizado",
+      description: `Modo admin ${checked ? "ativado" : "desativado"}.`,
+    });
+  };
 
   useEffect(() => {
     const pageTitles: { [key: string]: string } = {
@@ -95,10 +149,17 @@ const Navbar = () => {
     <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
             <Link to="/" className="text-xl font-semibold text-primary">
               InvoiceHub
             </Link>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={profile?.role === "admin"}
+                onCheckedChange={handleAdminToggle}
+              />
+              <span className="text-xs text-gray-500">Admin</span>
+            </div>
           </div>
 
           {/* Menu Desktop */}
