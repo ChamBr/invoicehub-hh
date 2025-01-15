@@ -7,12 +7,15 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import AdminModeSwitch from "./navbar/AdminModeSwitch";
 import NavLinks from "./navbar/NavLinks";
 import MobileMenu from "./navbar/MobileMenu";
+import UserMenu from "./navbar/UserMenu";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
   const { t } = useTranslation();
+  const { session } = useAuth();
 
   const menuItems = {
     records: [
@@ -66,6 +69,10 @@ const Navbar = () => {
     document.title = `InvoiceHub - ${pageTitles[location.pathname] || ""}`;
   }, [location, t]);
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -88,8 +95,9 @@ const Navbar = () => {
             />
           </div>
 
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center gap-4">
             <LanguageSwitcher />
+            <UserMenu />
           </div>
         </div>
       </div>

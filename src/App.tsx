@@ -4,8 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@/i18n/config";
+import { AuthProvider } from "./components/auth/AuthProvider";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
+import Login from "./pages/auth/Login";
 import Index from "./pages/Index";
 import CustomersIndex from "./pages/customers/Index";
 import NewCustomer from "./pages/customers/New";
@@ -25,23 +28,26 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-gray-50 flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/customers" element={<CustomersIndex />} />
-                <Route path="/customers/new" element={<NewCustomer />} />
-                <Route path="/products" element={<ProductsIndex />} />
-                <Route path="/invoices" element={<InvoicesIndex />} />
-                <Route path="/plans" element={<PlansIndex />} />
-                <Route path="/feedback" element={<FeedbackIndex />} />
-                <Route path="/profile" element={<ProfileIndex />} />
-                <Route path="/admin" element={<AdminIndex />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
+          <AuthProvider>
+            <div className="min-h-screen bg-gray-50 flex flex-col">
+              <Navbar />
+              <main className="flex-grow">
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                  <Route path="/customers" element={<ProtectedRoute><CustomersIndex /></ProtectedRoute>} />
+                  <Route path="/customers/new" element={<ProtectedRoute><NewCustomer /></ProtectedRoute>} />
+                  <Route path="/products" element={<ProtectedRoute><ProductsIndex /></ProtectedRoute>} />
+                  <Route path="/invoices" element={<ProtectedRoute><InvoicesIndex /></ProtectedRoute>} />
+                  <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
+                  <Route path="/feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProtectedRoute><ProfileIndex /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute><AdminIndex /></ProtectedRoute>} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
