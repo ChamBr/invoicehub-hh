@@ -21,18 +21,18 @@ const Navbar = () => {
   useEffect(() => {
     const pageTitles: { [key: string]: string } = {
       "/": "Dashboard",
-      "/customers": "Clientes",
-      "/products": "Produtos",
-      "/invoices": "Faturas",
-      "/plans": "Planos",
+      "/customers": "Customers",
+      "/products": "Products",
+      "/invoices": "Invoices",
+      "/plans": "Plans",
       "/feedback": "Feedback",
-      "/profile": "Perfil"
+      "/profile": "Profile"
     };
     document.title = `InvoiceHub - ${pageTitles[location.pathname] || ""}`;
   }, [location]);
 
   const menuItems = {
-    cadastros: [
+    records: [
       {
         to: "/customers",
         icon: <Users className="h-4 w-4" />,
@@ -49,7 +49,7 @@ const Navbar = () => {
         label: "Faturas"
       }
     ],
-    servicos: [
+    services: [
       {
         to: "/plans",
         icon: <CreditCard className="h-4 w-4" />,
@@ -61,7 +61,7 @@ const Navbar = () => {
         label: "Feedback"
       }
     ],
-    usuario: [
+    user: [
       {
         to: "/profile",
         icon: <UserCircle className="h-4 w-4" />,
@@ -135,9 +135,9 @@ const Navbar = () => {
       {isMobile && isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-white pt-16">
           <div className="container mx-auto px-4 py-6 space-y-6">
-            <MenuGroup title="Cadastros" items={menuItems.cadastros} />
-            <MenuGroup title="Serviços" items={menuItems.servicos} />
-            <MenuGroup title="Usuário" items={menuItems.usuario} />
+            <MenuGroup title="Records" items={menuItems.records} />
+            <MenuGroup title="Services" items={menuItems.services} />
+            <MenuGroup title="User" items={menuItems.user} />
           </div>
         </div>
       )}
