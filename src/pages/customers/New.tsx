@@ -57,6 +57,7 @@ const NewCustomer = () => {
         tax_exempt: values.taxExempt,
         tax_id: values.taxId,
         type: values.type,
+        contact_name: values.contactName,
       });
 
       if (error) throw error;

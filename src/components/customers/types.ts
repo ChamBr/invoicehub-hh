@@ -3,6 +3,7 @@ import { z } from "zod";
 export const customerFormSchema = z.object({
   type: z.enum(["personal", "company"]),
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  contactName: z.string().optional().nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
   phone: z.string().optional().nullable(),
   taxExempt: z.boolean().default(false),
