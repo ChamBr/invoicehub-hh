@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@/i18n/config";
 import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
 import Index from "./pages/Index";
 import CustomersIndex from "./pages/customers/Index";
 import NewCustomer from "./pages/customers/New";
@@ -24,19 +25,22 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-gray-50 flex flex-col">
             <Navbar />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/customers" element={<CustomersIndex />} />
-              <Route path="/customers/new" element={<NewCustomer />} />
-              <Route path="/products" element={<ProductsIndex />} />
-              <Route path="/invoices" element={<InvoicesIndex />} />
-              <Route path="/plans" element={<PlansIndex />} />
-              <Route path="/feedback" element={<FeedbackIndex />} />
-              <Route path="/profile" element={<ProfileIndex />} />
-              <Route path="/admin" element={<AdminIndex />} />
-            </Routes>
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/customers" element={<CustomersIndex />} />
+                <Route path="/customers/new" element={<NewCustomer />} />
+                <Route path="/products" element={<ProductsIndex />} />
+                <Route path="/invoices" element={<InvoicesIndex />} />
+                <Route path="/plans" element={<PlansIndex />} />
+                <Route path="/feedback" element={<FeedbackIndex />} />
+                <Route path="/profile" element={<ProfileIndex />} />
+                <Route path="/admin" element={<AdminIndex />} />
+              </Routes>
+            </main>
+            <Footer />
           </div>
         </BrowserRouter>
       </TooltipProvider>

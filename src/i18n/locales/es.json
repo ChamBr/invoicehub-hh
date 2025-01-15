@@ -12,5 +12,21 @@
       "submit": "Enviar Comentario",
       "list": "Lista de Comentarios"
     }
+  },
+  "dashboard": {
+    "welcome": "Bienvenido a InvoiceHub",
+    "metrics": {
+      "totalRevenue": "Ingresos Totales",
+      "monthlyGrowth": "Crecimiento Mensual",
+      "activeClients": "Clientes Activos",
+      "overdueInvoices": "Facturas Vencidas"
+    }
+  },
+  "footer": {
+    "version": "v0.01b",
+    "by": "Por",
+    "company": "HiveHub",
+    "separator": "|",
+    "ai": "alisson.ai"
   }
 }
