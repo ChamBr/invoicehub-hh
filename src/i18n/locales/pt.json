@@ -28,5 +28,12 @@
     "company": "HiveHub",
     "separator": "|",
     "ai": "alisson.ai"
+  },
+  "common": {
+    "admin": {
+      "mode": "Modo Admin",
+      "enabled": "Ativado",
+      "disabled": "Desativado"
+    }
   }
 }

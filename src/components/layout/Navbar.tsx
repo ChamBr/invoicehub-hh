@@ -27,7 +27,7 @@ const Navbar = () => {
   const queryClient = useQueryClient();
 
   // Buscar perfil do usuário
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -49,29 +49,45 @@ const Navbar = () => {
   });
 
   const handleAdminToggle = async (checked: boolean) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Usuário não autenticado.",
+        });
+        return;
+      }
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ role: checked ? "admin" : "user" })
-      .eq("id", user.id);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ role: checked ? "admin" : "user" })
+        .eq("id", user.id);
 
-    if (error) {
+      if (error) {
+        console.error("Erro ao atualizar perfil:", error);
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Não foi possível atualizar o perfil.",
+        });
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      toast({
+        title: t('common.admin.mode'),
+        description: checked ? t('common.admin.enabled') : t('common.admin.disabled'),
+      });
+    } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Não foi possível atualizar o perfil.",
+        description: "Ocorreu um erro inesperado.",
       });
-      return;
     }
-
-    queryClient.invalidateQueries({ queryKey: ["profile"] });
-    toast({
-      title: "Perfil atualizado",
-      description: `Modo admin ${checked ? "ativado" : "desativado"}.`,
-    });
   };
 
   useEffect(() => {
@@ -157,8 +173,12 @@ const Navbar = () => {
               <Switch
                 checked={profile?.role === "admin"}
                 onCheckedChange={handleAdminToggle}
+                disabled={isLoading}
+                aria-label={t('common.admin.mode')}
               />
-              <span className="text-xs text-gray-500">Admin</span>
+              <span className="text-xs text-gray-500">
+                {t('common.admin.mode')}
+              </span>
             </div>
           </div>
 
