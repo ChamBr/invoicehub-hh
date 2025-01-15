@@ -123,7 +123,7 @@ const DebugModeSwitch = () => {
       </div>
 
       {debugConfig?.is_enabled && (
-        <Alert variant="warning" className="bg-orange-50">
+        <Alert variant="destructive" className="bg-orange-50">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="text-sm">
             Modo debug ativo! O acesso admin sem autenticação está temporariamente liberado.

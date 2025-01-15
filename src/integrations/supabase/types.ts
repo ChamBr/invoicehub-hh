@@ -102,33 +102,33 @@ export type Database = {
       configurations: {
         Row: {
           created_at: string
+          debug_activated_at: string | null
           description: string | null
           id: string
           is_enabled: boolean | null
           name: string
           type: Database["public"]["Enums"]["config_type"]
           updated_at: string
-          debug_activated_at: string | null;
         }
         Insert: {
           created_at?: string
+          debug_activated_at?: string | null
           description?: string | null
           id?: string
           is_enabled?: boolean | null
           name: string
           type: Database["public"]["Enums"]["config_type"]
           updated_at?: string
-          debug_activated_at?: string | null;
         }
         Update: {
           created_at?: string
+          debug_activated_at?: string | null
           description?: string | null
           id?: string
           is_enabled?: boolean | null
           name?: string
           type?: Database["public"]["Enums"]["config_type"]
           updated_at?: string
-          debug_activated_at?: string | null;
         }
         Relationships: []
       }
@@ -292,7 +292,7 @@ export type Database = {
           id?: string
           notes?: string | null
           status?: string | null
-          total: number
+          total?: number
         }
         Update: {
           created_at?: string
@@ -438,7 +438,7 @@ export type Database = {
           company?: string | null
           created_at?: string
           full_name?: string | null
-          id: string
+          id?: string
           preferences?: Json | null
           role?: string | null
           updated_at?: string
@@ -465,7 +465,7 @@ export type Database = {
           id?: string
           plan_id: string
           renewal_date?: string | null
-          start_date: string
+          start_date?: string
           status?: string | null
         }
         Update: {
@@ -525,7 +525,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_debug_mode_valid: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       config_type: "feature" | "test"
@@ -545,7 +548,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never,
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -578,10 +581,10 @@ export type TablesInsert<
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
     ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
 
 export type TablesUpdate<
@@ -599,10 +602,10 @@ export type TablesUpdate<
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
     ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U
-    }
-    ? U
-    : never
+        Update: infer U
+      }
+      ? U
+      : never
     : never
 
 export type Enums<

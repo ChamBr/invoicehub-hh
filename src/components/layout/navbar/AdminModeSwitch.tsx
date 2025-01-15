@@ -44,7 +44,7 @@ const AdminModeSwitch = () => {
 
       const { error } = await supabase
         .from("profiles")
-        .update({ role: checked ? "admin" : "user" })
+        .update({ id: user.id, role: checked ? "admin" : "user" })
         .eq("id", user.id);
 
       if (error) {
