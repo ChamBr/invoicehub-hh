@@ -31,17 +31,18 @@ export function AddressAutocomplete({ onAddressSelect }: AddressAutocompleteProp
     <div className="space-y-2">
       <Label htmlFor="address">Street Address</Label>
       <div>
-        <AddressAutofill 
-          accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''}
-          onRetrieve={handleAddressSelect}
-        >
-          <Input
-            id="address"
-            placeholder="Start typing your address..."
-            autoComplete="street-address"
-            className="w-full"
-          />
-        </AddressAutofill>
+        {React.createElement(AddressAutofill, {
+          accessToken: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '',
+          onRetrieve: handleAddressSelect,
+          children: (
+            <Input
+              id="address"
+              placeholder="Start typing your address..."
+              autoComplete="street-address"
+              className="w-full"
+            />
+          )
+        })}
       </div>
     </div>
   );
