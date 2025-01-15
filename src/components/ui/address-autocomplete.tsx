@@ -30,14 +30,16 @@ export function AddressAutocomplete({ onAddressSelect }: AddressAutocompleteProp
   return (
     <div className="space-y-2">
       <Label htmlFor="address">Street Address</Label>
-      <AddressAutofill accessToken={process.env.MAPBOX_ACCESS_TOKEN || ''}>
-        <Input
-          id="address"
-          placeholder="Start typing your address..."
-          autoComplete="street-address"
-          className="w-full"
-        />
-      </AddressAutofill>
+      <div>
+        <AddressAutofill accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''}>
+          <Input
+            id="address"
+            placeholder="Start typing your address..."
+            autoComplete="street-address"
+            className="w-full"
+          />
+        </AddressAutofill>
+      </div>
     </div>
   );
 }
