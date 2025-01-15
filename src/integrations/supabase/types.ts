@@ -9,6 +9,75 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      company_profiles: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string
+          display_logo: boolean | null
+          display_phone: boolean | null
+          display_tax_id: boolean | null
+          email: string | null
+          id: string
+          logo_url: string | null
+          mobile: string | null
+          phone: string | null
+          state: string | null
+          tax_id: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string
+          display_logo?: boolean | null
+          display_phone?: boolean | null
+          display_tax_id?: boolean | null
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          mobile?: string | null
+          phone?: string | null
+          state?: string | null
+          tax_id?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string
+          display_logo?: boolean | null
+          display_phone?: boolean | null
+          display_tax_id?: boolean | null
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          mobile?: string | null
+          phone?: string | null
+          state?: string | null
+          tax_id?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address: string | null
