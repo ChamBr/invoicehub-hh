@@ -99,6 +99,36 @@ export type Database = {
         }
         Relationships: []
       }
+      configurations: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_enabled: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["config_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["config_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          name?: string
+          type?: Database["public"]["Enums"]["config_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address: string | null
@@ -495,7 +525,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      config_type: "feature" | "test"
     }
     CompositeTypes: {
       [_ in never]: never
