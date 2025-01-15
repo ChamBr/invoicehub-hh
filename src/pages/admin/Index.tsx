@@ -4,24 +4,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { PlansManagement } from "./PlansManagement";
 import { PaymentIntegrations } from "./PaymentIntegrations";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AdminIndex = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    document.title = "InvoiceHub - Administração";
-  }, []);
-
-  // Verificar se o usuário é admin
-  const { data: profile, isLoading: isLoadingProfile } = useQuery({
-    queryKey: ["profile"],
+  // Verificar autenticação e perfil admin
+  const { data: profile, isLoading: isLoadingProfile, error: profileError } = useQuery({
+    queryKey: ["admin-profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
@@ -38,7 +34,7 @@ const AdminIndex = () => {
   });
 
   // Buscar configurações do sistema
-  const { data: settings, isLoading: isLoadingSettings } = useQuery({
+  const { data: settings, isLoading: isLoadingSettings, error: settingsError } = useQuery({
     queryKey: ["system-settings"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -48,6 +44,7 @@ const AdminIndex = () => {
       if (error) throw error;
       return data;
     },
+    enabled: profile?.role === "admin", // Só busca se for admin
   });
 
   // Mutation para atualizar configurações
@@ -77,7 +74,12 @@ const AdminIndex = () => {
     },
   });
 
-  if (isLoadingProfile || isLoadingSettings) {
+  useEffect(() => {
+    document.title = "InvoiceHub - Administração";
+  }, []);
+
+  // Loading state
+  if (isLoadingProfile || (profile?.role === "admin" && isLoadingSettings)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -85,8 +87,21 @@ const AdminIndex = () => {
     );
   }
 
+  // Error state
+  if (profileError || settingsError) {
+    return (
+      <div className="p-8">
+        <Alert variant="destructive">
+          <AlertDescription>
+            Ocorreu um erro ao carregar a página de administração. Por favor, tente novamente.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   // Redirecionar se não for admin
-  if (profile?.role !== "admin") {
+  if (!profile || profile.role !== "admin") {
     return <Navigate to="/" replace />;
   }
 
