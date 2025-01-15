@@ -22,6 +22,13 @@ export type Database = {
           display_tax_id: boolean | null
           email: string | null
           id: string
+          invoice_currency: string | null
+          invoice_due_days: number | null
+          invoice_footer: string | null
+          invoice_next_number: number | null
+          invoice_prefix: string | null
+          invoice_template: string | null
+          invoice_terms: string | null
           logo_url: string | null
           mobile: string | null
           phone: string | null
@@ -44,6 +51,13 @@ export type Database = {
           display_tax_id?: boolean | null
           email?: string | null
           id?: string
+          invoice_currency?: string | null
+          invoice_due_days?: number | null
+          invoice_footer?: string | null
+          invoice_next_number?: number | null
+          invoice_prefix?: string | null
+          invoice_template?: string | null
+          invoice_terms?: string | null
           logo_url?: string | null
           mobile?: string | null
           phone?: string | null
@@ -66,6 +80,13 @@ export type Database = {
           display_tax_id?: boolean | null
           email?: string | null
           id?: string
+          invoice_currency?: string | null
+          invoice_due_days?: number | null
+          invoice_footer?: string | null
+          invoice_next_number?: number | null
+          invoice_prefix?: string | null
+          invoice_template?: string | null
+          invoice_terms?: string | null
           logo_url?: string | null
           mobile?: string | null
           phone?: string | null

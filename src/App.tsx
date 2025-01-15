@@ -7,6 +7,7 @@ import "@/i18n/config";
 import Navbar from "./components/layout/Navbar";
 import Index from "./pages/Index";
 import CustomersIndex from "./pages/customers/Index";
+import NewCustomer from "./pages/customers/New";
 import ProductsIndex from "./pages/products/Index";
 import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
@@ -27,6 +28,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/customers" element={<CustomersIndex />} />
+              <Route path="/customers/new" element={<NewCustomer />} />
               <Route path="/products" element={<ProductsIndex />} />
               <Route path="/invoices" element={<InvoicesIndex />} />
               <Route path="/plans" element={<PlansIndex />} />
