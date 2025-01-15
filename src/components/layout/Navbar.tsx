@@ -9,16 +9,37 @@ import {
   MessageSquare, 
   UserCircle,
   Menu,
-  X
+  X,
+  Settings
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
   const { t } = useTranslation();
+
+  // Verificar se o usuário é admin
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
 
   useEffect(() => {
     const pageTitles: { [key: string]: string } = {
@@ -28,7 +49,8 @@ const Navbar = () => {
       "/invoices": t('navigation.invoices'),
       "/plans": t('navigation.plans'),
       "/feedback": t('navigation.feedback'),
-      "/profile": t('navigation.profile')
+      "/profile": t('navigation.profile'),
+      "/admin": t('navigation.admin')
     };
     document.title = `InvoiceHub - ${pageTitles[location.pathname] || ""}`;
   }, [location, t]);
@@ -68,7 +90,14 @@ const Navbar = () => {
         to: "/profile",
         icon: <UserCircle className="h-4 w-4" />,
         label: t('navigation.profile')
-      }
+      },
+      ...(profile?.role === "admin" ? [
+        {
+          to: "/admin",
+          icon: <Settings className="h-4 w-4" />,
+          label: t('navigation.admin')
+        }
+      ] : [])
     ]
   };
 
