@@ -1,29 +1,41 @@
 import * as React from "react";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { Input } from "./input";
+import { UseFormReturn } from "react-hook-form";
 
 export interface AddressAutocompleteProps {
-  accessToken: string;
+  accessToken?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (address: any) => void;
+  form?: UseFormReturn<any>;
+  onAddressSelect?: (address: any) => void;
 }
 
 export function AddressAutocomplete({
-  accessToken,
+  accessToken = process.env.MAPBOX_ACCESS_TOKEN,
   value,
   onChange,
   onSelect,
+  form,
+  onAddressSelect,
   ...props
 }: AddressAutocompleteProps) {
+  const handleRetrieve = (res: any) => {
+    if (onSelect) onSelect(res);
+    if (onAddressSelect) onAddressSelect(res);
+  };
+
   return (
-    <AddressAutofill accessToken={accessToken} onRetrieve={onSelect}>
-      <Input
-        placeholder="Digite seu endereço"
-        value={value}
-        onChange={onChange}
-        {...props}
-      />
-    </AddressAutofill>
+    <div className="w-full">
+      <AddressAutofill accessToken={accessToken} onRetrieve={handleRetrieve}>
+        <Input
+          placeholder="Digite seu endereço"
+          value={value}
+          onChange={onChange}
+          {...props}
+        />
+      </AddressAutofill>
+    </div>
   );
 }

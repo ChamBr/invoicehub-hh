@@ -65,7 +65,15 @@ export function CustomerForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <CustomerTypeSelect form={form} />
         <CustomerContactInfo form={form} />
-        <AddressAutocomplete form={form} />
+        <AddressAutocomplete 
+          accessToken={process.env.MAPBOX_ACCESS_TOKEN}
+          onSelect={(address) => {
+            form.setValue('address', address.place_name);
+            form.setValue('city', address.city);
+            form.setValue('state', address.state);
+            form.setValue('zipCode', address.postcode);
+          }}
+        />
         <CustomerTaxInfo form={form} />
         <CustomerNotesField form={form} />
 
