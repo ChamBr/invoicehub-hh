@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { 
   Users, 
   Package, 
   FileText, 
-  CreditCard, 
   MessageSquare, 
   UserCircle,
   Menu,
@@ -14,8 +13,6 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,34 +20,15 @@ const Navbar = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Verificar se o usuário é admin
-  const { data: profile } = useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
   useEffect(() => {
     const pageTitles: { [key: string]: string } = {
       "/": "Dashboard",
       "/customers": t('navigation.customers'),
       "/products": t('navigation.products'),
       "/invoices": t('navigation.invoices'),
-      "/plans": t('navigation.plans'),
-      "/feedback": t('navigation.feedback'),
       "/profile": t('navigation.profile'),
-      "/admin": t('navigation.admin')
+      "/admin": t('navigation.admin'),
+      "/feedback": t('navigation.feedback.submit')
     };
     document.title = `InvoiceHub - ${pageTitles[location.pathname] || ""}`;
   }, [location, t]);
@@ -73,31 +51,24 @@ const Navbar = () => {
         label: t('navigation.invoices')
       }
     ],
-    services: [
-      {
-        to: "/plans",
-        icon: <CreditCard className="h-4 w-4" />,
-        label: t('navigation.plans')
-      },
-      {
-        to: "/feedback",
-        icon: <MessageSquare className="h-4 w-4" />,
-        label: t('navigation.feedback')
-      }
-    ],
     user: [
       {
         to: "/profile",
         icon: <UserCircle className="h-4 w-4" />,
         label: t('navigation.profile')
       },
-      ...(profile?.role === "admin" ? [
-        {
-          to: "/admin",
-          icon: <Settings className="h-4 w-4" />,
-          label: t('navigation.admin')
-        }
-      ] : [])
+      {
+        to: "/feedback",
+        icon: <MessageSquare className="h-4 w-4" />,
+        label: t('navigation.feedback.submit')
+      }
+    ],
+    admin: [
+      {
+        to: "/admin",
+        icon: <Settings className="h-4 w-4" />,
+        label: t('navigation.admin')
+      }
     ]
   };
 
@@ -171,8 +142,8 @@ const Navbar = () => {
         <div className="fixed inset-0 z-50 bg-white pt-16">
           <div className="container mx-auto px-4 py-6 space-y-6">
             <MenuGroup title={t('navigation.records')} items={menuItems.records} />
-            <MenuGroup title={t('navigation.services')} items={menuItems.services} />
             <MenuGroup title={t('navigation.user')} items={menuItems.user} />
+            <MenuGroup title={t('navigation.admin')} items={menuItems.admin} />
           </div>
         </div>
       )}

@@ -1,0 +1,16 @@
+{
+  "navigation": {
+    "records": "Registros",
+    "services": "Servicios",
+    "user": "Usuario",
+    "customers": "Clientes",
+    "products": "Productos",
+    "invoices": "Facturas",
+    "profile": "Perfil",
+    "admin": "Administración",
+    "feedback": {
+      "submit": "Enviar Comentario",
+      "list": "Lista de Comentarios"
+    }
+  }
+}

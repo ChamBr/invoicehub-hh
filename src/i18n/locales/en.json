@@ -6,9 +6,11 @@
     "customers": "Customers",
     "products": "Products",
     "invoices": "Invoices",
-    "plans": "Plans",
-    "feedback": "Feedback",
     "profile": "Profile",
-    "admin": "Administration"
+    "admin": "Administration",
+    "feedback": {
+      "submit": "Submit Feedback",
+      "list": "Feedback List"
+    }
   }
 }
