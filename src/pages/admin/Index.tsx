@@ -20,7 +20,9 @@ const AdminIndex = () => {
     queryKey: ["admin-profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) {
+        throw new Error("Usuário não autenticado");
+      }
 
       const { data, error } = await supabase
         .from("profiles")
@@ -28,7 +30,11 @@ const AdminIndex = () => {
         .eq("id", user.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao buscar perfil:", error);
+        throw error;
+      }
+
       return data;
     },
   });
@@ -41,7 +47,11 @@ const AdminIndex = () => {
         .from("system_settings")
         .select("*");
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao buscar configurações:", error);
+        throw error;
+      }
+
       return data;
     },
     enabled: profile?.role === "admin", // Só busca se for admin
@@ -65,12 +75,12 @@ const AdminIndex = () => {
       });
     },
     onError: (error) => {
+      console.error("Erro ao atualizar configuração:", error);
       toast({
         variant: "destructive",
         title: "Erro ao atualizar configuração",
         description: "Ocorreu um erro ao atualizar a configuração.",
       });
-      console.error("Error:", error);
     },
   });
 
