@@ -4,10 +4,10 @@ const Footer = () => {
   const { t } = useTranslation();
 
   return (
-    <footer className="py-4 bg-gray-50 text-sm text-gray-600">
+    <footer className="py-2 bg-gray-50 text-xs text-gray-600 opacity-75">
       <div className="container mx-auto text-center">
         <p>
-          InvoiceHub {t('footer.version')} {t('footer.separator')} {t('footer.by')} {t('footer.company')} {t('footer.separator')} {t('footer.ai')}
+          InvoiceHub v0.01b - By HiveHub | alisson.ai
         </p>
       </div>
     </footer>
