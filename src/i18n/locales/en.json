@@ -1,0 +1,30 @@
+{
+  "navigation": {
+    "records": "Records",
+    "customers": "Customers",
+    "products": "Products",
+    "invoices": "Invoices",
+    "services": "Services",
+    "plans": "Plans",
+    "feedback": "Feedback",
+    "user": "User",
+    "profile": "Profile"
+  },
+  "dashboard": {
+    "recentInvoices": "Recent Invoices",
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search"
+  }
+}

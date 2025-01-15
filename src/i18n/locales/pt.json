@@ -1,0 +1,30 @@
+{
+  "navigation": {
+    "records": "Registros",
+    "customers": "Clientes",
+    "products": "Produtos",
+    "invoices": "Faturas",
+    "services": "Serviços",
+    "plans": "Planos",
+    "feedback": "Feedback",
+    "user": "Usuário",
+    "profile": "Perfil"
+  },
+  "dashboard": {
+    "recentInvoices": "Faturas Recentes",
+    "status": {
+      "paid": "Pago",
+      "pending": "Pendente",
+      "overdue": "Vencido"
+    }
+  },
+  "common": {
+    "loading": "Carregando...",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Deletar",
+    "edit": "Editar",
+    "create": "Criar",
+    "search": "Buscar"
+  }
+}

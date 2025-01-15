@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import { 
   Users, 
   Package, 
@@ -11,61 +12,62 @@ import {
   X
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { t } = useTranslation();
 
-  // Atualiza o título da página
   useEffect(() => {
     const pageTitles: { [key: string]: string } = {
       "/": "Dashboard",
-      "/customers": "Customers",
-      "/products": "Products",
-      "/invoices": "Invoices",
-      "/plans": "Plans",
-      "/feedback": "Feedback",
-      "/profile": "Profile"
+      "/customers": t('navigation.customers'),
+      "/products": t('navigation.products'),
+      "/invoices": t('navigation.invoices'),
+      "/plans": t('navigation.plans'),
+      "/feedback": t('navigation.feedback'),
+      "/profile": t('navigation.profile')
     };
     document.title = `InvoiceHub - ${pageTitles[location.pathname] || ""}`;
-  }, [location]);
+  }, [location, t]);
 
   const menuItems = {
     records: [
       {
         to: "/customers",
         icon: <Users className="h-4 w-4" />,
-        label: "Clientes"
+        label: t('navigation.customers')
       },
       {
         to: "/products",
         icon: <Package className="h-4 w-4" />,
-        label: "Produtos"
+        label: t('navigation.products')
       },
       {
         to: "/invoices",
         icon: <FileText className="h-4 w-4" />,
-        label: "Faturas"
+        label: t('navigation.invoices')
       }
     ],
     services: [
       {
         to: "/plans",
         icon: <CreditCard className="h-4 w-4" />,
-        label: "Planos"
+        label: t('navigation.plans')
       },
       {
         to: "/feedback",
         icon: <MessageSquare className="h-4 w-4" />,
-        label: "Feedback"
+        label: t('navigation.feedback')
       }
     ],
     user: [
       {
         to: "/profile",
         icon: <UserCircle className="h-4 w-4" />,
-        label: "Perfil"
+        label: t('navigation.profile')
       }
     ]
   };
@@ -115,19 +117,23 @@ const Navbar = () => {
                 ))}
               </div>
             ))}
+            <LanguageSwitcher />
           </div>
 
           {/* Botão Menu Mobile */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6 text-gray-600" />
-            ) : (
-              <Menu className="h-6 w-6 text-gray-600" />
-            )}
-          </button>
+          <div className="md:hidden flex items-center space-x-2">
+            <LanguageSwitcher />
+            <button
+              className="p-2 rounded-lg hover:bg-gray-100"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6 text-gray-600" />
+              ) : (
+                <Menu className="h-6 w-6 text-gray-600" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -135,9 +141,9 @@ const Navbar = () => {
       {isMobile && isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-white pt-16">
           <div className="container mx-auto px-4 py-6 space-y-6">
-            <MenuGroup title="Records" items={menuItems.records} />
-            <MenuGroup title="Services" items={menuItems.services} />
-            <MenuGroup title="User" items={menuItems.user} />
+            <MenuGroup title={t('navigation.records')} items={menuItems.records} />
+            <MenuGroup title={t('navigation.services')} items={menuItems.services} />
+            <MenuGroup title={t('navigation.user')} items={menuItems.user} />
           </div>
         </div>
       )}
