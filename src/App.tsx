@@ -13,6 +13,7 @@ import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
 import FeedbackIndex from "./pages/feedback/Index";
 import ProfileIndex from "./pages/profile/Index";
+import AdminIndex from "./pages/admin/Index";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => {
               <Route path="/plans" element={<PlansIndex />} />
               <Route path="/feedback" element={<FeedbackIndex />} />
               <Route path="/profile" element={<ProfileIndex />} />
+              <Route path="/admin" element={<AdminIndex />} />
             </Routes>
           </div>
         </BrowserRouter>

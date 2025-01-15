@@ -280,6 +280,36 @@ export type Database = {
           },
         ]
       }
+      payment_integrations: {
+        Row: {
+          config: Json | null
+          created_at: string
+          id: string
+          is_enabled: boolean | null
+          name: string
+          provider: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          name: string
+          provider: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          name?: string
+          provider?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           billing_period: string
@@ -432,6 +462,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_settings: {
+        Row: {
+          created_at: string
+          feature_key: string
+          id: string
+          is_enabled: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          feature_key: string
+          id?: string
+          is_enabled?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          feature_key?: string
+          id?: string
+          is_enabled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
