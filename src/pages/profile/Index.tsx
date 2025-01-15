@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { CountrySelect } from "@/components/ui/country-select";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ProfileIndex = () => {
   const { toast } = useToast();
@@ -155,213 +156,231 @@ const ProfileIndex = () => {
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
-      <div className="space-y-8">
-        {/* User Profile */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-6">User Profile</h2>
-          <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-gray-200">
-              {profile?.avatar_url && (
-                <img
-                  src={profile.avatar_url}
-                  alt="Avatar"
-                  className="w-full h-full rounded-full object-cover"
-                />
-              )}
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold">{profile?.full_name}</h3>
-              <p className="text-gray-600">{profile?.company}</p>
-            </div>
-          </div>
-        </div>
+      <Tabs defaultValue="user" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="user">User Profile</TabsTrigger>
+          <TabsTrigger value="company">Company Details</TabsTrigger>
+          <TabsTrigger value="invoice">Invoice Settings</TabsTrigger>
+        </TabsList>
 
-        {/* Company Profile */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold">Company Information</h2>
-
-          {/* Logo Upload */}
-          <div className="space-y-2">
-            <Label htmlFor="logo">Company Logo</Label>
+        {/* User Profile Tab */}
+        <TabsContent value="user" className="space-y-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold mb-6">User Profile</h2>
             <div className="flex items-center gap-4">
-              <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
-                {(logoPreview || companyProfile?.logo_url) && (
+              <div className="w-20 h-20 rounded-full bg-gray-200">
+                {profile?.avatar_url && (
                   <img
-                    src={logoPreview || companyProfile?.logo_url}
-                    alt="Logo Preview"
-                    className="w-full h-full object-contain"
+                    src={profile.avatar_url}
+                    alt="Avatar"
+                    className="w-full h-full rounded-full object-cover"
                   />
                 )}
               </div>
-              <div className="space-y-2">
-                <Input
-                  id="logo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                />
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="display_logo"
-                    name="display_logo"
-                    defaultChecked={companyProfile?.display_logo}
+              <div>
+                <h3 className="text-xl font-semibold">{profile?.full_name}</h3>
+                <p className="text-gray-600">{profile?.company}</p>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Company Details Tab */}
+        <TabsContent value="company" className="space-y-6">
+          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
+            <h2 className="text-2xl font-bold">Company Information</h2>
+
+            {/* Logo Upload */}
+            <div className="space-y-2">
+              <Label htmlFor="logo">Company Logo</Label>
+              <div className="flex items-center gap-4">
+                <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
+                  {(logoPreview || companyProfile?.logo_url) && (
+                    <img
+                      src={logoPreview || companyProfile?.logo_url}
+                      alt="Logo Preview"
+                      className="w-full h-full object-contain"
+                    />
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Input
+                    id="logo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoChange}
                   />
-                  <Label htmlFor="display_logo">Display logo on invoice</Label>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="display_logo"
+                      name="display_logo"
+                      defaultChecked={companyProfile?.display_logo}
+                    />
+                    <Label htmlFor="display_logo">Display logo on invoice</Label>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="company_name">Company Name</Label>
-              <Input
-                id="company_name"
-                name="company_name"
-                defaultValue={companyProfile?.company_name}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="tax_id">Tax ID</Label>
+            {/* Basic Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
+                <Label htmlFor="company_name">Company Name</Label>
                 <Input
-                  id="tax_id"
-                  name="tax_id"
-                  defaultValue={companyProfile?.tax_id}
+                  id="company_name"
+                  name="company_name"
+                  defaultValue={companyProfile?.company_name}
+                  required
                 />
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="display_tax_id"
-                    name="display_tax_id"
-                    defaultChecked={companyProfile?.display_tax_id}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tax_id">Tax ID</Label>
+                <div className="space-y-2">
+                  <Input
+                    id="tax_id"
+                    name="tax_id"
+                    defaultValue={companyProfile?.tax_id}
                   />
-                  <Label htmlFor="display_tax_id">Display Tax ID on invoice</Label>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="display_tax_id"
+                      name="display_tax_id"
+                      defaultChecked={companyProfile?.display_tax_id}
+                    />
+                    <Label htmlFor="display_tax_id">Display Tax ID on invoice</Label>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Address */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Address</h3>
-            <AddressAutocomplete onAddressSelect={handleAddressSelect} />
-            <div className="space-y-2">
-              <Label htmlFor="address_line2">Address Line 2 (Optional)</Label>
-              <Input
-                id="address_line2"
-                name="address_line2"
-                defaultValue={companyProfile?.address_line2}
-                placeholder="Apartment, suite, unit, etc."
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Address */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Address</h3>
+              <AddressAutocomplete onAddressSelect={handleAddressSelect} />
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="address_line2">Address Line 2 (Optional)</Label>
                 <Input
-                  id="city"
-                  name="city"
-                  defaultValue={companyProfile?.city}
+                  id="address_line2"
+                  name="address_line2"
+                  defaultValue={companyProfile?.address_line2}
+                  placeholder="Apartment, suite, unit, etc."
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  name="state"
-                  defaultValue={companyProfile?.state}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    defaultValue={companyProfile?.city}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Input
+                    id="state"
+                    name="state"
+                    defaultValue={companyProfile?.state}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zip_code">ZIP Code</Label>
+                  <Input
+                    id="zip_code"
+                    name="zip_code"
+                    defaultValue={companyProfile?.zip_code}
+                  />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="zip_code">ZIP Code</Label>
-                <Input
-                  id="zip_code"
-                  name="zip_code"
-                  defaultValue={companyProfile?.zip_code}
+                <Label htmlFor="country">Country</Label>
+                <CountrySelect
+                  value={companyProfile?.country || 'US'}
+                  onValueChange={(value) => {
+                    const form = document.querySelector('form');
+                    if (form) {
+                      const formData = new FormData(form);
+                      formData.set('country', value);
+                      updateCompanyProfile.mutate(formData);
+                    }
+                  }}
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <CountrySelect
-                value={companyProfile?.country || 'US'}
-                onValueChange={(value) => {
-                  const form = document.querySelector('form');
-                  if (form) {
-                    const formData = new FormData(form);
-                    formData.set('country', value);
-                    updateCompanyProfile.mutate(formData);
-                  }
-                }}
-              />
-            </div>
-          </div>
 
-          {/* Contact */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contact</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  defaultValue={companyProfile?.phone}
-                />
+            {/* Contact */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Contact</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    defaultValue={companyProfile?.phone}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mobile">Mobile</Label>
+                  <Input
+                    id="mobile"
+                    name="mobile"
+                    type="tel"
+                    defaultValue={companyProfile?.mobile}
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="mobile">Mobile</Label>
-                <Input
-                  id="mobile"
-                  name="mobile"
-                  type="tel"
-                  defaultValue={companyProfile?.mobile}
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="display_phone"
+                  name="display_phone"
+                  defaultChecked={companyProfile?.display_phone}
                 />
+                <Label htmlFor="display_phone">
+                  Display phone/mobile on invoice
+                </Label>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    defaultValue={companyProfile?.email}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="website">Website</Label>
+                  <Input
+                    id="website"
+                    name="website"
+                    type="url"
+                    defaultValue={companyProfile?.website}
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Switch
-                id="display_phone"
-                name="display_phone"
-                defaultChecked={companyProfile?.display_phone}
-              />
-              <Label htmlFor="display_phone">
-                Display phone/mobile on invoice
-              </Label>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  defaultValue={companyProfile?.email}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
-                <Input
-                  id="website"
-                  name="website"
-                  type="url"
-                  defaultValue={companyProfile?.website}
-                />
-              </div>
-            </div>
-          </div>
 
-          <Button
-            type="submit"
-            className="w-full md:w-auto"
-            disabled={updateCompanyProfile.isPending}
-          >
-            {updateCompanyProfile.isPending ? "Saving..." : "Save Changes"}
-          </Button>
-        </form>
-      </div>
+            <Button
+              type="submit"
+              className="w-full md:w-auto"
+              disabled={updateCompanyProfile.isPending}
+            >
+              {updateCompanyProfile.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </form>
+        </TabsContent>
+
+        {/* Invoice Settings Tab */}
+        <TabsContent value="invoice" className="space-y-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold mb-6">Invoice Settings</h2>
+            <p className="text-gray-600">Invoice settings will be implemented soon.</p>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
