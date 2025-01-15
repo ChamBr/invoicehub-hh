@@ -34,12 +34,15 @@ export function AddressAutocomplete({ onAddressSelect }: AddressAutocompleteProp
         accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || ''}
         onRetrieve={handleAddressSelect}
       >
-        <Input
-          id="address"
-          placeholder="Start typing your address..."
-          autoComplete="street-address"
-          className="w-full"
-        />
+        {({ inputRef }: { inputRef: React.RefObject<HTMLInputElement> }) => (
+          <Input
+            ref={inputRef}
+            id="address"
+            placeholder="Start typing your address..."
+            autoComplete="street-address"
+            className="w-full"
+          />
+        )}
       </AddressAutofill>
     </div>
   );

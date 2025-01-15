@@ -111,6 +111,9 @@ export type Database = {
           phone: string | null
           state: string | null
           status: string | null
+          tax_exempt: boolean | null
+          tax_id: string | null
+          type: string | null
           zip_code: string | null
         }
         Insert: {
@@ -124,6 +127,9 @@ export type Database = {
           phone?: string | null
           state?: string | null
           status?: string | null
+          tax_exempt?: boolean | null
+          tax_id?: string | null
+          type?: string | null
           zip_code?: string | null
         }
         Update: {
@@ -137,6 +143,9 @@ export type Database = {
           phone?: string | null
           state?: string | null
           status?: string | null
+          tax_exempt?: boolean | null
+          tax_id?: string | null
+          type?: string | null
           zip_code?: string | null
         }
         Relationships: []
