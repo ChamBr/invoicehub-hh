@@ -34,13 +34,6 @@ const NewCustomer = () => {
     },
   });
 
-  const handleAddressSelect = (address: any) => {
-    form.setValue("address", address.line1);
-    form.setValue("city", address.city);
-    form.setValue("state", address.state);
-    form.setValue("zipCode", address.postalCode);
-  };
-
   const onSubmit = async (values: CustomerFormValues) => {
     try {
       setIsLoading(true);
@@ -112,7 +105,7 @@ const NewCustomer = () => {
 
             <CustomerContactInfo form={form} />
 
-            <AddressAutocomplete onAddressSelect={handleAddressSelect} />
+            <AddressAutocomplete form={form} />
 
             <CustomerTaxInfo form={form} />
 
