@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import { CountrySelect } from "@/components/ui/country-select";
+import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 
 const ProfileIndex = () => {
   const { toast } = useToast();
@@ -17,7 +19,7 @@ const ProfileIndex = () => {
     queryKey: ["profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) throw new Error("User not authenticated");
 
       const { data, error } = await supabase
         .from("profiles")
@@ -34,27 +36,26 @@ const ProfileIndex = () => {
     queryKey: ["company-profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) throw new Error("User not authenticated");
 
       const { data, error } = await supabase
         .from("company_profiles")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") throw error;
+      if (error) throw error;
       return data;
     },
   });
 
   const updateCompanyProfile = useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (formData: any) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+      if (!user) throw new Error("User not authenticated");
 
       let logoUrl = companyProfile?.logo_url;
 
-      // Upload logo if provided
       if (logoFile) {
         const fileExt = logoFile.name.split('.').pop();
         const filePath = `${user.id}-${Date.now()}.${fileExt}`;
@@ -102,17 +103,17 @@ const ProfileIndex = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-profile"] });
       toast({
-        title: "Perfil atualizado",
-        description: "Os dados da empresa foram atualizados com sucesso.",
+        title: "Profile updated",
+        description: "Company information has been updated successfully.",
       });
     },
     onError: (error) => {
       toast({
-        title: "Erro ao atualizar",
-        description: "Ocorreu um erro ao atualizar os dados da empresa.",
+        title: "Error updating",
+        description: "An error occurred while updating company information.",
         variant: "destructive",
       });
-      console.error("Erro ao atualizar perfil:", error);
+      console.error("Error updating profile:", error);
     },
   });
 
@@ -128,6 +129,20 @@ const ProfileIndex = () => {
     }
   };
 
+  const handleAddressSelect = (address: any) => {
+    const form = document.querySelector('form');
+    if (form) {
+      const formData = new FormData(form);
+      formData.set('address_line1', address.line1);
+      formData.set('address_line2', address.line2 || '');
+      formData.set('city', address.city);
+      formData.set('state', address.state);
+      formData.set('zip_code', address.postalCode);
+      formData.set('country', address.country);
+      updateCompanyProfile.mutate(formData);
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -135,15 +150,15 @@ const ProfileIndex = () => {
   };
 
   if (isLoadingProfile || isLoadingCompany) {
-    return <div className="p-8">Carregando...</div>;
+    return <div className="p-8">Loading...</div>;
   }
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <div className="space-y-8">
-        {/* Perfil do Usuário */}
+        {/* User Profile */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-6">Perfil do Usuário</h2>
+          <h2 className="text-2xl font-bold mb-6">User Profile</h2>
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-full bg-gray-200">
               {profile?.avatar_url && (
@@ -161,13 +176,13 @@ const ProfileIndex = () => {
           </div>
         </div>
 
-        {/* Perfil da Empresa */}
+        {/* Company Profile */}
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold">Dados da Empresa</h2>
+          <h2 className="text-2xl font-bold">Company Information</h2>
 
           {/* Logo Upload */}
           <div className="space-y-2">
-            <Label htmlFor="logo">Logo da Empresa</Label>
+            <Label htmlFor="logo">Company Logo</Label>
             <div className="flex items-center gap-4">
               <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
                 {(logoPreview || companyProfile?.logo_url) && (
@@ -191,16 +206,16 @@ const ProfileIndex = () => {
                     name="display_logo"
                     defaultChecked={companyProfile?.display_logo}
                   />
-                  <Label htmlFor="display_logo">Exibir logo na invoice</Label>
+                  <Label htmlFor="display_logo">Display logo on invoice</Label>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Informações Básicas */}
+          {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="company_name">Nome da Empresa</Label>
+              <Label htmlFor="company_name">Company Name</Label>
               <Input
                 id="company_name"
                 name="company_name"
@@ -222,34 +237,28 @@ const ProfileIndex = () => {
                     name="display_tax_id"
                     defaultChecked={companyProfile?.display_tax_id}
                   />
-                  <Label htmlFor="display_tax_id">Exibir Tax ID na invoice</Label>
+                  <Label htmlFor="display_tax_id">Display Tax ID on invoice</Label>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Endereço */}
+          {/* Address */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Endereço</h3>
+            <h3 className="text-lg font-semibold">Address</h3>
+            <AddressAutocomplete onAddressSelect={handleAddressSelect} />
             <div className="space-y-2">
-              <Label htmlFor="address_line1">Endereço Linha 1</Label>
-              <Input
-                id="address_line1"
-                name="address_line1"
-                defaultValue={companyProfile?.address_line1}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="address_line2">Endereço Linha 2</Label>
+              <Label htmlFor="address_line2">Address Line 2 (Optional)</Label>
               <Input
                 id="address_line2"
                 name="address_line2"
                 defaultValue={companyProfile?.address_line2}
+                placeholder="Apartment, suite, unit, etc."
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="city">Cidade</Label>
+                <Label htmlFor="city">City</Label>
                 <Input
                   id="city"
                   name="city"
@@ -257,7 +266,7 @@ const ProfileIndex = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="state">Estado</Label>
+                <Label htmlFor="state">State</Label>
                 <Input
                   id="state"
                   name="state"
@@ -265,7 +274,7 @@ const ProfileIndex = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="zip_code">CEP</Label>
+                <Label htmlFor="zip_code">ZIP Code</Label>
                 <Input
                   id="zip_code"
                   name="zip_code"
@@ -274,21 +283,27 @@ const ProfileIndex = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="country">País</Label>
-              <Input
-                id="country"
-                name="country"
-                defaultValue={companyProfile?.country || "USA"}
+              <Label htmlFor="country">Country</Label>
+              <CountrySelect
+                value={companyProfile?.country || 'US'}
+                onValueChange={(value) => {
+                  const form = document.querySelector('form');
+                  if (form) {
+                    const formData = new FormData(form);
+                    formData.set('country', value);
+                    updateCompanyProfile.mutate(formData);
+                  }
+                }}
               />
             </div>
           </div>
 
-          {/* Contato */}
+          {/* Contact */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contato</h3>
+            <h3 className="text-lg font-semibold">Contact</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="phone">Telefone</Label>
+                <Label htmlFor="phone">Phone</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -297,7 +312,7 @@ const ProfileIndex = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="mobile">Celular</Label>
+                <Label htmlFor="mobile">Mobile</Label>
                 <Input
                   id="mobile"
                   name="mobile"
@@ -313,12 +328,12 @@ const ProfileIndex = () => {
                 defaultChecked={companyProfile?.display_phone}
               />
               <Label htmlFor="display_phone">
-                Exibir telefone/celular na invoice
+                Display phone/mobile on invoice
               </Label>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   name="email"
@@ -343,7 +358,7 @@ const ProfileIndex = () => {
             className="w-full md:w-auto"
             disabled={updateCompanyProfile.isPending}
           >
-            {updateCompanyProfile.isPending ? "Salvando..." : "Salvar Alterações"}
+            {updateCompanyProfile.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </form>
       </div>
