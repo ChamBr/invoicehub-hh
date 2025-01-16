@@ -31,10 +31,12 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
       notes: initialData?.notes || "",
       taxId: initialData?.taxId || "",
       contactName: initialData?.contactName || "",
+      id: initialData?.id,
     },
   });
 
   const { isSubmitting, handleSubmit } = useCustomerSubmit(onSuccess, initialData?.id);
+  const type = form.watch("type");
 
   return (
     <Form {...form}>
@@ -46,9 +48,9 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nome</FormLabel>
+              <FormLabel>{type === "company" ? "Nome da Empresa" : "Nome"}</FormLabel>
               <FormControl>
-                <Input placeholder="Nome do cliente" {...field} />
+                <Input placeholder={type === "company" ? "Nome da empresa" : "Nome do cliente"} {...field} />
               </FormControl>
             </FormItem>
           )}
