@@ -59,7 +59,7 @@ const UserProfile = () => {
       phone: profile?.phone || "",
       birth_month: profile?.birth_date ? new Date(profile.birth_date).getMonth().toString() : "",
       birth_year: profile?.birth_date ? new Date(profile.birth_date).getFullYear().toString() : "",
-      gender: profile?.gender || undefined,
+      gender: profile?.gender as "masculino" | "feminino" | undefined,
       country: profile?.country || "BR",
     },
   });
@@ -122,6 +122,33 @@ const UserProfile = () => {
     );
   }
 
+  const getGenderLabel = (gender: string) => {
+    if (i18n.language === 'es') {
+      return gender === 'masculino' ? 'Masculino' : 'Femenino';
+    }
+    if (i18n.language === 'en') {
+      return gender === 'masculino' ? 'Male' : 'Female';
+    }
+    return gender === 'masculino' ? 'Masculino' : 'Feminino';
+  };
+
+  const getCountryLabel = (code: string) => {
+    const countries = {
+      BR: {
+        pt: 'Brasil',
+        en: 'Brazil',
+        es: 'Brasil'
+      },
+      US: {
+        pt: 'Estados Unidos',
+        en: 'United States',
+        es: 'Estados Unidos'
+      }
+    };
+    
+    return countries[code as keyof typeof countries]?.[i18n.language as keyof typeof countries['BR']] || code;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
@@ -159,7 +186,7 @@ const UserProfile = () => {
                   <Input
                     id="email"
                     type="email"
-                    value={profile?.email || ""}
+                    value={user?.email || ""}
                     disabled
                     className="bg-gray-100"
                   />
@@ -174,12 +201,19 @@ const UserProfile = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>País</FormLabel>
-                      <FormControl>
-                        <CountrySelect
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        />
-                      </FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o país" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="BR">{getCountryLabel('BR')}</SelectItem>
+                          <SelectItem value="US">{getCountryLabel('US')}</SelectItem>
+                          <SelectItem value="other">Outro</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -262,14 +296,10 @@ const UserProfile = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="masculino">
-                            {i18n.language === 'es' ? 'Masculino' : 
-                             i18n.language === 'en' ? 'Male' : 
-                             'Masculino'}
+                            {getGenderLabel('masculino')}
                           </SelectItem>
                           <SelectItem value="feminino">
-                            {i18n.language === 'es' ? 'Femenino' : 
-                             i18n.language === 'en' ? 'Female' : 
-                             'Feminino'}
+                            {getGenderLabel('feminino')}
                           </SelectItem>
                         </SelectContent>
                       </Select>
