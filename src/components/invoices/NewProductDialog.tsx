@@ -6,7 +6,7 @@ interface NewProductDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const NewProductDialog = ({ open, onOpenChange }: NewProductDialogProps) => {
+export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -20,6 +20,4 @@ const NewProductDialog = ({ open, onOpenChange }: NewProductDialogProps) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-export default NewProductDialog;
+}

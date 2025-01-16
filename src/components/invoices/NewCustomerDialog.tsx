@@ -7,11 +7,11 @@ interface NewCustomerDialogProps {
   onSuccess: () => void;
 }
 
-const NewCustomerDialog = ({
+export function NewCustomerDialog({
   open,
   onOpenChange,
   onSuccess,
-}: NewCustomerDialogProps) => {
+}: NewCustomerDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -25,6 +25,4 @@ const NewCustomerDialog = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-export default NewCustomerDialog;
+}

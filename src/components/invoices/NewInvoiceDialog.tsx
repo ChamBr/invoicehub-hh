@@ -39,6 +39,11 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     setItems(items.map((item, i) => (i === index ? updatedItem : item)));
   };
 
+  const handleNewCustomerSuccess = () => {
+    setIsNewCustomerDialogOpen(false);
+    // Atualizar a lista de clientes será feito automaticamente pelo React Query
+  };
+
   const handleSubmit = async () => {
     if (!selectedCustomer) {
       toast({
@@ -151,10 +156,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         <NewCustomerDialog
           open={isNewCustomerDialogOpen}
           onOpenChange={setIsNewCustomerDialogOpen}
-          onSuccess={(customerId) => {
-            setSelectedCustomer(customerId);
-            setIsNewCustomerDialogOpen(false);
-          }}
+          onSuccess={handleNewCustomerSuccess}
         />
       </DialogContent>
     </Dialog>
