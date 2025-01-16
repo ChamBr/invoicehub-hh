@@ -23,18 +23,39 @@ const AdminSettings = () => {
   const { data: emailSettings, isLoading } = useQuery({
     queryKey: ['emailSettings'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Primeiro, tenta buscar as configurações existentes
+      const { data: existingSettings, error: fetchError } = await supabase
         .from('email_settings')
         .select('*')
-        .single();
+        .maybeSingle();
 
-      if (error) {
-        console.error('Erro ao carregar configurações:', error);
-        throw error;
+      if (fetchError) {
+        console.error('Erro ao carregar configurações:', fetchError);
+        throw fetchError;
       }
-      
-      console.log('Configurações carregadas:', data);
-      return data as EmailSettings;
+
+      // Se não existir configurações, cria um registro padrão
+      if (!existingSettings) {
+        const { data: newSettings, error: createError } = await supabase
+          .from('email_settings')
+          .insert([{
+            sender_name: 'Faturamento',
+            sender_email: 'faturas@alisson.ai'
+          }])
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Erro ao criar configurações padrão:', createError);
+          throw createError;
+        }
+
+        console.log('Configurações padrão criadas:', newSettings);
+        return newSettings as EmailSettings;
+      }
+
+      console.log('Configurações carregadas:', existingSettings);
+      return existingSettings as EmailSettings;
     }
   });
 
