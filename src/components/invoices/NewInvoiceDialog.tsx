@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { calculateTotal } from "./utils";
 import { InvoiceItem } from "./types";
 import { InvoiceViewDialog } from "./InvoiceViewDialog";
+import { TemplateSelector } from "./templates/TemplateSelector";
 
 interface NewInvoiceDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [createdInvoice, setCreatedInvoice] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>();
 
   const handleCustomerSelect = (customerId: string) => {
     setSelectedCustomer(customerId);
@@ -73,12 +75,12 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
           status: status,
           due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           total: calculateTotal(items),
+          template_id: selectedTemplate, // Adicionado o template_id
         })
         .select()
         .single();
 
       if (invoiceError) throw invoiceError;
-      if (!invoice) throw new Error("Erro ao criar fatura");
 
       const invoiceItems = items.map((item) => ({
         invoice_id: invoice.id,
@@ -87,7 +89,6 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         quantity: item.quantity,
         price: item.price,
         total: item.total,
-        has_tax: item.hasTax,
       }));
 
       const { error: itemsError } = await supabase
@@ -138,6 +139,11 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
 
               {selectedCustomer && (
                 <>
+                  <TemplateSelector
+                    value={selectedTemplate}
+                    onChange={setSelectedTemplate}
+                  />
+
                   <InvoiceItems
                     items={items}
                     onAdd={handleAddItem}

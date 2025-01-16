@@ -329,6 +329,42 @@ export type Database = {
           },
         ]
       }
+      invoice_templates: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_default: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["invoice_template_type"]
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          type?: Database["public"]["Enums"]["invoice_template_type"]
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          type?: Database["public"]["Enums"]["invoice_template_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           created_at: string
@@ -639,6 +675,12 @@ export type Database = {
         | "overdue"
         | "cancelled"
         | "paid"
+      invoice_template_type:
+        | "default"
+        | "simple"
+        | "detailed"
+        | "professional"
+        | "custom"
     }
     CompositeTypes: {
       [_ in never]: never
