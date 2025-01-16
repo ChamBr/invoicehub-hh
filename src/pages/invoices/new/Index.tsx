@@ -10,6 +10,8 @@ import CustomerSelect from "./components/CustomerSelect";
 import InvoiceItems from "./components/InvoiceItems";
 import InvoiceSummary from "./components/InvoiceSummary";
 import NewCustomerDialog from "./components/NewCustomerDialog";
+import { type InvoiceItem } from "./types";
+import { calculateTotal } from "./utils";
 
 const NewInvoice = () => {
   const navigate = useNavigate();
