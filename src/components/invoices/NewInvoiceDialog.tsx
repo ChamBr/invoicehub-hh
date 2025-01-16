@@ -6,8 +6,10 @@ import { NewCustomerDialog } from "./NewCustomerDialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { InvoiceViewDialog } from "./InvoiceViewDialog";
-import { TemplateSelector } from "./templates/TemplateSelector";
 import { useInvoiceCreation } from "./hooks/useInvoiceCreation";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { PencilIcon } from "lucide-react";
 
 interface NewInvoiceDialogProps {
   open: boolean;
@@ -31,6 +33,32 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     handleSubmit,
   } = useInvoiceCreation();
 
+  // Buscar o template ativo do perfil da empresa
+  const { data: activeTemplate } = useQuery({
+    queryKey: ["active-template"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data: profile } = await supabase
+        .from("company_profiles")
+        .select(`
+          active_template_id,
+          invoice_templates (
+            id,
+            name,
+            description
+          )
+        `)
+        .eq("user_id", user.id)
+        .single();
+
+      if (!profile?.active_template_id) return null;
+
+      return profile.invoice_templates;
+    },
+  });
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -49,10 +77,28 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
 
               {selectedCustomer && (
                 <>
-                  <TemplateSelector
-                    value={selectedTemplate}
-                    onChange={setSelectedTemplate}
-                  />
+                  {/* Template Info */}
+                  <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="text-sm font-medium text-emerald-900">
+                          Template da Fatura
+                        </h4>
+                        <p className="text-sm text-emerald-700">
+                          {activeTemplate?.name || "Template Padrão"}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                        onClick={() => onOpenChange(false)}
+                      >
+                        <PencilIcon className="h-4 w-4 mr-2" />
+                        Alterar Template
+                      </Button>
+                    </div>
+                  </div>
 
                   <InvoiceItems
                     items={items}
