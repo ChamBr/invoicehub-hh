@@ -13,21 +13,21 @@ interface CompanyAddressProps {
   onAddressSelect: (address: any) => void;
 }
 
-export const CompanyAddress = ({
+export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   addressLine2,
   city,
   state,
   zipCode,
   country = 'BR',
   onAddressSelect,
-}: CompanyAddressProps) => {
+}) => {
   const format = addressFormats[country] || addressFormats.BR;
 
   const handleAddressSelect = React.useCallback((address: any) => {
     onAddressSelect(address);
   }, [onAddressSelect]);
 
-  const renderAddressLine2 = () => (
+  const renderAddressLine2 = React.useCallback(() => (
     <div className="space-y-2">
       <Label htmlFor="address_line2">Complemento (Opcional)</Label>
       <Input
@@ -37,9 +37,9 @@ export const CompanyAddress = ({
         placeholder="Apartamento, sala, etc."
       />
     </div>
-  );
+  ), [addressLine2]);
 
-  const renderLocationFields = () => (
+  const renderLocationFields = React.useCallback(() => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div className="space-y-2">
         <Label htmlFor="city">{format.cityLabel}</Label>
@@ -66,7 +66,7 @@ export const CompanyAddress = ({
         />
       </div>
     </div>
-  );
+  ), [city, state, zipCode, format]);
 
   return (
     <div className="space-y-4">
