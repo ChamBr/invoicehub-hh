@@ -104,6 +104,7 @@ export type Database = {
           created_at: string
           debug_activated_at: string | null
           description: string | null
+          gradient_colors: Json | null
           id: string
           is_enabled: boolean | null
           name: string
@@ -114,6 +115,7 @@ export type Database = {
           created_at?: string
           debug_activated_at?: string | null
           description?: string | null
+          gradient_colors?: Json | null
           id?: string
           is_enabled?: boolean | null
           name: string
@@ -124,6 +126,7 @@ export type Database = {
           created_at?: string
           debug_activated_at?: string | null
           description?: string | null
+          gradient_colors?: Json | null
           id?: string
           is_enabled?: boolean | null
           name?: string
@@ -531,7 +534,7 @@ export type Database = {
       }
     }
     Enums: {
-      config_type: "feature" | "test"
+      config_type: "feature" | "test" | "appearance"
     }
     CompositeTypes: {
       [_ in never]: never
