@@ -1,4 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import { useSessionManagement } from "../use-session";
 import { useToast } from "../use-toast";
 import { useNavigate } from "react-router-dom";
@@ -57,7 +58,7 @@ describe("useSessionManagement", () => {
     });
   });
 
-  it("should check session validity and return false for expired session", () => {
+  it("should check session validity and return false for expired session", async () => {
     const mockSession = {
       expires_at: Math.floor(Date.now() / 1000) - 3600, // 1 hour ago
     } as Session;
@@ -66,14 +67,14 @@ describe("useSessionManagement", () => {
       useSessionManagement(mockSession, mockSetSession)
     );
 
-    const isValid = result.current.checkSessionValidity(mockSession);
+    const isValid = await result.current.checkSessionValidity(mockSession);
 
     expect(isValid).toBe(false);
     expect(mockToast).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 
-  it("should show warning for session expiring soon", () => {
+  it("should show warning for session expiring soon", async () => {
     const mockSession = {
       expires_at: Math.floor(Date.now() / 1000) + 240, // 4 minutes from now
     } as Session;
@@ -82,7 +83,7 @@ describe("useSessionManagement", () => {
       useSessionManagement(mockSession, mockSetSession)
     );
 
-    const isValid = result.current.checkSessionValidity(mockSession);
+    const isValid = await result.current.checkSessionValidity(mockSession);
 
     expect(isValid).toBe(true);
     expect(mockToast).toHaveBeenCalledWith({
