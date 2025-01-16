@@ -7,7 +7,15 @@
     "products": "Productos",
     "invoices": "Facturas",
     "profile": "Perfil",
-    "admin": "Administración",
+    "company": "Empresa",
+    "invoice_settings": "Personalizar Factura",
+    "admin": {
+      "customers": "Clientes",
+      "plans": "Planes",
+      "integrations": "Integraciones",
+      "reports": "Informes",
+      "settings": "Configuración"
+    },
     "feedback": {
       "submit": "Soporte & Feedback",
       "list": "Lista de Feedback"

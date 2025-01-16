@@ -24,49 +24,49 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
     {
       to: "/profile",
       icon: createElement(UserCircle, { className: "h-4 w-4" }),
-      label: "Perfil"
+      label: t('navigation.profile')
     },
     {
       to: "/profile/company",
       icon: createElement(Building, { className: "h-4 w-4" }),
-      label: "Empresa"
+      label: t('navigation.company')
     },
     {
       to: "/profile/invoice-settings",
       icon: createElement(Receipt, { className: "h-4 w-4" }),
-      label: "Personalizar Invoice"
+      label: t('navigation.invoice_settings')
     },
     {
       to: "/feedback",
       icon: createElement(MessageSquare, { className: "h-4 w-4" }),
-      label: "Suporte & Feedback"
+      label: t('navigation.feedback.submit')
     }
   ],
   admin: [
     {
       to: "/admin/customers",
       icon: createElement(Users, { className: "h-4 w-4" }),
-      label: "Clientes"
+      label: t('navigation.admin.customers')
     },
     {
       to: "/admin/plans",
       icon: createElement(CreditCard, { className: "h-4 w-4" }),
-      label: "Planos"
+      label: t('navigation.admin.plans')
     },
     {
       to: "/admin/integrations",
       icon: createElement(Wallet, { className: "h-4 w-4" }),
-      label: "Integrações"
+      label: t('navigation.admin.integrations')
     },
     {
       to: "/admin/reports",
       icon: createElement(BarChart, { className: "h-4 w-4" }),
-      label: "Relatórios"
+      label: t('navigation.admin.reports')
     },
     {
       to: "/admin/settings",
       icon: createElement(Sliders, { className: "h-4 w-4" }),
-      label: "Configurações"
+      label: t('navigation.admin.settings')
     }
   ]
 });
