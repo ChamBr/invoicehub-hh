@@ -28,7 +28,7 @@ export function AddressAutocomplete({
       if (error) throw error;
       return data;
     },
-    staleTime: Infinity, // Token não precisa ser revalidado frequentemente
+    staleTime: Infinity,
     retry: 3,
   });
 
@@ -64,20 +64,21 @@ export function AddressAutocomplete({
 
   return (
     <div className="w-full">
-      <AddressAutofill 
-        accessToken={config.token} 
-        onRetrieve={handleRetrieve}
-        options={{
+      {React.createElement(AddressAutofill, {
+        accessToken: config.token,
+        onRetrieve: handleRetrieve,
+        options: {
           language: 'pt',
-        }}
-      >
-        <Input
-          placeholder="Digite seu endereço"
-          value={value}
-          onChange={onChange}
-          {...props}
-        />
-      </AddressAutofill>
+        },
+        children: (
+          <Input
+            placeholder="Digite seu endereço"
+            value={value}
+            onChange={onChange}
+            {...props}
+          />
+        )
+      })}
     </div>
   );
 }
