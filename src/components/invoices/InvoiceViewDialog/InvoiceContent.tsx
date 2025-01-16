@@ -1,11 +1,13 @@
 import { InvoiceDetailsItems } from "../InvoiceDetailsItems";
 import { Invoice } from "../types";
+import { InvoiceItems } from "../InvoiceItems";
 
 interface InvoiceContentProps {
   invoice: Invoice;
+  isEditing?: boolean;
 }
 
-export const InvoiceContent = ({ invoice }: InvoiceContentProps) => {
+export const InvoiceContent = ({ invoice, isEditing = false }: InvoiceContentProps) => {
   if (!invoice.items || invoice.items.length === 0) {
     return (
       <div className="text-center py-4 text-muted-foreground">
@@ -18,7 +20,14 @@ export const InvoiceContent = ({ invoice }: InvoiceContentProps) => {
     <>
       <div>
         <h3 className="text-lg font-medium mb-2">Itens</h3>
-        <InvoiceDetailsItems items={invoice.items} />
+        {isEditing ? (
+          <InvoiceItems 
+            items={invoice.items} 
+            onItemsChange={() => {}} // Implementar a lógica de atualização
+          />
+        ) : (
+          <InvoiceDetailsItems items={invoice.items} />
+        )}
       </div>
 
       {invoice.notes && (

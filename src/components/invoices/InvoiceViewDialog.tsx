@@ -16,6 +16,7 @@ interface InvoiceViewDialogProps {
 
 export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDialogProps) {
   const [currentStatus, setCurrentStatus] = useState<Invoice['status']>(invoice?.status);
+  const [isEditing, setIsEditing] = useState(false);
 
   const { data: invoiceWithItems } = useQuery({
     queryKey: ["invoice", invoice?.id],
@@ -76,8 +77,7 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
   };
 
   const handleEdit = () => {
-    onOpenChange(false);
-    // Aqui você pode adicionar a navegação para a página de edição
+    setIsEditing(true);
   };
 
   return (
@@ -90,7 +90,10 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
         
         <div className="space-y-6">
           <InvoiceInfo invoice={invoiceWithItems || invoice} />
-          <InvoiceContent invoice={invoiceWithItems || invoice} />
+          <InvoiceContent 
+            invoice={invoiceWithItems || invoice} 
+            isEditing={isEditing}
+          />
 
           <div className="pt-4 border-t">
             <InvoiceActions
