@@ -8,10 +8,12 @@ import { CustomerNotesField } from "./CustomerNotesField";
 import { CountrySelect } from "@/components/ui/country-select";
 import { customerFormSchema, type CustomerFormValues } from "./types";
 import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
-import { CustomerFormActions } from "./CustomerFormActions";
-import { useCustomerSubmit } from "./hooks/useCustomerSubmit";
 import { Input } from "@/components/ui/input";
+import { useCustomerSubmit } from "./hooks/useCustomerSubmit";
 import { useTranslation } from "react-i18next";
+import { FormSection } from "@/components/forms/FormSection";
+import { FormRow } from "@/components/forms/FormRow";
+import { FormActions } from "@/components/forms/FormActions";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -43,48 +45,65 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <CustomerTypeSelect form={form} />
-        
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {type === "company" ? t('customers.form.company_name') : t('customers.form.name')}
-              </FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder={
-                    type === "company" 
-                      ? t('customers.form.company_name_placeholder') 
-                      : t('customers.form.name_placeholder')
-                  } 
-                  {...field} 
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <FormSection title={t('customers.form.basic_info')}>
+          <CustomerTypeSelect form={form} />
+          
+          <FormRow>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {type === "company" ? t('customers.form.company_name') : t('customers.form.name')}
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder={
+                        type === "company" 
+                          ? t('customers.form.company_name_placeholder') 
+                          : t('customers.form.name_placeholder')
+                      } 
+                      {...field} 
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="country"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('customers.form.country')}</FormLabel>
-              <CountrySelect
-                value={field.value}
-                onValueChange={field.onChange}
-              />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('customers.form.country')}</FormLabel>
+                  <CountrySelect
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  />
+                </FormItem>
+              )}
+            />
+          </FormRow>
+        </FormSection>
 
-        <CustomerContactForm form={form} />
-        <CustomerTaxForm form={form} />
-        <CustomerNotesField form={form} />
-        <CustomerFormActions isSubmitting={isSubmitting} onCancel={onCancel} />
+        <FormSection title={t('customers.form.contact_info')}>
+          <CustomerContactForm form={form} />
+        </FormSection>
+
+        <FormSection title={t('customers.form.tax_info')}>
+          <CustomerTaxForm form={form} />
+        </FormSection>
+
+        <FormSection title={t('customers.form.additional_info')}>
+          <CustomerNotesField form={form} />
+        </FormSection>
+
+        <FormActions 
+          isSubmitting={isSubmitting} 
+          onCancel={onCancel}
+          submitLabel={initialData ? t('common.actions.save') : t('common.actions.create')}
+        />
       </form>
     </Form>
   );
