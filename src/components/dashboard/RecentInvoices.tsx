@@ -10,7 +10,10 @@ export function RecentInvoices() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("invoices")
-        .select("*")
+        .select(`
+          *,
+          customer:customers(name)
+        `)
         .order("created_at", { ascending: false })
         .limit(3);
 
@@ -70,7 +73,7 @@ export function RecentInvoices() {
             className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
           >
             <div className="space-y-1">
-              <p className="font-medium">{invoice.client}</p>
+              <p className="font-medium">{invoice.customer?.name}</p>
               <p className="text-sm text-gray-500">{invoice.id}</p>
             </div>
             <div className="text-right space-y-1">
