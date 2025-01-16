@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Product {
   id: string;
@@ -12,9 +14,11 @@ interface Product {
 interface ProductListProps {
   products: Product[] | null;
   isLoading: boolean;
+  onEdit?: (product: Product) => void;
+  onDelete?: (product: Product) => void;
 }
 
-const ProductList = ({ products, isLoading }: ProductListProps) => {
+const ProductList = ({ products, isLoading, onEdit, onDelete }: ProductListProps) => {
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -49,15 +53,14 @@ const ProductList = ({ products, isLoading }: ProductListProps) => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Ações
+            </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {products.map((product) => (
-            <tr
-              key={product.id}
-              className="hover:bg-gray-50 cursor-pointer"
-              onClick={() => navigate(`/products/${product.id}`)}
-            >
+            <tr key={product.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">{product.name}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {product.type === "product" ? "Produto" : "Serviço"}
@@ -81,6 +84,30 @@ const ProductList = ({ products, isLoading }: ProductListProps) => {
                 >
                   {product.status === "active" ? "Ativo" : "Inativo"}
                 </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit?.(product);
+                    }}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete?.(product);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}
