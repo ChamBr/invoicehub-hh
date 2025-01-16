@@ -17,7 +17,8 @@ export const InvoiceDetailsItems = ({ items }: InvoiceDetailsItemsProps) => {
   return (
     <div className="space-y-2">
       {items.map((item) => {
-        const taxAmount = item.hasTax ? item.total * TAX_RATE : 0;
+        // Calcula o imposto sobre o preço unitário, não sobre o total
+        const taxAmount = item.hasTax ? (item.price * item.quantity * TAX_RATE) : 0;
         const totalWithTax = item.total + taxAmount;
 
         return (
