@@ -67,7 +67,10 @@ export const TemplatePreviewDialog = ({
             company={sampleCompany} 
             layout="horizontal" 
           />
-          <PreviewItems items={sampleItems} />
+          <PreviewItems 
+            items={sampleItems} 
+            tableStyle={template.content.body.tableStyle} 
+          />
           <PreviewFooter content={template.content} />
         </div>
       </DialogContent>
