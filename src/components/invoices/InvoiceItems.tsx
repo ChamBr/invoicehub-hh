@@ -4,11 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { NewProductDialog } from "./NewProductDialog";
 import { InvoiceItem } from "./types";
 import { InvoiceItemsHeader } from "./InvoiceItemsHeader";
-import { InvoiceItemRow } from "./InvoiceItemRow";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { ProductSelect } from "./InvoiceItems/ProductSelect";
+import { CustomItemInputs } from "./InvoiceItems/CustomItemInputs";
+import { ItemsList } from "./InvoiceItems/ItemsList";
 
 interface InvoiceItemsProps {
   items: InvoiceItem[];
@@ -71,20 +71,7 @@ const InvoiceItems = ({ items, onAdd, onRemove, onUpdate, readOnly = false }: In
   };
 
   if (readOnly) {
-    return (
-      <div className="space-y-2">
-        {items.map((item, index) => (
-          <InvoiceItemRow
-            key={index}
-            item={item}
-            index={index}
-            onUpdate={onUpdate}
-            onRemove={onRemove}
-            readOnly
-          />
-        ))}
-      </div>
-    );
+    return <ItemsList items={items} onUpdate={onUpdate} onRemove={onRemove} readOnly />;
   }
 
   return (
@@ -95,46 +82,21 @@ const InvoiceItems = ({ items, onAdd, onRemove, onUpdate, readOnly = false }: In
       />
 
       <div className="space-y-4">
-        {/* Seleção de Item */}
         <div className="flex gap-4 items-end">
           {isCustomItem ? (
-            <>
-              <div className="flex-1">
-                <Input
-                  placeholder="Descrição do item"
-                  value={customItem.description}
-                  onChange={(e) => setCustomItem(prev => ({ ...prev, description: e.target.value }))}
-                />
-              </div>
-              <div className="w-32">
-                <Input
-                  type="number"
-                  placeholder="Preço"
-                  value={customItem.price}
-                  onChange={(e) => setCustomItem(prev => ({ ...prev, price: Number(e.target.value) }))}
-                />
-              </div>
-            </>
+            <CustomItemInputs
+              description={customItem.description}
+              price={customItem.price}
+              onDescriptionChange={(value) => setCustomItem(prev => ({ ...prev, description: value }))}
+              onPriceChange={(value) => setCustomItem(prev => ({ ...prev, price: value }))}
+            />
           ) : (
             <div className="flex-1">
-              <Select
-                value={selectedProduct || ""}
-                onValueChange={setSelectedProduct}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um produto" />
-                </SelectTrigger>
-                <SelectContent>
-                  {products?.map((product) => (
-                    <SelectItem key={product.id} value={product.id}>
-                      {product.name} - {new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(product.price)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ProductSelect
+                value={selectedProduct}
+                onChange={setSelectedProduct}
+                products={products || []}
+              />
             </div>
           )}
           <Button 
@@ -146,18 +108,7 @@ const InvoiceItems = ({ items, onAdd, onRemove, onUpdate, readOnly = false }: In
           </Button>
         </div>
 
-        {/* Lista de Itens */}
-        <div className="space-y-2">
-          {items.map((item, index) => (
-            <InvoiceItemRow
-              key={index}
-              item={item}
-              index={index}
-              onUpdate={onUpdate}
-              onRemove={onRemove}
-            />
-          ))}
-        </div>
+        <ItemsList items={items} onUpdate={onUpdate} onRemove={onRemove} />
       </div>
 
       <NewProductDialog
