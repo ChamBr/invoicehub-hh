@@ -108,6 +108,7 @@ export type Database = {
           id: string
           is_enabled: boolean | null
           name: string
+          system_version: string | null
           type: Database["public"]["Enums"]["config_type"]
           updated_at: string
         }
@@ -119,6 +120,7 @@ export type Database = {
           id?: string
           is_enabled?: boolean | null
           name: string
+          system_version?: string | null
           type: Database["public"]["Enums"]["config_type"]
           updated_at?: string
         }
@@ -130,6 +132,7 @@ export type Database = {
           id?: string
           is_enabled?: boolean | null
           name?: string
+          system_version?: string | null
           type?: Database["public"]["Enums"]["config_type"]
           updated_at?: string
         }
