@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { InvoiceViewDialog } from "./InvoiceViewDialog";
 import { useInvoiceCreation } from "./hooks/useInvoiceCreation";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PencilIcon } from "lucide-react";
 
@@ -23,8 +22,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     items,
     createdInvoice,
     isViewDialogOpen,
-    selectedTemplate,
-    setSelectedTemplate,
+    activeTemplate,
     setIsViewDialogOpen,
     handleCustomerSelect,
     handleAddItem,
@@ -32,32 +30,6 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     handleUpdateItem,
     handleSubmit,
   } = useInvoiceCreation();
-
-  // Buscar o template ativo do perfil da empresa
-  const { data: activeTemplate } = useQuery({
-    queryKey: ["active-template"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
-
-      const { data: profile } = await supabase
-        .from("company_profiles")
-        .select(`
-          active_template_id,
-          invoice_templates (
-            id,
-            name,
-            description
-          )
-        `)
-        .eq("user_id", user.id)
-        .single();
-
-      if (!profile?.active_template_id) return null;
-
-      return profile.invoice_templates;
-    },
-  });
 
   return (
     <>
