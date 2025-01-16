@@ -71,6 +71,7 @@ async function sendEmail(invoiceData: any, pdfUrl: string) {
     throw new Error("Email do cliente não encontrado");
   }
 
+  // Usando o email do cliente como remetente durante os testes
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -78,7 +79,7 @@ async function sendEmail(invoiceData: any, pdfUrl: string) {
       Authorization: `Bearer ${RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: "Fatura <invoices@resend.dev>",
+      from: "alisson@elit.com.br", // Use seu email verificado durante os testes
       to: [invoiceData.customer.email],
       subject: `Fatura #${invoiceData.id.slice(0, 8)}`,
       html: `
