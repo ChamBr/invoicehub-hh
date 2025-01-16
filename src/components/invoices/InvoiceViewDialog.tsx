@@ -4,6 +4,8 @@ import { FileText } from "lucide-react";
 import { Invoice } from "./types";
 import { InvoiceDetailsItems } from "./InvoiceDetailsItems";
 import { StatusBadge } from "./StatusBadge";
+import { InvoiceActions } from "./InvoiceActions";
+import { useState } from "react";
 
 interface InvoiceViewDialogProps {
   invoice: Invoice | null;
@@ -12,7 +14,28 @@ interface InvoiceViewDialogProps {
 }
 
 export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDialogProps) {
+  const [currentStatus, setCurrentStatus] = useState<Invoice['status']>();
+
   if (!invoice) return null;
+
+  const handleStatusChange = async (newStatus: Invoice['status']) => {
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({ status: newStatus })
+        .eq('id', invoice.id);
+
+      if (error) throw error;
+      setCurrentStatus(newStatus);
+    } catch (error) {
+      console.error('Error updating invoice status:', error);
+    }
+  };
+
+  const handleEdit = () => {
+    onOpenChange(false);
+    // Aqui você pode adicionar a navegação para a página de edição
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -30,7 +53,7 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
               <h3 className="text-lg font-medium">Cliente</h3>
               <p className="text-muted-foreground">{invoice.customer?.name}</p>
             </div>
-            <StatusBadge status={invoice.status} />
+            <StatusBadge status={currentStatus || invoice.status} />
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -76,6 +99,15 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
               <p className="text-muted-foreground">{invoice.notes}</p>
             </div>
           )}
+
+          <div className="pt-4 border-t">
+            <InvoiceActions
+              status={currentStatus || invoice.status}
+              invoiceId={invoice.id}
+              onEdit={handleEdit}
+              onStatusChange={handleStatusChange}
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
