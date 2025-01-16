@@ -17,7 +17,9 @@ import ProductsIndex from "./pages/products/Index";
 import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
 import FeedbackIndex from "./pages/feedback/Index";
-import ProfileIndex from "./pages/profile/Index";
+import UserProfile from "./pages/profile/UserProfile";
+import CompanyDetails from "./pages/profile/CompanyDetails";
+import InvoiceSettings from "./pages/profile/InvoiceSettings";
 import AdminCustomers from "./pages/admin/customers/Index";
 import AdminPlans from "./pages/admin/plans/Index";
 import AdminIntegrations from "./pages/admin/integrations/Index";
@@ -46,9 +48,13 @@ const AppLayout = () => {
                 <Route path="/invoices" element={<ProtectedRoute><InvoicesIndex /></ProtectedRoute>} />
                 <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
                 <Route path="/feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
-                <Route path="/profile" element={<ProtectedRoute><ProfileIndex /></ProtectedRoute>} />
                 
-                {/* Novas rotas administrativas */}
+                {/* Rotas de perfil */}
+                <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+                <Route path="/profile/company" element={<ProtectedRoute><CompanyDetails /></ProtectedRoute>} />
+                <Route path="/profile/invoice-settings" element={<ProtectedRoute><InvoiceSettings /></ProtectedRoute>} />
+                
+                {/* Rotas administrativas */}
                 <Route path="/admin/customers" element={<ProtectedRoute><AdminCustomers /></ProtectedRoute>} />
                 <Route path="/admin/plans" element={<ProtectedRoute><AdminPlans /></ProtectedRoute>} />
                 <Route path="/admin/integrations" element={<ProtectedRoute><AdminIntegrations /></ProtectedRoute>} />
