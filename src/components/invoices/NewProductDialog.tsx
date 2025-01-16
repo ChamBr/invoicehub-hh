@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ProductForm } from "@/components/products/components/ProductForm";
 
@@ -7,11 +8,13 @@ interface NewProductDialogProps {
 }
 
 export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Novo Produto</DialogTitle>
+          <DialogTitle>{t('products.new')}</DialogTitle>
         </DialogHeader>
         <ProductForm
           onSuccess={() => onOpenChange(false)}

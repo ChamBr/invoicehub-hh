@@ -21,6 +21,45 @@
       "list": "Feedback List"
     }
   },
+  "products": {
+    "title": "Products and Services",
+    "new": "New Product/Service",
+    "edit": "Edit Product/Service",
+    "form": {
+      "type": "Type",
+      "product": "Product",
+      "service": "Service",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "sku": "SKU",
+      "stock": "Stock"
+    },
+    "table": {
+      "name": "Name",
+      "type": "Type",
+      "price": "Price",
+      "stock": "Stock",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "messages": {
+      "created": "Product created successfully!",
+      "updated": "Product updated successfully!",
+      "deleted": "Product deleted successfully!",
+      "error": {
+        "create": "Error creating product",
+        "update": "Error updating product",
+        "delete": "Error deleting product"
+      }
+    },
+    "confirmDelete": {
+      "title": "Confirm deletion",
+      "message": "Are you sure you want to delete this product?",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    }
+  },
   "invoice_settings": {
     "title": "Customize Invoice",
     "numbering": {
@@ -115,7 +154,11 @@
     "actions": {
       "save": "Save",
       "saving": "Saving...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating...",
+      "edit": "Edit",
+      "delete": "Delete"
     },
     "success": {
       "profile_updated": "Profile updated successfully",

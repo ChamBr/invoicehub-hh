@@ -21,6 +21,49 @@
       "list": "Lista de Feedback"
     }
   },
+  "products": {
+    "title": "Produtos e Serviços",
+    "new": "Novo Produto/Serviço",
+    "edit": "Editar Produto/Serviço",
+    "form": {
+      "type": "Tipo",
+      "product": "Produto",
+      "service": "Serviço",
+      "name": "Nome",
+      "description": "Descrição",
+      "price": "Preço",
+      "sku": "SKU",
+      "stock": "Estoque",
+      "status": {
+        "active": "Ativo",
+        "inactive": "Inativo"
+      }
+    },
+    "table": {
+      "name": "Nome",
+      "type": "Tipo",
+      "price": "Preço",
+      "stock": "Estoque",
+      "status": "Status",
+      "actions": "Ações"
+    },
+    "messages": {
+      "created": "Produto criado com sucesso!",
+      "updated": "Produto atualizado com sucesso!",
+      "deleted": "Produto excluído com sucesso!",
+      "error": {
+        "create": "Erro ao criar produto",
+        "update": "Erro ao atualizar produto",
+        "delete": "Erro ao excluir produto"
+      }
+    },
+    "confirmDelete": {
+      "title": "Confirmar exclusão",
+      "message": "Tem certeza que deseja excluir este produto?",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    }
+  },
   "invoice_settings": {
     "title": "Personalizar Invoice",
     "numbering": {
@@ -115,7 +158,11 @@
     "actions": {
       "save": "Salvar",
       "saving": "Salvando...",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "creating": "Criando...",
+      "edit": "Editar",
+      "delete": "Excluir"
     },
     "success": {
       "profile_updated": "Perfil atualizado com sucesso",

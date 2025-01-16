@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ interface ProductFormProps {
 }
 
 export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -53,8 +55,8 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
       if (error) throw error;
 
       toast({
-        title: "Sucesso",
-        description: "Produto criado com sucesso!",
+        title: t('common.success'),
+        description: t('products.messages.created'),
       });
       
       onSuccess();
@@ -62,8 +64,8 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
       console.error("Error:", error);
       toast({
         variant: "destructive",
-        title: "Erro",
-        description: "Erro ao criar produto. Tente novamente.",
+        title: t('common.errors.unexpected'),
+        description: t('products.messages.error.create'),
       });
     }
   };
@@ -76,7 +78,7 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nome</FormLabel>
+              <FormLabel>{t('products.form.name')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -89,7 +91,7 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel>{t('products.form.description')}</FormLabel>
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
@@ -102,7 +104,7 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Preço</FormLabel>
+              <FormLabel>{t('products.form.price')}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -120,7 +122,7 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           name="sku"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>SKU</FormLabel>
+              <FormLabel>{t('products.form.sku')}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -133,7 +135,7 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           name="stock"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Estoque</FormLabel>
+              <FormLabel>{t('products.form.stock')}</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -147,9 +149,11 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
 
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancelar
+            {t('common.actions.cancel')}
           </Button>
-          <Button type="submit">Criar</Button>
+          <Button type="submit">
+            {t('common.actions.create')}
+          </Button>
         </div>
       </form>
     </Form>

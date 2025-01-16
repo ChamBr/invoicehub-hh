@@ -21,6 +21,45 @@
       "list": "Lista de Feedback"
     }
   },
+  "products": {
+    "title": "Productos y Servicios",
+    "new": "Nuevo Producto/Servicio",
+    "edit": "Editar Producto/Servicio",
+    "form": {
+      "type": "Tipo",
+      "product": "Producto",
+      "service": "Servicio",
+      "name": "Nombre",
+      "description": "Descripción",
+      "price": "Precio",
+      "sku": "SKU",
+      "stock": "Stock"
+    },
+    "table": {
+      "name": "Nombre",
+      "type": "Tipo",
+      "price": "Precio",
+      "stock": "Stock",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "created": "¡Producto creado con éxito!",
+      "updated": "¡Producto actualizado con éxito!",
+      "deleted": "¡Producto eliminado con éxito!",
+      "error": {
+        "create": "Error al crear el producto",
+        "update": "Error al actualizar el producto",
+        "delete": "Error al eliminar el producto"
+      }
+    },
+    "confirmDelete": {
+      "title": "Confirmar eliminación",
+      "message": "¿Está seguro de que desea eliminar este producto?",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    }
+  },
   "invoice_settings": {
     "title": "Personalizar Factura",
     "numbering": {
@@ -115,7 +154,11 @@
     "actions": {
       "save": "Guardar",
       "saving": "Guardando...",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "create": "Crear",
+      "creating": "Creando...",
+      "edit": "Editar",
+      "delete": "Eliminar"
     },
     "success": {
       "profile_updated": "Perfil actualizado con éxito",
