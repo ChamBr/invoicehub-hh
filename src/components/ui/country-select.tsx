@@ -1,70 +1,78 @@
-import * as React from "react"
-import ReactCountryFlag from "react-country-flag"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { useTranslation } from "react-i18next"
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const countries = [
-  { code: "US", name: "United States" },
-  { code: "BR", name: "Brazil" },
-]
+  { label: "Brasil", value: "BR" },
+  { label: "Estados Unidos", value: "US" },
+  { label: "Portugal", value: "PT" },
+  { label: "Espanha", value: "ES" },
+];
 
-interface CountrySelectProps {
-  value?: string
-  onValueChange: (value: string) => void
+export interface CountrySelectProps {
+  value: string;
+  onValueChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export function CountrySelect({ value, onValueChange }: CountrySelectProps) {
-  const { i18n } = useTranslation();
-
-  const getCountryName = (code: string) => {
-    const countryNames = new Intl.DisplayNames([i18n.language], { type: 'region' });
-    return countryNames.of(code);
-  };
+export function CountrySelect({ value, onValueChange, disabled }: CountrySelectProps) {
+  const [open, setOpen] = React.useState(false);
 
   return (
-    <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-full bg-white">
-        <SelectValue placeholder="Select country">
-          {value && (
-            <div className="flex items-center gap-2">
-              <ReactCountryFlag
-                countryCode={value}
-                svg
-                style={{
-                  width: '1.5em',
-                  height: '1.5em',
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between"
+          disabled={disabled}
+        >
+          {value
+            ? countries.find((country) => country.value === value)?.label
+            : "Selecione um país..."}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder="Procurar país..." />
+          <CommandEmpty>Nenhum país encontrado.</CommandEmpty>
+          <CommandGroup>
+            {countries.map((country) => (
+              <CommandItem
+                key={country.value}
+                value={country.value}
+                onSelect={(currentValue) => {
+                  onValueChange(currentValue);
+                  setOpen(false);
                 }}
-              />
-              {getCountryName(value)}
-            </div>
-          )}
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent className="bg-white">
-        {countries.map((country) => (
-          <SelectItem
-            key={country.code}
-            value={country.code}
-            className="flex items-center gap-2"
-          >
-            <ReactCountryFlag
-              countryCode={country.code}
-              svg
-              style={{
-                width: '1.5em',
-                height: '1.5em',
-              }}
-            />
-            {getCountryName(country.code)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  )
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    value === country.value ? "opacity-100" : "opacity-0"
+                  )}
+                />
+                {country.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
 }

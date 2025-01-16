@@ -26,7 +26,9 @@ const CompanyDetails = () => {
           <FormSection
             title="Informações da Empresa"
             description="Preencha as informações da sua empresa para personalizar suas faturas."
-          />
+          >
+            <div className="sr-only">Seção de informações da empresa</div>
+          </FormSection>
           {!isEditing && (
             <Button
               onClick={() => setIsEditing(true)}
