@@ -89,6 +89,27 @@ export const InvoiceActions = ({
     await onStatusChange("cancelled");
   };
 
+  const handleGenerateInvoice = async () => {
+    setIsLoading(true);
+    try {
+      await onStatusChange("created");
+      
+      toast({
+        title: "Sucesso",
+        description: "Fatura gerada com sucesso",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Ocorreu um erro ao gerar a fatura",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex gap-2 justify-between">
       <ActionButtons
@@ -99,6 +120,7 @@ export const InvoiceActions = ({
         onEdit={onEdit}
         onSend={handleSend}
         onGeneratePDF={handleGeneratePDF}
+        onGenerateInvoice={handleGenerateInvoice}
       />
       
       <CancelDialog 

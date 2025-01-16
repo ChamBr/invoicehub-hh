@@ -10,6 +10,7 @@ interface ActionButtonsProps {
   onEdit: () => void;
   onSend: () => Promise<void>;
   onGeneratePDF: () => Promise<void>;
+  onGenerateInvoice: () => Promise<void>;
 }
 
 export const ActionButtons = ({
@@ -20,14 +21,21 @@ export const ActionButtons = ({
   onEdit,
   onSend,
   onGeneratePDF,
+  onGenerateInvoice,
 }: ActionButtonsProps) => {
   switch (status) {
     case "draft":
       return (
-        <Button variant="outline" onClick={onEdit}>
-          <FileEdit className="h-4 w-4 mr-2" />
-          Editar Rascunho
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onEdit}>
+            <FileEdit className="h-4 w-4 mr-2" />
+            Editar Rascunho
+          </Button>
+          <Button onClick={onGenerateInvoice} disabled={isLoading}>
+            <FileText className="h-4 w-4 mr-2" />
+            {isLoading ? "Gerando..." : "Gerar Fatura"}
+          </Button>
+        </div>
       );
     
     case "created":
@@ -39,11 +47,11 @@ export const ActionButtons = ({
           </Button>
           <Button onClick={onSend} disabled={isLoading}>
             <Send className="h-4 w-4 mr-2" />
-            Enviar
+            {isLoading ? "Enviando..." : "Enviar"}
           </Button>
           <Button variant="outline" onClick={onGeneratePDF} disabled={isLoading}>
             <FileText className="h-4 w-4 mr-2" />
-            Gerar PDF
+            {isLoading ? "Gerando..." : "Gerar PDF"}
           </Button>
         </div>
       );
@@ -54,7 +62,7 @@ export const ActionButtons = ({
           {!emailSentAt && (
             <Button onClick={onSend} disabled={isLoading}>
               <Send className="h-4 w-4 mr-2" />
-              Reenviar
+              {isLoading ? "Enviando..." : "Reenviar"}
             </Button>
           )}
           {pdfUrl ? (
@@ -65,7 +73,7 @@ export const ActionButtons = ({
           ) : (
             <Button variant="outline" onClick={onGeneratePDF} disabled={isLoading}>
               <FileText className="h-4 w-4 mr-2" />
-              Gerar PDF
+              {isLoading ? "Gerando..." : "Gerar PDF"}
             </Button>
           )}
         </div>
