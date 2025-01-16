@@ -17,15 +17,15 @@ const Footer = () => {
   };
 
   return (
-    <footer className="py-2 bg-gray-50 border-t">
+    <footer className="py-2 bg-[#F1F0FB] border-t border-gray-100">
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <p className="text-xs text-gray-600">
+        <p className="text-xs text-gray-500">
           InvoiceHub v0.01b - By HiveHub | alisson.ai
         </p>
         <Button 
           variant="ghost" 
           size="sm"
-          className="text-xs flex items-center gap-1"
+          className="text-xs flex items-center gap-1 text-gray-400 hover:text-gray-600 hover:bg-transparent"
           onClick={handleForceRefresh}
         >
           <RefreshCw className="h-3 w-3" />
