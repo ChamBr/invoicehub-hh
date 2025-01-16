@@ -9,25 +9,29 @@
     "profile": "Profile",
     "admin": "Administration",
     "feedback": {
-      "submit": "Submit Feedback",
+      "submit": "Support & Feedback",
       "list": "Feedback List"
     }
   },
-  "dashboard": {
-    "welcome": "Welcome to InvoiceHub",
-    "metrics": {
-      "totalRevenue": "Total Revenue",
-      "monthlyGrowth": "Monthly Growth",
-      "activeClients": "Active Clients",
-      "overdueInvoices": "Overdue Invoices"
-    }
-  },
-  "footer": {
-    "version": "v0.01b",
-    "by": "By",
-    "company": "HiveHub",
-    "separator": "|",
-    "ai": "alisson.ai"
+  "invoice_settings": {
+    "title": "Customize Invoice",
+    "numbering": {
+      "prefix": "Invoice Prefix",
+      "next_number": "Next Number",
+      "prefix_placeholder": "Ex: INV"
+    },
+    "currency": {
+      "currency": "Currency",
+      "due_days": "Payment Term (days)"
+    },
+    "terms": {
+      "terms": "Terms and Conditions",
+      "footer": "Invoice Footer"
+    },
+    "save": "Save Settings",
+    "saving": "Saving...",
+    "success": "Settings updated successfully",
+    "error": "Error updating settings"
   },
   "common": {
     "admin": {
@@ -37,8 +41,9 @@
     },
     "errors": {
       "auth": "User not authenticated",
-      "update": "Could not update profile",
+      "update": "Could not update",
       "unexpected": "An unexpected error occurred"
-    }
+    },
+    "loading": "Loading..."
   }
 }

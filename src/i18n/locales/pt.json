@@ -13,21 +13,25 @@
       "list": "Lista de Feedback"
     }
   },
-  "dashboard": {
-    "welcome": "Bem-vindo ao InvoiceHub",
-    "metrics": {
-      "totalRevenue": "Receita Total",
-      "monthlyGrowth": "Crescimento Mensal",
-      "activeClients": "Clientes Ativos",
-      "overdueInvoices": "Faturas Vencidas"
-    }
-  },
-  "footer": {
-    "version": "v0.01b",
-    "by": "Por",
-    "company": "HiveHub",
-    "separator": "|",
-    "ai": "alisson.ai"
+  "invoice_settings": {
+    "title": "Personalizar Invoice",
+    "numbering": {
+      "prefix": "Prefixo da Fatura",
+      "next_number": "Próximo Número",
+      "prefix_placeholder": "Ex: INV"
+    },
+    "currency": {
+      "currency": "Moeda",
+      "due_days": "Prazo de Pagamento (dias)"
+    },
+    "terms": {
+      "terms": "Termos e Condições",
+      "footer": "Rodapé da Fatura"
+    },
+    "save": "Salvar Configurações",
+    "saving": "Salvando...",
+    "success": "Configurações atualizadas com sucesso",
+    "error": "Erro ao atualizar configurações"
   },
   "common": {
     "admin": {
@@ -37,8 +41,9 @@
     },
     "errors": {
       "auth": "Usuário não autenticado",
-      "update": "Não foi possível atualizar o perfil",
+      "update": "Não foi possível atualizar",
       "unexpected": "Ocorreu um erro inesperado"
-    }
+    },
+    "loading": "Carregando..."
   }
 }

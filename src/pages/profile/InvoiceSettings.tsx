@@ -5,16 +5,18 @@ import { useToast } from "@/components/ui/use-toast";
 import { InvoiceNumberingForm } from "@/components/invoice-settings/InvoiceNumberingForm";
 import { InvoiceCurrencyForm } from "@/components/invoice-settings/InvoiceCurrencyForm";
 import { InvoiceTermsForm } from "@/components/invoice-settings/InvoiceTermsForm";
+import { useTranslation } from 'react-i18next';
 
 const InvoiceSettings = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { data: companyProfile, isLoading } = useQuery({
     queryKey: ["company-profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error(t('common.errors.auth'));
 
       const { data, error } = await supabase
         .from("company_profiles")
@@ -30,7 +32,7 @@ const InvoiceSettings = () => {
   const updateInvoiceSettings = useMutation({
     mutationFn: async (formData: FormData) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error(t('common.errors.auth'));
 
       const invoiceData = {
         invoice_prefix: String(formData.get('invoice_prefix')),
@@ -52,14 +54,14 @@ const InvoiceSettings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-profile"] });
       toast({
-        title: "Configurações atualizadas",
-        description: "As configurações de fatura foram atualizadas com sucesso.",
+        title: t('invoice_settings.success'),
+        description: t('invoice_settings.success'),
       });
     },
     onError: (error) => {
       toast({
-        title: "Erro ao atualizar",
-        description: "Ocorreu um erro ao atualizar as configurações de fatura.",
+        title: t('invoice_settings.error'),
+        description: t('common.errors.unexpected'),
         variant: "destructive",
       });
       console.error("Error updating invoice settings:", error);
@@ -67,7 +69,7 @@ const InvoiceSettings = () => {
   });
 
   if (isLoading) {
-    return <div className="p-8">Carregando...</div>;
+    return <div className="p-8">{t('common.loading')}</div>;
   }
 
   return (
@@ -77,7 +79,7 @@ const InvoiceSettings = () => {
         const formData = new FormData(e.currentTarget);
         updateInvoiceSettings.mutate(formData);
       }} className="bg-white rounded-lg shadow p-6 space-y-6">
-        <h2 className="text-2xl font-bold">Configurações de Fatura</h2>
+        <h2 className="text-2xl font-bold">{t('invoice_settings.title')}</h2>
 
         <InvoiceNumberingForm
           defaultPrefix={companyProfile?.invoice_prefix}
@@ -99,7 +101,9 @@ const InvoiceSettings = () => {
           className="w-full md:w-auto"
           disabled={updateInvoiceSettings.isPending}
         >
-          {updateInvoiceSettings.isPending ? "Salvando..." : "Salvar Configurações"}
+          {updateInvoiceSettings.isPending 
+            ? t('invoice_settings.saving')
+            : t('invoice_settings.save')}
         </Button>
       </form>
     </div>

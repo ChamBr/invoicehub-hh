@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
+import { cn } from "@/lib/utils";
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -34,7 +35,10 @@ const LanguageSwitcher = () => {
           <DropdownMenuItem 
             key={lang.code}
             onClick={() => changeLanguage(lang.code)}
-            className="flex items-center gap-2"
+            className={cn(
+              "flex items-center gap-2",
+              i18n.language === lang.code && "font-bold"
+            )}
           >
             <ReactCountryFlag 
               countryCode={lang.country} 
