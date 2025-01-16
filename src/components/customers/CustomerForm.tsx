@@ -6,9 +6,11 @@ import { CustomerTypeSelect } from "./CustomerTypeSelect";
 import { CustomerContactInfo } from "./CustomerContactInfo";
 import { CustomerTaxInfo } from "./CustomerTaxInfo";
 import { CustomerNotesField } from "./CustomerNotesField";
+import { CountrySelect } from "@/components/ui/country-select";
 import { customerFormSchema, type CustomerFormValues } from "./types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { FormField, FormItem, FormLabel } from "@/components/ui/form";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -23,6 +25,7 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
     defaultValues: {
       type: "personal",
       taxExempt: false,
+      country: "BR",
     },
   });
 
@@ -64,6 +67,21 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <CustomerTypeSelect form={form} />
+        
+        <FormField
+          control={form.control}
+          name="country"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>País</FormLabel>
+              <CountrySelect
+                value={field.value}
+                onValueChange={field.onChange}
+              />
+            </FormItem>
+          )}
+        />
+
         <CustomerContactInfo form={form} />
         <CustomerTaxInfo form={form} />
         <CustomerNotesField form={form} />

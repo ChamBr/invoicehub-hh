@@ -6,6 +6,7 @@ export const customerFormSchema = z.object({
   contactName: z.string().optional().nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
   phone: z.string().optional().nullable(),
+  country: z.string().min(2, "País é obrigatório"),
   taxExempt: z.boolean().default(false),
   taxId: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
@@ -16,3 +17,31 @@ export const customerFormSchema = z.object({
 });
 
 export type CustomerFormValues = z.infer<typeof customerFormSchema>;
+
+export type AddressFormat = {
+  zipLabel: string;
+  stateLabel: string;
+  cityLabel: string;
+  addressLabel: string;
+  taxIdLabel: string;
+  taxIdMask: string;
+};
+
+export const addressFormats: Record<string, AddressFormat> = {
+  BR: {
+    zipLabel: "CEP",
+    stateLabel: "Estado",
+    cityLabel: "Cidade",
+    addressLabel: "Endereço",
+    taxIdLabel: "CPF/CNPJ",
+    taxIdMask: "999.999.999-99",
+  },
+  US: {
+    zipLabel: "ZIP Code",
+    stateLabel: "State",
+    cityLabel: "City",
+    addressLabel: "Address",
+    taxIdLabel: "Tax ID",
+    taxIdMask: "99-9999999",
+  },
+};
