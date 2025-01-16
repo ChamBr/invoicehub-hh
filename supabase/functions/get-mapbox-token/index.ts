@@ -19,6 +19,9 @@ serve(async (req) => {
     // Verificar se o token existe
     const token = Deno.env.get('MAPBOX_ACCESS_TOKEN')
     console.log('Token recuperado:', token ? 'Sim' : 'Não')
+    console.log('Request URL:', req.url)
+    console.log('Request method:', req.method)
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()))
     
     if (!token) {
       console.error('Token do Mapbox não configurado')
