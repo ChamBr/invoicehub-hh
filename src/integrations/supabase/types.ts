@@ -284,6 +284,33 @@ export type Database = {
           },
         ]
       }
+      footer_settings: {
+        Row: {
+          center_text: string | null
+          created_at: string
+          id: string
+          left_text: string | null
+          right_text: string | null
+          updated_at: string
+        }
+        Insert: {
+          center_text?: string | null
+          created_at?: string
+          id?: string
+          left_text?: string | null
+          right_text?: string | null
+          updated_at?: string
+        }
+        Update: {
+          center_text?: string | null
+          created_at?: string
+          id?: string
+          left_text?: string | null
+          right_text?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoice_items: {
         Row: {
           description: string

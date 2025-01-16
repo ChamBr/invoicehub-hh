@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmailSettingsForm } from "./components/EmailSettingsForm";
 import { GeneralSettingsForm } from "./components/GeneralSettingsForm";
+import { FooterSettingsForm } from "./components/FooterSettingsForm";
 import { useEmailSettings } from "./hooks/useEmailSettings";
 
 const AdminSettings = () => {
@@ -23,6 +24,7 @@ const AdminSettings = () => {
         <TabsList>
           <TabsTrigger value="email">Configurações de Email</TabsTrigger>
           <TabsTrigger value="general">Configurações Gerais</TabsTrigger>
+          <TabsTrigger value="footer">Configurações do Rodapé</TabsTrigger>
         </TabsList>
 
         <TabsContent value="email">
@@ -34,6 +36,12 @@ const AdminSettings = () => {
         <TabsContent value="general">
           <Card>
             <GeneralSettingsForm />
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="footer">
+          <Card>
+            <FooterSettingsForm />
           </Card>
         </TabsContent>
       </Tabs>
