@@ -35,6 +35,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Primeiro, tenta recuperar a sessão do localStorage
+        const storedSession = localStorage.getItem('supabase.auth.token');
+        if (storedSession) {
+          const parsedSession = JSON.parse(storedSession);
+          if (parsedSession?.currentSession?.access_token) {
+            supabase.auth.setSession({
+              access_token: parsedSession.currentSession.access_token,
+              refresh_token: parsedSession.currentSession.refresh_token,
+            });
+          }
+        }
+
+        // Então, verifica a sessão atual
         const { data: { session: currentSession }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -49,7 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         }
 
-        if (checkSessionValidity(currentSession)) {
+        if (await checkSessionValidity(currentSession)) {
           setSession(currentSession);
           console.log("Sessão inicializada com sucesso");
         }
@@ -78,6 +91,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         case "SIGNED_IN":
           if (newSession) {
             setSession(newSession);
+            localStorage.setItem('supabase.auth.token', JSON.stringify({
+              currentSession: {
+                access_token: newSession.access_token,
+                refresh_token: newSession.refresh_token,
+              }
+            }));
             toast({
               title: "Login realizado",
               description: "Bem-vindo ao sistema",
@@ -90,6 +109,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (newSession) {
             console.log("Token atualizado com sucesso");
             setSession(newSession);
+            localStorage.setItem('supabase.auth.token', JSON.stringify({
+              currentSession: {
+                access_token: newSession.access_token,
+                refresh_token: newSession.refresh_token,
+              }
+            }));
           }
           break;
           

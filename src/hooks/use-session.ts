@@ -12,7 +12,7 @@ export const useSessionManagement = (
 
   const clearSession = () => {
     setSession(null);
-    localStorage.clear();
+    localStorage.removeItem('supabase.auth.token');
   };
 
   const handleSessionEnd = (message: string) => {
@@ -26,7 +26,9 @@ export const useSessionManagement = (
 
   const refreshSession = async (currentSession: Session) => {
     try {
-      const { data: { session: newSession }, error } = await supabase.auth.refreshSession();
+      const { data: { session: newSession }, error } = await supabase.auth.refreshSession({
+        refresh_token: currentSession.refresh_token,
+      });
       
       if (error) {
         console.error("Erro ao atualizar sessão:", error);
@@ -36,6 +38,12 @@ export const useSessionManagement = (
 
       if (newSession) {
         setSession(newSession);
+        localStorage.setItem('supabase.auth.token', JSON.stringify({
+          currentSession: {
+            access_token: newSession.access_token,
+            refresh_token: newSession.refresh_token,
+          }
+        }));
         return true;
       }
 
