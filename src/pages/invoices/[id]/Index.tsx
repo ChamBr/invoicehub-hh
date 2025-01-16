@@ -23,7 +23,14 @@ export default function InvoiceDetails() {
         .select(`
           *,
           customer:customers(name),
-          items:invoice_items(*)
+          items:invoice_items(
+            id,
+            description,
+            quantity,
+            price,
+            total,
+            hasTax
+          )
         `)
         .eq("id", id)
         .single();
