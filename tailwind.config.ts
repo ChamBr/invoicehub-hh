@@ -25,13 +25,13 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#4CAF84", // Ajustado para um verde mais suave
-          dark: "#065F46",
-          light: "#ECFDF5",
+          DEFAULT: "#0066CC", // Azul principal do template
+          dark: "#004C99",
+          light: "#E6F0FF",
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#065F46",
+          DEFAULT: "#004C99",
           foreground: "#FFFFFF",
         },
         destructive: {
@@ -43,13 +43,18 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#ECFDF5",
-          foreground: "#065F46",
+          DEFAULT: "#E6F0FF",
+          foreground: "#004C99",
         },
         card: {
           DEFAULT: "#FFFFFF",
           foreground: "#1F2937",
         },
+        invoice: {
+          blue: "#0066CC",
+          lightBlue: "#E6F0FF",
+          tableHeader: "#004C99",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",

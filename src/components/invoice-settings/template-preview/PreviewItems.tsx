@@ -10,56 +10,68 @@ interface PreviewItemsProps {
 }
 
 export const PreviewItems = ({ items }: PreviewItemsProps) => {
-  const total = items.reduce((sum, item) => sum + item.total, 0);
-  const tax = total * 0.10;
-  const grandTotal = total + tax;
+  const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+  const taxRate = 0.08; // 8% como no exemplo
+  const tax = subtotal * taxRate;
+  const shipping = 8000; // R$ 8.000,00 como no exemplo
+  const total = subtotal + tax + shipping;
 
   return (
-    <div>
+    <div className="space-y-6">
       <table className="w-full">
-        <thead className="bg-gray-50 text-sm">
-          <tr>
-            <th className="px-4 py-2 text-left">Descrição</th>
-            <th className="px-4 py-2 text-center">Qtd</th>
-            <th className="px-4 py-2 text-right">Valor Unit.</th>
-            <th className="px-4 py-2 text-right">Total</th>
+        <thead>
+          <tr className="bg-invoice-tableHeader text-white">
+            <th className="px-6 py-3 text-left">Descrição do Item</th>
+            <th className="px-6 py-3 text-center">Quantidade</th>
+            <th className="px-6 py-3 text-right">Preço</th>
+            <th className="px-6 py-3 text-right">Total</th>
           </tr>
         </thead>
-        <tbody className="text-sm">
+        <tbody className="divide-y">
           {items.map((item, index) => (
-            <tr key={index} className="border-b">
-              <td className="px-4 py-3">{item.description}</td>
-              <td className="px-4 py-3 text-center">{item.quantity}</td>
-              <td className="px-4 py-3 text-right">
+            <tr key={index} className="hover:bg-gray-50">
+              <td className="px-6 py-4">{item.description}</td>
+              <td className="px-6 py-4 text-center">{item.quantity}</td>
+              <td className="px-6 py-4 text-right">
                 {item.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               </td>
-              <td className="px-4 py-3 text-right">
+              <td className="px-6 py-4 text-right">
                 {item.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               </td>
             </tr>
           ))}
         </tbody>
-        <tfoot className="text-sm font-medium">
-          <tr>
-            <td colSpan={3} className="px-4 py-2 text-right">Subtotal:</td>
-            <td className="px-4 py-2 text-right">
-              {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={3} className="px-4 py-2 text-right">Impostos (10%):</td>
-            <td className="px-4 py-2 text-right">
-              {tax.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-            </td>
-          </tr>
-          <tr className="font-bold">
-            <td colSpan={3} className="px-4 py-2 text-right">Total:</td>
-            <td className="px-4 py-2 text-right">
-              {grandTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-            </td>
-          </tr>
-        </tfoot>
       </table>
+
+      <div className="flex justify-between">
+        {/* Notas */}
+        <div className="w-1/2">
+          <h3 className="font-semibold mb-2">Notas:</h3>
+          <div className="text-sm text-gray-600">
+            Observações / Instruções de Pagamento
+          </div>
+        </div>
+
+        {/* Totais */}
+        <div className="w-1/3 space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Subtotal:</span>
+            <span>{subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span>Taxa ({(taxRate * 100)}%):</span>
+            <span>{tax.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span>Frete / Manuseio:</span>
+            <span>{shipping.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </div>
+          <div className="flex justify-between font-bold text-lg text-invoice-blue pt-2 border-t">
+            <span>Total:</span>
+            <span>{total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
