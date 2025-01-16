@@ -40,12 +40,8 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
         <div className="col-span-2">
           <Label htmlFor="country">{t('company.country')}</Label>
           <CountrySelect
-            defaultValue={country}
+            value={country}
             onValueChange={handleCountryChange}
-            options={[
-              { value: 'BR', label: 'Brasil' },
-              { value: 'US', label: 'United States' }
-            ]}
           />
         </div>
         <div className="col-span-6">
@@ -58,7 +54,7 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
             required
           />
         </div>
-        <div className="col-span-4">
+        <div className="col-span-4 space-y-2">
           <Label htmlFor="tax_id">{format.taxIdLabel}</Label>
           <Input
             id="tax_id"
@@ -66,19 +62,18 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
             defaultValue={taxId}
             placeholder={format.taxIdMask}
           />
+          <div className="flex items-center gap-2">
+            <Switch
+              id="display_tax_id"
+              name="display_tax_id"
+              checked={displayTaxId}
+              onCheckedChange={handleDisplayTaxIdChange}
+            />
+            <Label htmlFor="display_tax_id" className="text-sm text-muted-foreground">
+              {t('company.display_tax_id')}
+            </Label>
+          </div>
         </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Switch
-          id="display_tax_id"
-          name="display_tax_id"
-          checked={displayTaxId}
-          onCheckedChange={handleDisplayTaxIdChange}
-        />
-        <Label htmlFor="display_tax_id" className="text-sm text-muted-foreground">
-          {t('company.display_tax_id')}
-        </Label>
       </div>
     </div>
   );
