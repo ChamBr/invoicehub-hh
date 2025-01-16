@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 
@@ -36,10 +35,20 @@ const AdminSettings = () => {
 
   const form = useForm({
     defaultValues: {
-      senderName: emailSettings?.sender_name || "",
-      senderEmail: emailSettings?.sender_email || ""
+      senderName: "",
+      senderEmail: ""
     }
   });
+
+  // Atualizar o formulário quando os dados forem carregados
+  useState(() => {
+    if (emailSettings) {
+      form.reset({
+        senderName: emailSettings.sender_name,
+        senderEmail: emailSettings.sender_email
+      });
+    }
+  }, [emailSettings]);
 
   const mutation = useMutation({
     mutationFn: async (values: { senderName: string; senderEmail: string }) => {
