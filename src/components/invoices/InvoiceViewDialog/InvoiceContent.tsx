@@ -6,11 +6,19 @@ interface InvoiceContentProps {
 }
 
 export const InvoiceContent = ({ invoice }: InvoiceContentProps) => {
+  if (!invoice.items || invoice.items.length === 0) {
+    return (
+      <div className="text-center py-4 text-muted-foreground">
+        Nenhum item encontrado nesta fatura
+      </div>
+    );
+  }
+
   return (
     <>
       <div>
         <h3 className="text-lg font-medium mb-2">Itens</h3>
-        <InvoiceDetailsItems items={invoice.items || []} />
+        <InvoiceDetailsItems items={invoice.items} />
       </div>
 
       {invoice.notes && (
