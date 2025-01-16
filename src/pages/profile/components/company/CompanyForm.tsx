@@ -29,18 +29,8 @@ export const CompanyForm = ({
       formData.set('state', address.state || '');
       formData.set('zip_code', address.zip_code || '');
       formData.set('country', address.country || companyProfile?.country || 'BR');
-      onSubmit(formData);
     }
-  }, [onSubmit, companyProfile?.country]);
-
-  const handleCountryChange = useCallback((value: string) => {
-    const form = document.querySelector('form');
-    if (form) {
-      const formData = new FormData(form);
-      formData.set('country', value);
-      onSubmit(formData);
-    }
-  }, [onSubmit]);
+  }, [companyProfile?.country]);
 
   return (
     <form onSubmit={(e) => {
@@ -65,7 +55,6 @@ export const CompanyForm = ({
               if (form) {
                 const formData = new FormData(form);
                 formData.set('display_logo', checked.toString());
-                onSubmit(formData);
               }
             }}
           />
@@ -76,13 +65,18 @@ export const CompanyForm = ({
               taxId={companyProfile?.tax_id}
               displayTaxId={companyProfile?.display_tax_id}
               country={companyProfile?.country}
-              onCountryChange={handleCountryChange}
+              onCountryChange={(value) => {
+                const form = document.querySelector('form');
+                if (form) {
+                  const formData = new FormData(form);
+                  formData.set('country', value);
+                }
+              }}
               onDisplayTaxIdChange={(checked) => {
                 const form = document.querySelector('form');
                 if (form) {
                   const formData = new FormData(form);
                   formData.set('display_tax_id', checked.toString());
-                  onSubmit(formData);
                 }
               }}
             />
@@ -113,7 +107,6 @@ export const CompanyForm = ({
                 if (form) {
                   const formData = new FormData(form);
                   formData.set('display_phone', checked.toString());
-                  onSubmit(formData);
                 }
               }}
             />
