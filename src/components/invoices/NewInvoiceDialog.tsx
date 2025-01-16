@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import CustomerSelect from "./CustomerSelect";
+import { CustomerSelect } from "./CustomerSelect";
 import InvoiceItems from "./InvoiceItems";
 import InvoiceSummary from "./InvoiceSummary";
 import { NewCustomerDialog } from "./NewCustomerDialog";
@@ -41,7 +41,6 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
 
   const handleNewCustomerSuccess = () => {
     setIsNewCustomerDialogOpen(false);
-    // Atualizar a lista de clientes será feito automaticamente pelo React Query
   };
 
   const handleSubmit = async () => {
@@ -66,18 +65,17 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     try {
       const { data: invoice, error: invoiceError } = await supabase
         .from("invoices")
-        .insert([
-          {
-            customer_id: selectedCustomer,
-            status: "draft",
-            due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            total: calculateTotal(items),
-          },
-        ])
+        .insert({
+          customer_id: selectedCustomer,
+          status: "draft",
+          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          total: calculateTotal(items),
+        })
         .select()
-        .single();
+        .maybeSingle();
 
       if (invoiceError) throw invoiceError;
+      if (!invoice) throw new Error("Erro ao criar fatura");
 
       const invoiceItems = items.map((item) => ({
         invoice_id: invoice.id,

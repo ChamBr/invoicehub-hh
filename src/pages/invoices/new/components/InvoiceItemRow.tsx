@@ -1,13 +1,7 @@
+import { useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { InvoiceItem } from "../types";
@@ -25,81 +19,45 @@ export const InvoiceItemRow = ({
   item,
   index,
   isCustomItem,
-  products,
   onUpdate,
   onRemove,
 }: InvoiceItemRowProps) => {
-  const handleProductSelect = (productId: string) => {
-    const product = products?.find((p) => p.id === productId);
-    if (product) {
-      onUpdate(index, {
-        ...item,
-        productId,
-        description: product.name,
-        price: product.price,
-        total: product.price * item.quantity,
-      });
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (item.quantity === 0) {
+      timer = setTimeout(() => {
+        onRemove(index);
+      }, 3000);
     }
-  };
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [item.quantity, index, onRemove]);
 
   return (
     <div className="flex gap-4 items-start">
       <div className="flex-1 space-y-4">
-        {isCustomItem ? (
-          <Input
-            placeholder="Descrição do item"
-            value={item.description}
-            onChange={(e) =>
-              onUpdate(index, {
-                ...item,
-                description: e.target.value,
-              })
-            }
-          />
-        ) : (
-          <Select
-            value={item.productId || undefined}
-            onValueChange={handleProductSelect}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione um produto" />
-            </SelectTrigger>
-            <SelectContent>
-              {products?.map((product) => (
-                <SelectItem key={product.id} value={product.id}>
-                  {product.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
+        <div className="text-sm font-medium">
+          {item.description}
+          <div className="text-muted-foreground text-xs">
+            {new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(item.price)}
+          </div>
+        </div>
 
         <div className="flex gap-4">
           <div className="w-32">
             <Input
               type="number"
-              min="1"
+              min="0"
               value={item.quantity}
               onChange={(e) =>
                 onUpdate(index, {
                   ...item,
                   quantity: parseInt(e.target.value),
                   total: parseInt(e.target.value) * item.price,
-                })
-              }
-            />
-          </div>
-          <div className="w-32">
-            <Input
-              type="number"
-              min="0"
-              step="0.01"
-              value={item.price}
-              onChange={(e) =>
-                onUpdate(index, {
-                  ...item,
-                  price: parseFloat(e.target.value),
-                  total: item.quantity * parseFloat(e.target.value),
                 })
               }
             />
@@ -117,7 +75,11 @@ export const InvoiceItemRow = ({
         </div>
       </div>
 
-      <Button variant="ghost" size="sm" onClick={() => onRemove(index)}>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onRemove(index)}
+      >
         <Trash2 className="h-4 w-4 text-red-500" />
       </Button>
     </div>
