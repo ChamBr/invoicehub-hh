@@ -11,6 +11,7 @@ import { customerFormSchema, type CustomerFormValues } from "./types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useState } from "react";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -19,6 +20,7 @@ interface CustomerFormProps {
 
 export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
@@ -31,6 +33,8 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
 
   const onSubmit = async (values: CustomerFormValues) => {
     try {
+      setIsSubmitting(true);
+      
       const { error } = await supabase.from("customers").insert({
         name: values.name,
         email: values.email,
@@ -50,6 +54,7 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
 
       toast({
         title: "Cliente cadastrado com sucesso!",
+        description: `O cliente ${values.name} foi cadastrado.`,
       });
 
       onSuccess();
@@ -58,8 +63,10 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
       toast({
         variant: "destructive",
         title: "Erro ao cadastrar cliente",
-        description: "Por favor, tente novamente.",
+        description: "Ocorreu um erro ao tentar cadastrar o cliente. Por favor, tente novamente.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -91,11 +98,12 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
             type="button"
             variant="outline"
             onClick={onCancel}
+            disabled={isSubmitting}
           >
             Cancelar
           </Button>
-          <Button type="submit">
-            Salvar Cliente
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Salvando..." : "Salvar Cliente"}
           </Button>
         </div>
       </form>
