@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { CustomerTypeSelect } from "./CustomerTypeSelect";
-import { CustomerContactInfo } from "./CustomerContactInfo";
-import { CustomerTaxInfo } from "./CustomerTaxInfo";
+import { CustomerContactForm } from "./form/CustomerContactForm";
+import { CustomerTaxForm } from "./form/CustomerTaxForm";
 import { CustomerNotesField } from "./CustomerNotesField";
 import { CountrySelect } from "@/components/ui/country-select";
 import { customerFormSchema, type CustomerFormValues } from "./types";
@@ -11,6 +11,7 @@ import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/for
 import { CustomerFormActions } from "./CustomerFormActions";
 import { useCustomerSubmit } from "./hooks/useCustomerSubmit";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -19,6 +20,7 @@ interface CustomerFormProps {
 }
 
 export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormProps) {
+  const { t } = useTranslation();
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
     defaultValues: {
@@ -48,9 +50,18 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{type === "company" ? "Nome da Empresa" : "Nome"}</FormLabel>
+              <FormLabel>
+                {type === "company" ? t('customers.form.company_name') : t('customers.form.name')}
+              </FormLabel>
               <FormControl>
-                <Input placeholder={type === "company" ? "Nome da empresa" : "Nome do cliente"} {...field} />
+                <Input 
+                  placeholder={
+                    type === "company" 
+                      ? t('customers.form.company_name_placeholder') 
+                      : t('customers.form.name_placeholder')
+                  } 
+                  {...field} 
+                />
               </FormControl>
             </FormItem>
           )}
@@ -61,7 +72,7 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
           name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>País</FormLabel>
+              <FormLabel>{t('customers.form.country')}</FormLabel>
               <CountrySelect
                 value={field.value}
                 onValueChange={field.onChange}
@@ -70,8 +81,8 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
           )}
         />
 
-        <CustomerContactInfo form={form} />
-        <CustomerTaxInfo form={form} />
+        <CustomerContactForm form={form} />
+        <CustomerTaxForm form={form} />
         <CustomerNotesField form={form} />
         <CustomerFormActions isSubmitting={isSubmitting} onCancel={onCancel} />
       </form>
