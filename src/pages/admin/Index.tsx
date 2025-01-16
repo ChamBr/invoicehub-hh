@@ -1,20 +1,22 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Users, CreditCard, Settings, BarChart, Flag } from "lucide-react";
+import DebugModeSwitch from "@/components/admin/DebugModeSwitch";
 import { PlansManagement } from "./PlansManagement";
 import { PaymentIntegrations } from "./PaymentIntegrations";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import DebugModeSwitch from "@/components/admin/DebugModeSwitch";
 
 const AdminIndex = () => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: profile, isLoading: isLoadingProfile, error: profileError } = useQuery({
     queryKey: ["admin-profile"],
@@ -54,39 +56,8 @@ const AdminIndex = () => {
 
       return data;
     },
-    enabled: profile?.role === "admin", // Só busca se for admin
+    enabled: profile?.role === "admin",
   });
-
-  // Mutation para atualizar configurações
-  const updateSetting = useMutation({
-    mutationFn: async ({ featureKey, isEnabled }: { featureKey: string; isEnabled: boolean }) => {
-      const { error } = await supabase
-        .from("system_settings")
-        .update({ is_enabled: isEnabled })
-        .eq("feature_key", featureKey);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["system-settings"] });
-      toast({
-        title: "Configuração atualizada",
-        description: "A configuração foi atualizada com sucesso.",
-      });
-    },
-    onError: (error) => {
-      console.error("Erro ao atualizar configuração:", error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao atualizar configuração",
-        description: "Ocorreu um erro ao atualizar a configuração.",
-      });
-    },
-  });
-
-  useEffect(() => {
-    document.title = "InvoiceHub - Administração";
-  }, []);
 
   // Loading state
   if (isLoadingProfile || (profile?.role === "admin" && isLoadingSettings)) {
@@ -120,56 +91,79 @@ const AdminIndex = () => {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Administração</h1>
 
-        <Tabs defaultValue="features" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="features">Recursos</TabsTrigger>
-            <TabsTrigger value="plans">Planos</TabsTrigger>
-            <TabsTrigger value="payments">Integrações de Pagamento</TabsTrigger>
-            <TabsTrigger value="debug">Debug</TabsTrigger>
-          </TabsList>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 h-24 text-lg"
+            onClick={() => navigate("/customers")}
+          >
+            <Users className="h-6 w-6" />
+            Clientes
+          </Button>
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 h-24 text-lg"
+            onClick={() => navigate("/plans")}
+          >
+            <CreditCard className="h-6 w-6" />
+            Planos
+          </Button>
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 h-24 text-lg"
+            onClick={() => navigate("/reports")}
+          >
+            <BarChart className="h-6 w-6" />
+            Relatórios
+          </Button>
+        </div>
 
-          <TabsContent value="features">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Recursos do Sistema</h2>
-              <div className="space-y-4">
-                {settings?.map((setting) => (
-                  <div key={setting.id} className="flex items-center justify-between">
-                    <Label htmlFor={setting.feature_key} className="flex-1">
-                      {setting.feature_key === "address_autocomplete" 
-                        ? "Autocompletar Endereço" 
-                        : setting.feature_key}
-                    </Label>
-                    <Switch
-                      id={setting.feature_key}
-                      checked={setting.is_enabled}
-                      onCheckedChange={(checked) => 
-                        updateSetting.mutate({
-                          featureKey: setting.feature_key,
-                          isEnabled: checked,
-                        })
-                      }
-                    />
+        <div className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Configurações do Sistema
+            </h2>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="features">
+                <AccordionTrigger>
+                  <span className="flex items-center gap-2">
+                    <Flag className="h-4 w-4" />
+                    Flags do Sistema
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4 pt-4">
+                    {settings?.map((setting) => (
+                      <div key={setting.id} className="flex items-center justify-between">
+                        <label htmlFor={setting.feature_key} className="flex-1">
+                          {setting.feature_key === "address_autocomplete" 
+                            ? "Autocompletar Endereço" 
+                            : setting.feature_key}
+                        </label>
+                        <DebugModeSwitch />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </Card>
-          </TabsContent>
+                </AccordionContent>
+              </AccordionItem>
 
-          <TabsContent value="plans">
-            <PlansManagement />
-          </TabsContent>
+              <AccordionItem value="integrations">
+                <AccordionTrigger>Integrações de Pagamento</AccordionTrigger>
+                <AccordionContent>
+                  <PaymentIntegrations />
+                </AccordionContent>
+              </AccordionItem>
 
-          <TabsContent value="payments">
-            <PaymentIntegrations />
-          </TabsContent>
-
-          <TabsContent value="debug">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Modo Debug</h2>
-              <DebugModeSwitch />
-            </Card>
-          </TabsContent>
-        </Tabs>
+              <AccordionItem value="plans">
+                <AccordionTrigger>Gerenciamento de Planos</AccordionTrigger>
+                <AccordionContent>
+                  <PlansManagement />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </Card>
+        </div>
       </div>
     </div>
   );
