@@ -61,7 +61,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
       console.log("Auth state changed:", event);
       setSession(newSession);
-      setIsLoading(false);
 
       if (event === "SIGNED_OUT") {
         navigate("/login");
@@ -75,26 +74,50 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           description: "Bem-vindo ao sistema",
         });
         navigate("/");
+      } else if (event === "TOKEN_REFRESHED") {
+        console.log("Token refreshed successfully");
+      } else if (event === "USER_UPDATED") {
+        setSession(newSession);
       }
+
+      setIsLoading(false);
     });
 
-    // Verificar expiração da sessão a cada minuto
+    // Verificar expiração da sessão a cada 5 minutos
     const checkSessionExpiration = setInterval(async () => {
       const { data: { session: currentSession } } = await supabase.auth.getSession();
+      
+      if (!currentSession) {
+        clearInterval(checkSessionExpiration);
+        return;
+      }
+
       if (currentSession?.expires_at) {
         const expirationTime = new Date(currentSession.expires_at * 1000);
         const now = new Date();
+        const timeUntilExpiration = expirationTime.getTime() - now.getTime();
         
         // Se faltar menos de 5 minutos para expirar
-        if (expirationTime.getTime() - now.getTime() < 5 * 60 * 1000) {
+        if (timeUntilExpiration < 5 * 60 * 1000 && timeUntilExpiration > 0) {
           toast({
             title: "Atenção",
             description: "Sua sessão irá expirar em breve. Por favor, faça login novamente.",
             duration: 10000,
           });
         }
+        
+        // Se já expirou
+        if (timeUntilExpiration <= 0) {
+          await supabase.auth.signOut();
+          navigate("/login");
+          toast({
+            variant: "destructive",
+            title: "Sessão expirada",
+            description: "Sua sessão expirou. Por favor, faça login novamente.",
+          });
+        }
       }
-    }, 60000);
+    }, 300000); // 5 minutos
 
     return () => {
       subscription.unsubscribe();
