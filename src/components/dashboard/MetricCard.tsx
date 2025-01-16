@@ -23,7 +23,7 @@ export function MetricCard({
 }: MetricCardProps) {
   return (
     <Card className={cn("p-6", className)}>
-      <div className="flex items-start justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
             className={cn(

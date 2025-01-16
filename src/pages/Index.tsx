@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { DollarSign, TrendingUp, Users, AlertCircle } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
+import { MetricSettings } from "@/components/dashboard/MetricSettings";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { RecentInvoices } from "@/components/dashboard/RecentInvoices";
 import { useEffect, useState } from "react";
@@ -103,12 +104,30 @@ const Index = () => {
     .filter((metric) => metric.isEnabled)
     .sort((a, b) => a.order - b.order);
 
+  const handleMetricsUpdate = (enabledMetricIds: string[]) => {
+    const updatedMetrics = metrics.map((metric) => ({
+      ...metric,
+      isEnabled: enabledMetricIds.includes(metric.id),
+    }));
+    setMetrics(updatedMetrics);
+  };
+
   return (
     <div className="flex-grow p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500 mt-2">{t('dashboard.welcome')}</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-500 mt-2">{t('dashboard.welcome')}</p>
+          </div>
+          <MetricSettings
+            metrics={metrics.map(({ id, title, isEnabled }) => ({
+              id,
+              title,
+              isEnabled,
+            }))}
+            onUpdate={handleMetricsUpdate}
+          />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
