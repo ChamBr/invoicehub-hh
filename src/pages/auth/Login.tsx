@@ -4,13 +4,31 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session);
+      
+      if (event === 'SIGNED_IN' && session) {
+        console.log("User signed in, redirecting...");
+        navigate("/");
+      } else if (event === 'SIGNED_OUT') {
+        console.log("User signed out");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   useEffect(() => {
     if (session) {
+      console.log("Session exists, redirecting...");
       navigate("/");
     }
   }, [session, navigate]);
@@ -78,11 +96,40 @@ const Login = () => {
                 color: '#10B981',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease'
+              },
+              message: {
+                color: '#DC2626',
+                fontSize: '0.875rem',
+                marginTop: '0.5rem'
               }
             }
           }}
           theme="custom"
           providers={[]}
+          localization={{
+            variables: {
+              sign_in: {
+                email_label: 'E-mail',
+                password_label: 'Senha',
+                button_label: 'Entrar',
+                loading_button_label: 'Entrando...',
+                email_input_placeholder: 'Seu e-mail',
+                password_input_placeholder: 'Sua senha',
+                link_text: 'Já tem uma conta? Entre',
+                confirmation_text: 'Verifique seu e-mail para o link de confirmação'
+              },
+              sign_up: {
+                email_label: 'E-mail',
+                password_label: 'Senha',
+                button_label: 'Cadastrar',
+                loading_button_label: 'Cadastrando...',
+                email_input_placeholder: 'Seu e-mail',
+                password_input_placeholder: 'Sua senha',
+                link_text: 'Não tem uma conta? Cadastre-se',
+                confirmation_text: 'Verifique seu e-mail para o link de confirmação'
+              }
+            }
+          }}
         />
       </div>
     </div>
