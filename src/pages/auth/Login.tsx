@@ -17,6 +17,10 @@ const Login = () => {
       
       if (event === 'SIGNED_IN' && session) {
         console.log("User signed in, redirecting...");
+        toast({
+          title: "Login realizado com sucesso",
+          description: "Redirecionando para a página inicial...",
+        });
         navigate("/");
       } else if (event === 'SIGNED_OUT') {
         console.log("User signed out");
@@ -24,7 +28,7 @@ const Login = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   useEffect(() => {
     if (session) {
@@ -115,8 +119,7 @@ const Login = () => {
                 loading_button_label: 'Entrando...',
                 email_input_placeholder: 'Seu e-mail',
                 password_input_placeholder: 'Sua senha',
-                link_text: 'Já tem uma conta? Entre',
-                confirmation_text: 'Verifique seu e-mail para o link de confirmação'
+                link_text: 'Não tem uma conta? Cadastre-se'
               },
               sign_up: {
                 email_label: 'E-mail',
@@ -125,8 +128,7 @@ const Login = () => {
                 loading_button_label: 'Cadastrando...',
                 email_input_placeholder: 'Seu e-mail',
                 password_input_placeholder: 'Sua senha',
-                link_text: 'Não tem uma conta? Cadastre-se',
-                confirmation_text: 'Verifique seu e-mail para o link de confirmação'
+                link_text: 'Já tem uma conta? Entre'
               }
             }
           }}

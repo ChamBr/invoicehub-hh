@@ -28,7 +28,6 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { clearSession, handleSessionEnd, checkSessionValidity } = useSessionManagement(session, setSession);
@@ -36,19 +35,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Primeiro, tenta recuperar a sessão do localStorage
-        const storedSession = localStorage.getItem('supabase.auth.token');
-        if (storedSession) {
-          const parsedSession = JSON.parse(storedSession);
-          if (parsedSession?.currentSession?.access_token) {
-            supabase.auth.setSession({
-              access_token: parsedSession.currentSession.access_token,
-              refresh_token: parsedSession.currentSession.refresh_token,
-            });
-          }
-        }
-
-        // Então, verifica a sessão atual
         const { data: { session: currentSession }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -72,7 +58,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         handleSessionEnd("Ocorreu um erro ao inicializar sua sessão.");
       } finally {
         setIsLoading(false);
-        setIsInitialized(true);
       }
     };
 
@@ -91,14 +76,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           break;
           
         case "SIGNED_IN":
-          if (newSession && !isInitialized) {
+          if (newSession) {
             setSession(newSession);
-            localStorage.setItem('supabase.auth.token', JSON.stringify({
-              currentSession: {
-                access_token: newSession.access_token,
-                refresh_token: newSession.refresh_token,
-              }
-            }));
             toast({
               title: "Login realizado",
               description: "Bem-vindo ao sistema",
@@ -111,12 +90,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (newSession) {
             console.log("Token atualizado com sucesso");
             setSession(newSession);
-            localStorage.setItem('supabase.auth.token', JSON.stringify({
-              currentSession: {
-                access_token: newSession.access_token,
-                refresh_token: newSession.refresh_token,
-              }
-            }));
           }
           break;
           
@@ -142,7 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
       clearInterval(sessionCheck);
     };
-  }, [navigate, toast, clearSession, handleSessionEnd, checkSessionValidity, isInitialized]);
+  }, [navigate, toast, clearSession, handleSessionEnd, checkSessionValidity]);
 
   return (
     <AuthContext.Provider value={{ session, isLoading, clearSession }}>
