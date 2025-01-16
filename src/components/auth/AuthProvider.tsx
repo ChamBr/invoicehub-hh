@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(newSession);
       setIsLoading(false);
 
-      if (event === "SIGNED_OUT" || event === "USER_DELETED") {
+      if (event === "SIGNED_OUT") {
         navigate("/login");
         toast({
           title: "Sessão encerrada",
@@ -78,8 +78,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
+    // Verificar expiração da sessão a cada minuto
+    const checkSessionExpiration = setInterval(async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (currentSession?.expires_at) {
+        const expirationTime = new Date(currentSession.expires_at * 1000);
+        const now = new Date();
+        
+        // Se faltar menos de 5 minutos para expirar
+        if (expirationTime.getTime() - now.getTime() < 5 * 60 * 1000) {
+          toast({
+            title: "Atenção",
+            description: "Sua sessão irá expirar em breve. Por favor, faça login novamente.",
+            duration: 10000,
+          });
+        }
+      }
+    }, 60000);
+
     return () => {
       subscription.unsubscribe();
+      clearInterval(checkSessionExpiration);
     };
   }, [navigate, toast]);
 

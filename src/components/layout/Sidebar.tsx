@@ -37,8 +37,13 @@ const Sidebar = () => {
 
       <div className="flex-1 py-6 space-y-6 overflow-y-auto">
         <MenuGroup title={t('navigation.records')} items={menuItems.records} collapsed={collapsed} />
-        <MenuGroup title="Administração" items={menuItems.admin} collapsed={collapsed} />
         <MenuGroup title={t('navigation.user')} items={menuItems.user} collapsed={collapsed} />
+      </div>
+      
+      <div className="mt-auto border-t border-gray-200 bg-gray-50">
+        <div className="py-6">
+          <MenuGroup title="Administração" items={menuItems.admin} collapsed={collapsed} />
+        </div>
       </div>
     </div>
   );

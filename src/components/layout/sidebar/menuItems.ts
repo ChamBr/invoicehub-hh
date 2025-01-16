@@ -20,6 +20,18 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
       label: t('navigation.invoices')
     }
   ],
+  user: [
+    {
+      to: "/profile",
+      icon: createElement(UserCircle, { className: "h-4 w-4" }),
+      label: t('navigation.profile')
+    },
+    {
+      to: "/feedback",
+      icon: createElement(MessageSquare, { className: "h-4 w-4" }),
+      label: t('navigation.feedback.submit')
+    }
+  ],
   admin: [
     {
       to: "/admin/customers",
@@ -45,18 +57,6 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
       to: "/admin/settings",
       icon: createElement(Sliders, { className: "h-4 w-4" }),
       label: "Configurações"
-    }
-  ],
-  user: [
-    {
-      to: "/profile",
-      icon: createElement(UserCircle, { className: "h-4 w-4" }),
-      label: t('navigation.profile')
-    },
-    {
-      to: "/feedback",
-      icon: createElement(MessageSquare, { className: "h-4 w-4" }),
-      label: t('navigation.feedback.submit')
     }
   ]
 });
