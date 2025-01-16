@@ -13,7 +13,7 @@ export interface AddressAutocompleteProps {
 }
 
 export function AddressAutocomplete({
-  accessToken = process.env.MAPBOX_ACCESS_TOKEN,
+  accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN,
   value,
   onChange,
   onSelect,
