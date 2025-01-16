@@ -24,7 +24,7 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
-const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
+export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
   const { toast } = useToast();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -155,5 +155,3 @@ const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
     </Form>
   );
 };
-
-export default ProductForm;

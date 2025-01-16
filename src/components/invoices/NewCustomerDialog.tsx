@@ -4,7 +4,7 @@ import { CustomerForm } from "@/components/customers/CustomerForm";
 interface NewCustomerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: (customerId: string) => void;
+  onSuccess: () => void;
 }
 
 const NewCustomerDialog = ({
