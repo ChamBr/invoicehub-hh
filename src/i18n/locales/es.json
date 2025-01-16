@@ -41,6 +41,59 @@
     "success": "Configuración actualizada con éxito",
     "error": "Error al actualizar la configuración"
   },
+  "profile": {
+    "title": "Perfil de Usuario",
+    "company": {
+      "title": "Información de la Empresa",
+      "logo": {
+        "title": "Logo de la Empresa",
+        "display": "Mostrar logo en la factura"
+      },
+      "basic_info": {
+        "title": "Información Básica",
+        "company_name": "Nombre de la Empresa",
+        "tax_id": "NIF/CIF",
+        "display_tax": "Mostrar NIF/CIF en la factura"
+      },
+      "address": {
+        "title": "Dirección",
+        "line1": "Dirección",
+        "line2": "Complemento (Opcional)",
+        "city": "Ciudad",
+        "state": "Provincia",
+        "zip": "Código Postal",
+        "country": "País"
+      },
+      "contact": {
+        "title": "Contacto",
+        "phone": "Teléfono",
+        "mobile": "Móvil",
+        "display_phone": "Mostrar teléfono/móvil en la factura",
+        "email": "Correo electrónico",
+        "website": "Sitio web"
+      }
+    },
+    "user": {
+      "title": "Información Personal",
+      "full_name": "Nombre Completo",
+      "email": "Correo electrónico",
+      "email_hint": "El correo no se puede cambiar ya que se usa para autenticación",
+      "country": "País",
+      "phone": "Móvil",
+      "birth": {
+        "month": "Mes de Nacimiento",
+        "year": "Año de Nacimiento",
+        "select_month": "Seleccione el mes",
+        "year_placeholder": "AAAA"
+      },
+      "gender": {
+        "label": "Sexo",
+        "select": "Seleccione el sexo",
+        "male": "Masculino",
+        "female": "Femenino"
+      }
+    }
+  },
   "common": {
     "admin": {
       "mode": "Modo Admin",
@@ -50,8 +103,23 @@
     "errors": {
       "auth": "Usuario no autenticado",
       "update": "No se pudo actualizar",
-      "unexpected": "Ocurrió un error inesperado"
+      "unexpected": "Ocurrió un error inesperado",
+      "required": "Campo requerido",
+      "invalid_email": "Correo electrónico inválido",
+      "invalid_phone": "Número de teléfono inválido",
+      "invalid_date": "Fecha inválida",
+      "min_length": "Mínimo {{count}} caracteres",
+      "max_length": "Máximo {{count}} caracteres"
     },
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "actions": {
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "cancel": "Cancelar"
+    },
+    "success": {
+      "profile_updated": "Perfil actualizado con éxito",
+      "company_updated": "Información de la empresa actualizada con éxito"
+    }
   }
 }

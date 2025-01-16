@@ -41,6 +41,59 @@
     "success": "Settings updated successfully",
     "error": "Error updating settings"
   },
+  "profile": {
+    "title": "User Profile",
+    "company": {
+      "title": "Company Information",
+      "logo": {
+        "title": "Company Logo",
+        "display": "Display logo on invoice"
+      },
+      "basic_info": {
+        "title": "Basic Information",
+        "company_name": "Company Name",
+        "tax_id": "Tax ID",
+        "display_tax": "Display Tax ID on invoice"
+      },
+      "address": {
+        "title": "Address",
+        "line1": "Address",
+        "line2": "Suite/Apt (Optional)",
+        "city": "City",
+        "state": "State",
+        "zip": "ZIP Code",
+        "country": "Country"
+      },
+      "contact": {
+        "title": "Contact",
+        "phone": "Phone",
+        "mobile": "Mobile",
+        "display_phone": "Display phone/mobile on invoice",
+        "email": "Email",
+        "website": "Website"
+      }
+    },
+    "user": {
+      "title": "Personal Information",
+      "full_name": "Full Name",
+      "email": "Email",
+      "email_hint": "Email cannot be changed as it is used for authentication",
+      "country": "Country",
+      "phone": "Mobile",
+      "birth": {
+        "month": "Birth Month",
+        "year": "Birth Year",
+        "select_month": "Select month",
+        "year_placeholder": "YYYY"
+      },
+      "gender": {
+        "label": "Gender",
+        "select": "Select gender",
+        "male": "Male",
+        "female": "Female"
+      }
+    }
+  },
   "common": {
     "admin": {
       "mode": "Admin Mode",
@@ -50,8 +103,23 @@
     "errors": {
       "auth": "User not authenticated",
       "update": "Could not update",
-      "unexpected": "An unexpected error occurred"
+      "unexpected": "An unexpected error occurred",
+      "required": "Required field",
+      "invalid_email": "Invalid email",
+      "invalid_phone": "Invalid phone number",
+      "invalid_date": "Invalid date",
+      "min_length": "Minimum {{count}} characters",
+      "max_length": "Maximum {{count}} characters"
     },
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "actions": {
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "success": {
+      "profile_updated": "Profile updated successfully",
+      "company_updated": "Company information updated successfully"
+    }
   }
 }

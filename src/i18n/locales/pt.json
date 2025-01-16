@@ -41,6 +41,59 @@
     "success": "Configurações atualizadas com sucesso",
     "error": "Erro ao atualizar configurações"
   },
+  "profile": {
+    "title": "Perfil do Usuário",
+    "company": {
+      "title": "Informações da Empresa",
+      "logo": {
+        "title": "Logo da Empresa",
+        "display": "Exibir logo na fatura"
+      },
+      "basic_info": {
+        "title": "Informações Básicas",
+        "company_name": "Nome da Empresa",
+        "tax_id": "CNPJ/CPF",
+        "display_tax": "Exibir CNPJ/CPF na fatura"
+      },
+      "address": {
+        "title": "Endereço",
+        "line1": "Endereço",
+        "line2": "Complemento",
+        "city": "Cidade",
+        "state": "Estado",
+        "zip": "CEP",
+        "country": "País"
+      },
+      "contact": {
+        "title": "Contato",
+        "phone": "Telefone",
+        "mobile": "Celular",
+        "display_phone": "Exibir telefone/celular na fatura",
+        "email": "E-mail",
+        "website": "Website"
+      }
+    },
+    "user": {
+      "title": "Dados Pessoais",
+      "full_name": "Nome Completo",
+      "email": "E-mail",
+      "email_hint": "O e-mail não pode ser alterado pois é usado para autenticação",
+      "country": "País",
+      "phone": "Celular",
+      "birth": {
+        "month": "Mês de Nascimento",
+        "year": "Ano de Nascimento",
+        "select_month": "Selecione o mês",
+        "year_placeholder": "AAAA"
+      },
+      "gender": {
+        "label": "Sexo",
+        "select": "Selecione o sexo",
+        "male": "Masculino",
+        "female": "Feminino"
+      }
+    }
+  },
   "common": {
     "admin": {
       "mode": "Modo Admin",
@@ -50,8 +103,23 @@
     "errors": {
       "auth": "Usuário não autenticado",
       "update": "Não foi possível atualizar",
-      "unexpected": "Ocorreu um erro inesperado"
+      "unexpected": "Ocorreu um erro inesperado",
+      "required": "Campo obrigatório",
+      "invalid_email": "E-mail inválido",
+      "invalid_phone": "Telefone inválido",
+      "invalid_date": "Data inválida",
+      "min_length": "Mínimo de {{count}} caracteres",
+      "max_length": "Máximo de {{count}} caracteres"
     },
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "actions": {
+      "save": "Salvar",
+      "saving": "Salvando...",
+      "cancel": "Cancelar"
+    },
+    "success": {
+      "profile_updated": "Perfil atualizado com sucesso",
+      "company_updated": "Dados da empresa atualizados com sucesso"
+    }
   }
 }
