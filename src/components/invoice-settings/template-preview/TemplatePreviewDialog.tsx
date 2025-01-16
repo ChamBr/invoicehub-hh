@@ -62,7 +62,7 @@ export const TemplatePreviewDialog = ({
           lineHeight: template.content.body.lineHeight,
         }}>
           <PreviewHeader content={template.content} company={sampleCompany} />
-          <PreviewCustomer customer={sampleCustomer} />
+          <PreviewCustomer customer={sampleCustomer} company={sampleCompany} />
           <PreviewItems items={sampleItems} />
           <PreviewFooter content={template.content} />
         </div>
