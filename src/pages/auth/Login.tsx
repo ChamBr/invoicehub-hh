@@ -17,14 +17,14 @@ const Login = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#F1F0FB] via-[#D6BCFA] to-[#9b87f5]">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#F7FAF9] via-[#ECFDF5] to-[#D1FAE5]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#F1F0FB] via-[#D6BCFA] to-[#9b87f5] p-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#F7FAF9] via-[#ECFDF5] to-[#D1FAE5] p-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-xl p-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
