@@ -19,9 +19,7 @@ const NewCustomerDialog = ({
           <DialogTitle>Novo Cliente</DialogTitle>
         </DialogHeader>
         <CustomerForm
-          onSuccess={(customerId) => {
-            onSuccess(customerId);
-          }}
+          onSuccess={onSuccess}
           onCancel={() => onOpenChange(false)}
         />
       </DialogContent>

@@ -40,7 +40,15 @@ const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
-      const { error } = await supabase.from("products").insert([data]);
+      const { error } = await supabase.from("products").insert({
+        name: data.name,
+        description: data.description,
+        type: data.type,
+        price: data.price,
+        sku: data.sku || null,
+        stock: data.stock || 0,
+        status: "active"
+      });
       
       if (error) throw error;
 
