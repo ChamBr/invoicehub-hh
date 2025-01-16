@@ -28,27 +28,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Verificar sessão atual
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        // Limpar qualquer sessão antiga que possa estar causando conflito
+        const currentSession = await supabase.auth.getSession();
         
-        if (error) {
-          console.error("Erro ao verificar sessão:", error);
-          toast({
-            variant: "destructive",
-            title: "Erro de autenticação",
-            description: "Por favor, faça login novamente",
-          });
+        if (currentSession.error) {
+          console.error("Erro ao verificar sessão:", currentSession.error);
+          await supabase.auth.signOut();
+          setSession(null);
           navigate("/login");
           return;
         }
 
-        setSession(currentSession);
-        
-        if (!currentSession && window.location.pathname !== "/login") {
+        if (!currentSession.data.session) {
+          console.log("Nenhuma sessão encontrada");
           navigate("/login");
+          return;
         }
+
+        setSession(currentSession.data.session);
+        console.log("Sessão inicializada com sucesso");
+        
       } catch (error) {
-        console.error("Erro ao verificar sessão:", error);
+        console.error("Erro ao inicializar auth:", error);
         navigate("/login");
       } finally {
         setIsLoading(false);
@@ -57,9 +58,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     initializeAuth();
 
-    // Configurar listener para mudanças na autenticação
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-      console.log("Auth state changed:", event);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      console.log("Mudança no estado de autenticação:", event);
       
       switch (event) {
         case "SIGNED_OUT":
@@ -72,66 +74,72 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           break;
           
         case "SIGNED_IN":
-          setSession(newSession);
-          toast({
-            title: "Login realizado",
-            description: "Bem-vindo ao sistema",
-          });
-          navigate("/");
+          if (newSession) {
+            setSession(newSession);
+            toast({
+              title: "Login realizado",
+              description: "Bem-vindo ao sistema",
+            });
+            navigate("/");
+          }
           break;
           
         case "TOKEN_REFRESHED":
-          console.log("Token atualizado com sucesso");
-          setSession(newSession);
+          if (newSession) {
+            console.log("Token atualizado com sucesso");
+            setSession(newSession);
+          }
           break;
           
         case "USER_UPDATED":
-          setSession(newSession);
+          if (newSession) {
+            setSession(newSession);
+          }
           break;
       }
 
       setIsLoading(false);
     });
 
-    // Verificar expiração da sessão a cada 5 minutos
-    const checkSessionExpiration = setInterval(async () => {
+    // Verificar expiração da sessão a cada minuto
+    const sessionCheck = setInterval(async () => {
       const { data: { session: currentSession } } = await supabase.auth.getSession();
       
       if (!currentSession) {
-        clearInterval(checkSessionExpiration);
+        console.log("Sessão não encontrada durante verificação");
+        clearInterval(sessionCheck);
         return;
       }
 
-      if (currentSession?.expires_at) {
-        const expirationTime = new Date(currentSession.expires_at * 1000);
-        const now = new Date();
-        const timeUntilExpiration = expirationTime.getTime() - now.getTime();
-        
-        // Se faltar menos de 5 minutos para expirar
-        if (timeUntilExpiration < 5 * 60 * 1000 && timeUntilExpiration > 0) {
-          toast({
-            title: "Atenção",
-            description: "Sua sessão irá expirar em breve. Por favor, faça login novamente.",
-            duration: 10000,
-          });
-        }
-        
-        // Se já expirou
-        if (timeUntilExpiration <= 0) {
-          await supabase.auth.signOut();
-          navigate("/login");
-          toast({
-            variant: "destructive",
-            title: "Sessão expirada",
-            description: "Sua sessão expirou. Por favor, faça login novamente.",
-          });
-        }
+      const expirationTime = new Date(currentSession.expires_at! * 1000);
+      const now = new Date();
+      const timeUntilExpiration = expirationTime.getTime() - now.getTime();
+      
+      // Aviso 5 minutos antes da expiração
+      if (timeUntilExpiration < 5 * 60 * 1000 && timeUntilExpiration > 0) {
+        toast({
+          title: "Atenção",
+          description: "Sua sessão irá expirar em breve. Por favor, faça login novamente.",
+          duration: 10000,
+        });
       }
-    }, 300000); // 5 minutos
+      
+      // Sessão expirada
+      if (timeUntilExpiration <= 0) {
+        await supabase.auth.signOut();
+        setSession(null);
+        navigate("/login");
+        toast({
+          variant: "destructive",
+          title: "Sessão expirada",
+          description: "Sua sessão expirou. Por favor, faça login novamente.",
+        });
+      }
+    }, 60000); // Verificar a cada minuto
 
     return () => {
       subscription.unsubscribe();
-      clearInterval(checkSessionExpiration);
+      clearInterval(sessionCheck);
     };
   }, [navigate, toast]);
 
