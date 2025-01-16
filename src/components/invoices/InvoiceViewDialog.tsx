@@ -1,8 +1,8 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Invoice } from "../types";
-import { InvoiceHeader } from "./InvoiceHeader";
-import { InvoiceInfo } from "./InvoiceInfo";
-import { InvoiceContent } from "./InvoiceContent";
+import { Invoice } from "./types";
+import { InvoiceHeader } from "./InvoiceViewDialog/InvoiceHeader";
+import { InvoiceInfo } from "./InvoiceViewDialog/InvoiceInfo";
+import { InvoiceContent } from "./InvoiceViewDialog/InvoiceContent";
 import { InvoiceActions } from "./InvoiceActions";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,7 +40,7 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
-        <InvoiceHeader invoice={invoice} currentStatus={currentStatus} />
+        <InvoiceHeader invoice={invoice} currentStatus={currentStatus || invoice.status} />
         
         <div className="space-y-6">
           <InvoiceInfo invoice={invoice} />
