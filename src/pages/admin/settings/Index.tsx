@@ -28,7 +28,12 @@ const AdminSettings = () => {
         .select('*')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro ao carregar configurações:', error);
+        throw error;
+      }
+      
+      console.log('Configurações carregadas:', data);
       return data as EmailSettings;
     }
   });
@@ -40,9 +45,9 @@ const AdminSettings = () => {
     }
   });
 
-  // Atualizar o formulário quando os dados forem carregados
   useEffect(() => {
     if (emailSettings) {
+      console.log('Atualizando formulário com:', emailSettings);
       form.reset({
         senderName: emailSettings.sender_name,
         senderEmail: emailSettings.sender_email
@@ -52,15 +57,29 @@ const AdminSettings = () => {
 
   const mutation = useMutation({
     mutationFn: async (values: { senderName: string; senderEmail: string }) => {
-      const { error } = await supabase
+      console.log('Tentando salvar:', values);
+      
+      if (!emailSettings?.id) {
+        throw new Error('ID das configurações não encontrado');
+      }
+
+      const { error, data } = await supabase
         .from('email_settings')
         .update({
           sender_name: values.senderName,
           sender_email: values.senderEmail
         })
-        .eq('id', emailSettings?.id);
+        .eq('id', emailSettings.id)
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro ao salvar:', error);
+        throw error;
+      }
+
+      console.log('Dados salvos com sucesso:', data);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emailSettings'] });
@@ -73,13 +92,14 @@ const AdminSettings = () => {
       console.error('Erro ao salvar configurações:', error);
       toast({
         title: "Erro ao salvar",
-        description: "Ocorreu um erro ao salvar as configurações.",
+        description: "Ocorreu um erro ao salvar as configurações. Por favor, tente novamente.",
         variant: "destructive"
       });
     }
   });
 
   const onSubmit = (values: { senderName: string; senderEmail: string }) => {
+    console.log('Submetendo formulário:', values);
     mutation.mutate(values);
   };
 
