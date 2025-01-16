@@ -34,7 +34,7 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
     {
       to: "/profile/invoice-settings",
       icon: createElement(Receipt, { className: "h-4 w-4" }),
-      label: "Configurações de Fatura"
+      label: "Personalizar Invoice"
     },
     {
       to: "/feedback",
