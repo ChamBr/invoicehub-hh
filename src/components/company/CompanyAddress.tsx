@@ -30,17 +30,13 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
     }
   }, [onAddressSelect, addressInput]);
 
-  const handleAddressChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddressInput(e.target.value);
-  }, []);
-
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">{format.addressLabel}</h3>
       <AddressAutocomplete 
         onAddressSelect={handleAddressSelect}
         value={addressInput}
-        onChange={handleAddressChange}
+        onChange={(e) => setAddressInput(e.target.value)}
       />
       
       <div className="space-y-2">

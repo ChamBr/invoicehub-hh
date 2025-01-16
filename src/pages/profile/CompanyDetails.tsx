@@ -7,7 +7,7 @@ const CompanyDetails = () => {
   const { companyProfile, isLoading, updateCompanyProfile } = useCompanyProfile();
 
   if (isLoading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="p-8">Carregando...</div>;
   }
 
   return (
