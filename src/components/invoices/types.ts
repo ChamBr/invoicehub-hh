@@ -22,7 +22,6 @@ export interface Invoice {
   };
 }
 
-// Objeto de configuração para status das faturas
 export const invoiceStatusConfig = {
   draft: {
     label: 'Rascunho',
@@ -60,13 +59,3 @@ export const invoiceStatusConfig = {
     icon: 'CheckCircle2'
   }
 } as const;
-
-// Funções auxiliares
-export const getStatusColor = (status: InvoiceStatus): string => 
-  invoiceStatusConfig[status].color;
-
-export const getStatusLabel = (status: InvoiceStatus): string => 
-  invoiceStatusConfig[status].label;
-
-export const getStatusIcon = (status: InvoiceStatus): string => 
-  invoiceStatusConfig[status].icon;

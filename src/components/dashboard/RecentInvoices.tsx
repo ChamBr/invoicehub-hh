@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { invoiceStatusConfig, type InvoiceStatus } from "@/components/invoices/types";
-import * as Icons from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
 const invoices = [
   {
@@ -30,8 +30,9 @@ const invoices = [
 
 export function RecentInvoices() {
   const renderStatusIcon = (status: InvoiceStatus) => {
-    const IconComponent = Icons[invoiceStatusConfig[status].icon as keyof typeof Icons];
-    return <IconComponent className="h-4 w-4 mr-1" />;
+    const iconName = invoiceStatusConfig[status].icon;
+    const Icon = LucideIcons[iconName as keyof typeof LucideIcons];
+    return <Icon className="h-4 w-4 mr-1" />;
   };
 
   return (

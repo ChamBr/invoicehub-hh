@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle } from "lucide-react";
-import * as Icons from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { NewInvoiceDialog } from "@/components/invoices/NewInvoiceDialog";
@@ -37,8 +37,9 @@ const InvoicesIndex = () => {
   });
 
   const renderStatusIcon = (status: InvoiceStatus) => {
-    const IconComponent = Icons[invoiceStatusConfig[status].icon as keyof typeof Icons];
-    return <IconComponent className="h-4 w-4 mr-1" />;
+    const iconName = invoiceStatusConfig[status].icon;
+    const Icon = LucideIcons[iconName as keyof typeof LucideIcons];
+    return <Icon className="h-4 w-4 mr-1" />;
   };
 
   if (isLoading) {
@@ -88,7 +89,10 @@ const InvoicesIndex = () => {
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className={`flex w-fit items-center gap-1 ${invoiceStatusConfig[invoice.status].color}`}
+                      className={cn(
+                        "flex w-fit items-center gap-1",
+                        invoiceStatusConfig[invoice.status].color
+                      )}
                     >
                       {renderStatusIcon(invoice.status)}
                       <span>{invoiceStatusConfig[invoice.status].label}</span>
