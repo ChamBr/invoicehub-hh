@@ -13,6 +13,7 @@ interface CompanyBasicInfoProps {
   country?: string;
   onCountryChange: (value: string) => void;
   onDisplayTaxIdChange: (checked: boolean) => void;
+  disabled?: boolean;
 }
 
 export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
@@ -22,6 +23,7 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
   country = 'BR',
   onCountryChange,
   onDisplayTaxIdChange,
+  disabled = false,
 }) => {
   const { t } = useTranslation();
   const format = addressFormats[country] || addressFormats.BR;
@@ -34,6 +36,7 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
           <CountrySelect
             value={country}
             onValueChange={onCountryChange}
+            disabled={disabled}
           />
         </div>
         
@@ -46,6 +49,7 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
             placeholder={t('company.name_placeholder')}
             className="w-full"
             required
+            disabled={disabled}
           />
         </div>
 
@@ -57,6 +61,7 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
             defaultValue={taxId}
             placeholder={format.taxIdMask}
             className="w-full"
+            disabled={disabled}
           />
           <div className="flex items-center gap-2 pt-2">
             <Switch
@@ -64,6 +69,7 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
               name="display_tax_id"
               checked={displayTaxId}
               onCheckedChange={onDisplayTaxIdChange}
+              disabled={disabled}
             />
             <Label htmlFor="display_tax_id" className="text-sm text-muted-foreground">
               {t('company.display_tax_id')}

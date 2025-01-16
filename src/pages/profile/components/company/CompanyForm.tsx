@@ -12,13 +12,17 @@ interface CompanyFormProps {
   onLogoChange: (file: File | null) => void;
   onSubmit: (formData: FormData) => void;
   isLoading?: boolean;
+  isEditing?: boolean;
+  onCancel?: () => void;
 }
 
 export const CompanyForm = ({
   companyProfile,
   onLogoChange,
   onSubmit,
-  isLoading
+  isLoading,
+  isEditing = true,
+  onCancel
 }: CompanyFormProps) => {
   const handleAddressSelect = useCallback((address: any) => {
     const form = document.querySelector('form');
@@ -65,6 +69,7 @@ export const CompanyForm = ({
                 formData.set('display_logo', checked.toString());
               }
             }}
+            disabled={!isEditing}
           />
 
           <FormSection>
@@ -87,6 +92,7 @@ export const CompanyForm = ({
                   formData.set('display_tax_id', checked.toString());
                 }
               }}
+              disabled={!isEditing}
             />
           </FormSection>
         </div>
@@ -101,6 +107,7 @@ export const CompanyForm = ({
               zipCode={companyProfile?.zip_code}
               country={companyProfile?.country}
               onAddressSelect={handleAddressSelect}
+              disabled={!isEditing}
             />
           </FormSection>
 
@@ -118,16 +125,20 @@ export const CompanyForm = ({
                   formData.set('display_phone', checked.toString());
                 }
               }}
+              disabled={!isEditing}
             />
           </FormSection>
         </div>
       </div>
 
-      <FormActions
-        isSubmitting={isLoading}
-        submitLabel="Salvar Alterações"
-        className="flex justify-end pt-6 border-t"
-      />
+      {isEditing && (
+        <FormActions
+          isSubmitting={isLoading}
+          submitLabel="Salvar Alterações"
+          onCancel={onCancel}
+          className="flex justify-end pt-6 border-t"
+        />
+      )}
     </form>
   );
 };

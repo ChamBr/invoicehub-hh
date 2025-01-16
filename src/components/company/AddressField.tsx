@@ -8,6 +8,7 @@ interface AddressFieldProps {
   onChange: (value: string) => void;
   label: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export const AddressField = ({
@@ -16,6 +17,7 @@ export const AddressField = ({
   onChange,
   label,
   placeholder,
+  disabled = false,
 }: AddressFieldProps) => {
   return (
     <div className="space-y-2">
@@ -26,6 +28,7 @@ export const AddressField = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        disabled={disabled}
       />
     </div>
   );

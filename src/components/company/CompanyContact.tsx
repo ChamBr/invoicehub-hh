@@ -9,6 +9,7 @@ interface CompanyContactProps {
   website?: string;
   displayPhone?: boolean;
   onDisplayPhoneChange: (checked: boolean) => void;
+  disabled?: boolean;
 }
 
 export const CompanyContact = ({
@@ -18,6 +19,7 @@ export const CompanyContact = ({
   website,
   displayPhone = false,
   onDisplayPhoneChange,
+  disabled = false,
 }: CompanyContactProps) => {
   return (
     <div className="space-y-4">
@@ -30,6 +32,7 @@ export const CompanyContact = ({
             name="phone"
             type="tel"
             defaultValue={phone}
+            disabled={disabled}
           />
         </div>
         <div className="space-y-2">
@@ -39,6 +42,7 @@ export const CompanyContact = ({
             name="mobile"
             type="tel"
             defaultValue={mobile}
+            disabled={disabled}
           />
         </div>
       </div>
@@ -48,6 +52,7 @@ export const CompanyContact = ({
           name="display_phone"
           checked={displayPhone}
           onCheckedChange={onDisplayPhoneChange}
+          disabled={disabled}
         />
         <Label htmlFor="display_phone">
           Exibir telefone/celular na fatura
@@ -61,6 +66,7 @@ export const CompanyContact = ({
             name="email"
             type="email"
             defaultValue={email}
+            disabled={disabled}
           />
         </div>
         <div className="space-y-2">
@@ -71,8 +77,9 @@ export const CompanyContact = ({
             type="url"
             defaultValue={website}
             placeholder="https://exemplo.com"
-            pattern="https?://.*"
+            pattern="https?://.+"
             title="Digite uma URL válida começando com http:// ou https://"
+            disabled={disabled}
           />
         </div>
       </div>

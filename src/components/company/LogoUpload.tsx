@@ -8,6 +8,7 @@ interface LogoUploadProps {
   onLogoChange: (file: File) => void;
   displayLogo?: boolean;
   onDisplayLogoChange: (checked: boolean) => void;
+  disabled?: boolean;
 }
 
 export const LogoUpload = ({
@@ -15,6 +16,7 @@ export const LogoUpload = ({
   onLogoChange,
   displayLogo = false,
   onDisplayLogoChange,
+  disabled = false,
 }: LogoUploadProps) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
@@ -41,7 +43,11 @@ export const LogoUpload = ({
       <div className="space-y-2">
         <label
           htmlFor="logo"
-          className="relative block w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary transition-colors"
+          className={`relative block w-full h-32 border-2 border-dashed rounded-lg transition-colors ${
+            disabled
+              ? 'border-gray-200 cursor-not-allowed'
+              : 'border-gray-300 cursor-pointer hover:border-primary'
+          }`}
         >
           {(logoPreview || logoUrl) ? (
             <img
@@ -52,7 +58,9 @@ export const LogoUpload = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
               <ImageIcon className="w-6 h-6 mb-2" />
-              <span className="text-sm">Clique para fazer upload do logo</span>
+              <span className="text-sm">
+                {disabled ? 'Logo da empresa' : 'Clique para fazer upload do logo'}
+              </span>
             </div>
           )}
           <input
@@ -62,6 +70,7 @@ export const LogoUpload = ({
             accept="image/*"
             onChange={handleLogoChange}
             className="hidden"
+            disabled={disabled}
           />
         </label>
         <div className="flex items-center gap-2">
@@ -70,6 +79,7 @@ export const LogoUpload = ({
             name="display_logo"
             checked={displayLogo}
             onCheckedChange={onDisplayLogoChange}
+            disabled={disabled}
           />
           <Label htmlFor="display_logo" className="text-sm text-muted-foreground">
             Exibir logo na fatura

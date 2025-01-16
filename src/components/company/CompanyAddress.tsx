@@ -12,6 +12,7 @@ interface CompanyAddressProps {
   zipCode?: string;
   country?: string;
   onAddressSelect: (address: any) => void;
+  disabled?: boolean;
 }
 
 export const CompanyAddress: React.FC<CompanyAddressProps> = ({
@@ -22,6 +23,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   zipCode,
   country = 'BR',
   onAddressSelect,
+  disabled = false,
 }) => {
   const { t } = useTranslation();
   const format = addressFormats[country] || addressFormats.BR;
@@ -51,6 +53,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
         onChange={(value) => updateAddress('line1', value, addressLine2)}
         label={t('company.address_line1')}
         placeholder={t('company.address_line1_placeholder')}
+        disabled={disabled}
       />
       
       <AddressField
@@ -59,6 +62,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
         onChange={(value) => updateAddress('line2', value)}
         label={t('company.address_line2')}
         placeholder={t('company.address_line2_placeholder')}
+        disabled={disabled}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -68,6 +72,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
           onChange={(value) => updateAddress('zip_code', value)}
           label={format.zipLabel}
           placeholder={format.zipLabel}
+          disabled={disabled}
         />
         
         <AddressField
@@ -76,6 +81,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
           onChange={(value) => updateAddress('city', value)}
           label={format.cityLabel}
           placeholder={format.cityLabel}
+          disabled={disabled}
         />
         
         <AddressField
@@ -84,6 +90,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
           onChange={(value) => updateAddress('state', value)}
           label={format.stateLabel}
           placeholder={format.stateLabel}
+          disabled={disabled}
         />
       </div>
     </div>
