@@ -1,4 +1,4 @@
-import { Users, Package, FileText, MessageSquare, UserCircle, CreditCard, BarChart, Wallet, Sliders, Building, Receipt, FilePlus, Edit, PlusCircle } from "lucide-react";
+import { Users, Package, FileText, MessageSquare, UserCircle, CreditCard, BarChart, Wallet, Sliders, Building, Receipt } from "lucide-react";
 import { MenuItems } from "./types";
 import { createElement } from "react";
 
@@ -13,11 +13,6 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
       to: "/products",
       icon: createElement(Package, { className: "h-4 w-4" }),
       label: t('navigation.products')
-    },
-    {
-      to: "/products/new",
-      icon: createElement(PlusCircle, { className: "h-4 w-4" }),
-      label: "Novo Produto/Serviço"
     },
     {
       to: "/invoices",
@@ -57,11 +52,6 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
       to: "/admin/plans",
       icon: createElement(CreditCard, { className: "h-4 w-4" }),
       label: "Planos"
-    },
-    {
-      to: "/admin/plans/new",
-      icon: createElement(FilePlus, { className: "h-4 w-4" }),
-      label: "Novo Plano"
     },
     {
       to: "/admin/integrations",

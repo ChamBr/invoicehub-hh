@@ -3,13 +3,33 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Package, PackagePlus } from "lucide-react";
+import { Package, Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useNavigate } from "react-router-dom";
 
 const ProductsIndex = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    type: "product",
+    price: "",
+    sku: "",
+    stock: "0",
+  });
 
   const { data: products, error } = useQuery({
     queryKey: ["products"],
@@ -23,6 +43,49 @@ const ProductsIndex = () => {
       return data;
     },
   });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.from("products").insert([
+        {
+          name: formData.name,
+          description: formData.description,
+          type: formData.type,
+          price: parseFloat(formData.price),
+          sku: formData.sku,
+          stock: formData.type === "product" ? parseInt(formData.stock) : 0,
+        },
+      ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Produto/Serviço criado",
+        description: "O produto/serviço foi criado com sucesso.",
+      });
+      setIsDialogOpen(false);
+      setFormData({
+        name: "",
+        description: "",
+        type: "product",
+        price: "",
+        sku: "",
+        stock: "0",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao criar produto/serviço",
+        description: "Ocorreu um erro ao criar o produto/serviço.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (error) {
     toast({
@@ -39,13 +102,117 @@ const ProductsIndex = () => {
           <Package className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Produtos e Serviços</h1>
         </div>
-        <Button
-          onClick={() => navigate("/products/new")}
-          className="flex items-center gap-2"
-        >
-          <PackagePlus className="h-4 w-4" />
-          Novo Produto/Serviço
-        </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Novo Produto/Serviço
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Novo Produto/Serviço</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="type">Tipo</Label>
+                <RadioGroup
+                  value={formData.type}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, type: value })
+                  }
+                  className="flex gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="product" id="product" />
+                    <Label htmlFor="product">Produto</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="service" id="service" />
+                    <Label htmlFor="service">Serviço</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="name">Nome</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Descrição</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="price">Preço</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.price}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="sku">SKU</Label>
+                <Input
+                  id="sku"
+                  value={formData.sku}
+                  onChange={(e) =>
+                    setFormData({ ...formData, sku: e.target.value })
+                  }
+                />
+              </div>
+
+              {formData.type === "product" && (
+                <div className="space-y-2">
+                  <Label htmlFor="stock">Estoque</Label>
+                  <Input
+                    id="stock"
+                    type="number"
+                    min="0"
+                    value={formData.stock}
+                    onChange={(e) =>
+                      setFormData({ ...formData, stock: e.target.value })
+                    }
+                  />
+                </div>
+              )}
+
+              <div className="flex justify-end gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? "Criando..." : "Criar"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="bg-white rounded-lg shadow">

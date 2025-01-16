@@ -12,7 +12,6 @@ import Footer from "./components/layout/Footer";
 import Login from "./pages/auth/Login";
 import Index from "./pages/Index";
 import CustomersIndex from "./pages/customers/Index";
-import NewCustomer from "./pages/customers/New";
 import ProductsIndex from "./pages/products/Index";
 import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
@@ -22,8 +21,6 @@ import CompanyDetails from "./pages/profile/CompanyDetails";
 import InvoiceSettings from "./pages/profile/InvoiceSettings";
 import AdminCustomers from "./pages/admin/customers/Index";
 import AdminPlans from "./pages/admin/plans/Index";
-import NewPlan from "./pages/admin/plans/New";
-import EditPlan from "./pages/admin/plans/Edit";
 import AdminIntegrations from "./pages/admin/integrations/Index";
 import AdminReports from "./pages/admin/reports/Index";
 import AdminSettings from "./pages/admin/settings/Index";
@@ -45,7 +42,6 @@ const AppLayout = () => {
               <Routes>
                 <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
                 <Route path="/customers" element={<ProtectedRoute><CustomersIndex /></ProtectedRoute>} />
-                <Route path="/customers/new" element={<ProtectedRoute><NewCustomer /></ProtectedRoute>} />
                 <Route path="/products" element={<ProtectedRoute><ProductsIndex /></ProtectedRoute>} />
                 <Route path="/invoices" element={<ProtectedRoute><InvoicesIndex /></ProtectedRoute>} />
                 <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
@@ -59,8 +55,6 @@ const AppLayout = () => {
                 {/* Rotas administrativas */}
                 <Route path="/admin/customers" element={<ProtectedRoute><AdminCustomers /></ProtectedRoute>} />
                 <Route path="/admin/plans" element={<ProtectedRoute><AdminPlans /></ProtectedRoute>} />
-                <Route path="/admin/plans/new" element={<ProtectedRoute><NewPlan /></ProtectedRoute>} />
-                <Route path="/admin/plans/:id/edit" element={<ProtectedRoute><EditPlan /></ProtectedRoute>} />
                 <Route path="/admin/integrations" element={<ProtectedRoute><AdminIntegrations /></ProtectedRoute>} />
                 <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>} />
                 <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
