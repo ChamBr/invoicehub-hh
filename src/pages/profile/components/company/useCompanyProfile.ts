@@ -37,18 +37,22 @@ export const useCompanyProfile = () => {
       // Buscar cliente pelo email (se existir)
       const email = formData.get('email')?.toString();
       if (email) {
-        const { data: customerData, error: customerError } = await supabase
-          .from('customers')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle();
+        try {
+          const { data: customerData, error: customerError } = await supabase
+            .from('customers')
+            .select('id')
+            .eq('email', email)
+            .maybeSingle();
 
-        if (customerError) {
-          console.error("Erro ao buscar cliente:", customerError);
-        }
-        
-        if (customerData) {
-          console.log("Cliente encontrado:", customerData);
+          if (customerError) {
+            console.error("Erro ao buscar cliente:", customerError);
+          }
+          
+          if (customerData) {
+            console.log("Cliente encontrado:", customerData);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar cliente:", error);
         }
       }
 
