@@ -26,9 +26,14 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
 
   const handleAddressSelect = React.useCallback((address: any) => {
     if (address && addressInput.trim().length >= 3) {
-      onAddressSelect(address);
+      // Mantém o país atual ao invés de usar o do endereço selecionado
+      const addressData = {
+        ...address,
+        country: country // Mantém o país atual
+      };
+      onAddressSelect(addressData);
     }
-  }, [onAddressSelect, addressInput]);
+  }, [onAddressSelect, addressInput, country]);
 
   const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAddressInput(e.target.value);
