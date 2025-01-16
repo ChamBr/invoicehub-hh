@@ -1,108 +1,16 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { 
-  Users, 
-  Package, 
-  FileText, 
-  MessageSquare, 
-  UserCircle, 
-  Settings, 
-  AlignLeft,
-  CreditCard,
-  BarChart,
-  Wallet,
-  Sliders
-} from "lucide-react";
+import { AlignLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import MenuGroup from "./sidebar/MenuGroup";
+import { createMenuItems } from "./sidebar/menuItems";
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
   const { t } = useTranslation();
-
-  const menuItems = {
-    records: [
-      {
-        to: "/customers",
-        icon: <Users className="h-4 w-4" />,
-        label: t('navigation.customers')
-      },
-      {
-        to: "/products",
-        icon: <Package className="h-4 w-4" />,
-        label: t('navigation.products')
-      },
-      {
-        to: "/invoices",
-        icon: <FileText className="h-4 w-4" />,
-        label: t('navigation.invoices')
-      }
-    ],
-    admin: [
-      {
-        to: "/admin/customers",
-        icon: <Users className="h-4 w-4" />,
-        label: "Clientes"
-      },
-      {
-        to: "/admin/plans",
-        icon: <CreditCard className="h-4 w-4" />,
-        label: "Planos"
-      },
-      {
-        to: "/admin/integrations",
-        icon: <Wallet className="h-4 w-4" />,
-        label: "Integrações"
-      },
-      {
-        to: "/admin/reports",
-        icon: <BarChart className="h-4 w-4" />,
-        label: "Relatórios"
-      },
-      {
-        to: "/admin/settings",
-        icon: <Sliders className="h-4 w-4" />,
-        label: "Configurações"
-      }
-    ],
-    user: [
-      {
-        to: "/profile",
-        icon: <UserCircle className="h-4 w-4" />,
-        label: t('navigation.profile')
-      },
-      {
-        to: "/feedback",
-        icon: <MessageSquare className="h-4 w-4" />,
-        label: t('navigation.feedback.submit')
-      }
-    ]
-  };
-
-  const MenuGroup = ({ title, items }: { title: string; items: any[] }) => (
-    <div className="space-y-2">
-      {!collapsed && (
-        <h3 className="text-xs uppercase text-gray-500 font-semibold px-4">{title}</h3>
-      )}
-      <div className="space-y-1">
-        {items.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-primary hover:bg-primary-light rounded-lg transition-colors",
-              location.pathname === item.to && "bg-primary-light text-primary font-medium"
-            )}
-          >
-            {item.icon}
-            {!collapsed && item.label}
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
+  const menuItems = createMenuItems(t);
 
   return (
     <div
@@ -128,9 +36,9 @@ const Sidebar = () => {
       </div>
 
       <div className="flex-1 py-6 space-y-6 overflow-y-auto">
-        <MenuGroup title={t('navigation.records')} items={menuItems.records} />
-        <MenuGroup title="Administração" items={menuItems.admin} />
-        <MenuGroup title={t('navigation.user')} items={menuItems.user} />
+        <MenuGroup title={t('navigation.records')} items={menuItems.records} collapsed={collapsed} />
+        <MenuGroup title="Administração" items={menuItems.admin} collapsed={collapsed} />
+        <MenuGroup title={t('navigation.user')} items={menuItems.user} collapsed={collapsed} />
       </div>
     </div>
   );
