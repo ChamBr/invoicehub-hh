@@ -14,13 +14,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
-const countries = [
-  { label: "Estados Unidos", value: "US" },
-  { label: "Brasil", value: "BR" },
-  { label: "Espanha", value: "ES" },
-  { label: "Portugal", value: "PT" },
-] as const;
+interface Country {
+  code: string;
+  name_en: string;
+}
 
 export interface CountrySelectProps {
   value?: string;
@@ -34,12 +35,39 @@ export function CountrySelect({
   disabled = false 
 }: CountrySelectProps) {
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation();
+
+  const { data: countries = [], isLoading } = useQuery({
+    queryKey: ["countries"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("countries")
+        .select("code, name_en")
+        .eq("is_active", true)
+        .order("name_en");
+
+      if (error) {
+        console.error("Erro ao buscar países:", error);
+        return [];
+      }
+
+      return data as Country[];
+    },
+  });
 
   // Garante que sempre tenhamos um país selecionado válido
   const selectedCountry = React.useMemo(() => {
-    const found = countries.find((country) => country.value === value);
-    return found || countries[0]; // Retorna Estados Unidos se nenhum país for encontrado
-  }, [value]);
+    const found = countries.find((country) => country.code === value);
+    return found || countries[0];
+  }, [value, countries]);
+
+  if (isLoading) {
+    return (
+      <Button variant="outline" className="w-full" disabled>
+        Carregando países...
+      </Button>
+    );
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -51,19 +79,19 @@ export function CountrySelect({
           className="w-full justify-between"
           disabled={disabled}
         >
-          {selectedCountry.label}
+          {selectedCountry?.name_en || t("common.loading")}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
         <Command>
-          <CommandInput placeholder="Procurar país..." />
-          <CommandEmpty>Nenhum país encontrado.</CommandEmpty>
+          <CommandInput placeholder={t("common.search_country")} />
+          <CommandEmpty>{t("common.no_country_found")}</CommandEmpty>
           <CommandGroup>
             {countries.map((country) => (
               <CommandItem
-                key={country.value}
-                value={country.value}
+                key={country.code}
+                value={country.code}
                 onSelect={(currentValue) => {
                   onValueChange(currentValue);
                   setOpen(false);
@@ -72,10 +100,10 @@ export function CountrySelect({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    selectedCountry.value === country.value ? "opacity-100" : "opacity-0"
+                    value === country.code ? "opacity-100" : "opacity-0"
                   )}
                 />
-                {country.label}
+                {country.name_en}
               </CommandItem>
             ))}
           </CommandGroup>
