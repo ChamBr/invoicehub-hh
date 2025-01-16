@@ -84,23 +84,20 @@ const AdminSettings = () => {
         throw new Error('ID das configurações não encontrado');
       }
 
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from('email_settings')
         .update({
           sender_name: values.senderName,
           sender_email: values.senderEmail
         })
-        .eq('id', emailSettings.id)
-        .select()
-        .single();
+        .eq('id', emailSettings.id);
 
       if (error) {
         console.error('Erro ao salvar:', error);
         throw error;
       }
 
-      console.log('Dados salvos com sucesso:', data);
-      return data;
+      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['emailSettings'] });
