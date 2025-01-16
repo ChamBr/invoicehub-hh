@@ -22,17 +22,26 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   onAddressSelect,
 }) => {
   const format = addressFormats[country] || addressFormats.BR;
+  const [addressInput, setAddressInput] = React.useState("");
 
   const handleAddressSelect = React.useCallback((address: any) => {
-    if (address) {
+    if (address && addressInput.length >= 3) {
       onAddressSelect(address);
     }
-  }, [onAddressSelect]);
+  }, [onAddressSelect, addressInput]);
+
+  const handleAddressChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddressInput(e.target.value);
+  }, []);
 
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">{format.addressLabel}</h3>
-      <AddressAutocomplete onAddressSelect={handleAddressSelect} />
+      <AddressAutocomplete 
+        onAddressSelect={handleAddressSelect}
+        value={addressInput}
+        onChange={handleAddressChange}
+      />
       
       <div className="space-y-2">
         <Label htmlFor="address_line2">Complemento (Opcional)</Label>
