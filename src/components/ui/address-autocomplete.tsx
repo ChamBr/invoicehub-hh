@@ -25,11 +25,15 @@ export function AddressAutocomplete({
     queryKey: ['mapbox-token'],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke('get-mapbox-token');
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao obter token do Mapbox:", error);
+        throw error;
+      }
       return data;
     },
     staleTime: Infinity,
     retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   const handleRetrieve = React.useCallback((res: any) => {
@@ -62,23 +66,25 @@ export function AddressAutocomplete({
     );
   }
 
+  const AutofillComponent = AddressAutofill as any; // Contorna o erro de tipagem
+
   return (
     <div className="w-full">
-      {React.createElement(AddressAutofill, {
-        accessToken: config.token,
-        onRetrieve: handleRetrieve,
-        options: {
+      <AutofillComponent
+        accessToken={config.token}
+        onRetrieve={handleRetrieve}
+        options={{
           language: 'pt',
-        },
-        children: (
-          <Input
-            placeholder="Digite seu endereço"
-            value={value}
-            onChange={onChange}
-            {...props}
-          />
-        )
-      })}
+          countries: ['BR'],
+        }}
+      >
+        <Input
+          placeholder="Digite seu endereço"
+          value={value}
+          onChange={onChange}
+          {...props}
+        />
+      </AutofillComponent>
     </div>
   );
 }
