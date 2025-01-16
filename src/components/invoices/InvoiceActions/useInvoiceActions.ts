@@ -94,11 +94,33 @@ export const useInvoiceActions = ({ invoiceId, onStatusChange }: UseInvoiceActio
     }
   };
 
+  const handleMarkAsPaid = async () => {
+    setIsLoading(true);
+    try {
+      await onStatusChange("paid");
+      
+      toast({
+        title: "Sucesso",
+        description: "Fatura marcada como paga com sucesso",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Ocorreu um erro ao marcar a fatura como paga",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     handleGeneratePDF,
     handleSend,
     handleCancel,
     handleGenerateInvoice,
+    handleMarkAsPaid,
   };
 };

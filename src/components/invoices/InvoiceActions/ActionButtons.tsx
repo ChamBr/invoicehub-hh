@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FileEdit, Send, FileText } from "lucide-react";
+import { FileEdit, Send, FileText, CheckCircle2 } from "lucide-react";
 import { InvoiceStatus } from "../types";
 
 interface ActionButtonsProps {
@@ -11,6 +11,7 @@ interface ActionButtonsProps {
   onSend: () => Promise<void>;
   onGeneratePDF: () => Promise<void>;
   onGenerateInvoice: () => Promise<void>;
+  onMarkAsPaid: () => Promise<void>;
 }
 
 export const ActionButtons = ({
@@ -22,6 +23,7 @@ export const ActionButtons = ({
   onSend,
   onGeneratePDF,
   onGenerateInvoice,
+  onMarkAsPaid,
 }: ActionButtonsProps) => {
   switch (status) {
     case "draft":
@@ -76,6 +78,10 @@ export const ActionButtons = ({
               {isLoading ? "Gerando..." : "Gerar PDF"}
             </Button>
           )}
+          <Button onClick={onMarkAsPaid} disabled={isLoading}>
+            <CheckCircle2 className="h-4 w-4 mr-2" />
+            {isLoading ? "Processando..." : "Marcar como Paga"}
+          </Button>
         </div>
       );
     

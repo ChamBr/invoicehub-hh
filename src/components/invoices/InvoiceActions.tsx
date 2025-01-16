@@ -26,6 +26,7 @@ export const InvoiceActions = ({
     handleSend,
     handleCancel,
     handleGenerateInvoice,
+    handleMarkAsPaid,
   } = useInvoiceActions({ invoiceId, onStatusChange });
 
   return (
@@ -39,6 +40,7 @@ export const InvoiceActions = ({
         onSend={handleSend}
         onGeneratePDF={handleGeneratePDF}
         onGenerateInvoice={handleGenerateInvoice}
+        onMarkAsPaid={handleMarkAsPaid}
       />
       
       <CancelDialog 
