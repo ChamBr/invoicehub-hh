@@ -41,8 +41,11 @@ export function MetricCard({
         </div>
         
         <div className="flex items-baseline justify-between">
+          <p className="text-2xl font-semibold">{value}</p>
           <div className="flex items-baseline gap-2">
-            <p className="text-2xl font-semibold">{value}</p>
+            {secondaryValue && (
+              <p className="text-sm text-gray-500">{secondaryValue}</p>
+            )}
             {trend && (
               <p
                 className={cn(
@@ -54,9 +57,6 @@ export function MetricCard({
               </p>
             )}
           </div>
-          {secondaryValue && (
-            <p className="text-sm text-gray-500">{secondaryValue}</p>
-          )}
         </div>
       </div>
     </Card>
