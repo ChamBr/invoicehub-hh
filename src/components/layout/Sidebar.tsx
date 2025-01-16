@@ -22,7 +22,7 @@ const Sidebar = () => {
     >
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
         {!collapsed && (
-          <Link to="/" className="text-xl text-primary hover:text-primary/90 transition-colors">
+          <Link to="/" className="text-xl text-primary font-light hover:text-primary/90 transition-colors">
             InvoiceHub
           </Link>
         )}
