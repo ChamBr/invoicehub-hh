@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, UserPlus, Pencil, Trash2, Building2, User } from "lucide-react";
+import { Users, UserPlus, Trash2, Building2, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CustomerForm } from "@/components/customers/CustomerForm";
+import { CustomerDetails } from "@/components/customers/CustomerDetails";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +30,7 @@ const CustomersIndex = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerToDelete, setCustomerToDelete] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const { data: customers, error } = useQuery({
     queryKey: ["customers"],
@@ -78,12 +80,6 @@ const CustomersIndex = () => {
     });
   }
 
-  const handleEditClick = (customer, e) => {
-    e.stopPropagation();
-    setSelectedCustomer(customer);
-    setIsDialogOpen(true);
-  };
-
   const handleDeleteClick = (customer, e) => {
     e.stopPropagation();
     setCustomerToDelete(customer);
@@ -91,7 +87,19 @@ const CustomersIndex = () => {
 
   const handleRowClick = (customer) => {
     setSelectedCustomer(customer);
+    setIsEditing(false);
     setIsDialogOpen(true);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleFormSuccess = () => {
+    setIsDialogOpen(false);
+    setSelectedCustomer(null);
+    setIsEditing(false);
+    queryClient.invalidateQueries({ queryKey: ["customers"] });
   };
 
   return (
@@ -111,21 +119,29 @@ const CustomersIndex = () => {
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>
-                {selectedCustomer ? "Editar Cliente" : "Novo Cliente"}
+                {selectedCustomer
+                  ? isEditing
+                    ? "Editar Cliente"
+                    : "Detalhes do Cliente"
+                  : "Novo Cliente"}
               </DialogTitle>
             </DialogHeader>
-            <CustomerForm
-              onSuccess={() => {
-                setIsDialogOpen(false);
-                setSelectedCustomer(null);
-                queryClient.invalidateQueries({ queryKey: ["customers"] });
-              }}
-              onCancel={() => {
-                setIsDialogOpen(false);
-                setSelectedCustomer(null);
-              }}
-              initialData={selectedCustomer}
-            />
+            {selectedCustomer && !isEditing ? (
+              <CustomerDetails
+                customer={selectedCustomer}
+                onEdit={handleEditClick}
+              />
+            ) : (
+              <CustomerForm
+                onSuccess={handleFormSuccess}
+                onCancel={() => {
+                  setIsDialogOpen(false);
+                  setSelectedCustomer(null);
+                  setIsEditing(false);
+                }}
+                initialData={selectedCustomer}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -148,12 +164,6 @@ const CustomersIndex = () => {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Nome da Empresa
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Telefone
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -184,12 +194,6 @@ const CustomersIndex = () => {
                       {customer.type === "company" ? customer.name : "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {customer.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {customer.phone}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           customer.status === "active"
@@ -201,14 +205,6 @@ const CustomersIndex = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => handleEditClick(customer, e)}
-                        className="mr-2"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
