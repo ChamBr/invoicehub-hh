@@ -22,10 +22,14 @@ export const CompanyAddress = ({
 }: CompanyAddressProps) => {
   const format = addressFormats[country] || addressFormats.BR;
 
+  const handleAddressSelect = React.useCallback((address: any) => {
+    onAddressSelect(address);
+  }, [onAddressSelect]);
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">{format.addressLabel}</h3>
-      <AddressAutocomplete onAddressSelect={onAddressSelect} />
+      <AddressAutocomplete onAddressSelect={handleAddressSelect} />
       <div className="space-y-2">
         <Label htmlFor="address_line2">Complemento (Opcional)</Label>
         <Input
