@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Package, Plus } from "lucide-react";
 import {
   Dialog,
@@ -11,15 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProductsIndex = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -57,6 +58,7 @@ const ProductsIndex = () => {
           price: parseFloat(formData.price),
           sku: formData.sku,
           stock: formData.type === "product" ? parseInt(formData.stock) : 0,
+          status: "active",
         },
       ]);
 
@@ -66,6 +68,10 @@ const ProductsIndex = () => {
         title: "Produto/Serviço criado",
         description: "O produto/serviço foi criado com sucesso.",
       });
+      
+      // Atualiza a lista de produtos
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      
       setIsDialogOpen(false);
       setFormData({
         name: "",
