@@ -7,10 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useTranslation } from "react-i18next"
 
 const countries = [
   { code: "US", name: "United States" },
   { code: "BR", name: "Brazil" },
+  { code: "ES", name: "Spain" },
 ]
 
 interface CountrySelectProps {
@@ -19,10 +21,17 @@ interface CountrySelectProps {
 }
 
 export function CountrySelect({ value, onValueChange }: CountrySelectProps) {
+  const { i18n } = useTranslation();
+
+  const getCountryName = (code: string) => {
+    const countryNames = new Intl.DisplayNames([i18n.language], { type: 'region' });
+    return countryNames.of(code);
+  };
+
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select a country">
+        <SelectValue placeholder="Selecione um país">
           {value && (
             <div className="flex items-center gap-2">
               <ReactCountryFlag
@@ -33,7 +42,7 @@ export function CountrySelect({ value, onValueChange }: CountrySelectProps) {
                   height: '1.5em',
                 }}
               />
-              {countries.find(country => country.code === value)?.name}
+              {getCountryName(value)}
             </div>
           )}
         </SelectValue>
@@ -53,7 +62,7 @@ export function CountrySelect({ value, onValueChange }: CountrySelectProps) {
                 height: '1.5em',
               }}
             />
-            {country.name}
+            {getCountryName(country.code)}
           </SelectItem>
         ))}
       </SelectContent>

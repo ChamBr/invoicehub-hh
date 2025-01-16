@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -15,10 +17,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CountrySelect } from "@/components/ui/country-select";
+import { ProfilePhotoUpload } from "./components/ProfilePhotoUpload";
+import { profileSchema, type ProfileFormData } from "./schema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 const UserProfile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const { data: profile, isLoading: isProfileLoading } = useQuery({
@@ -38,32 +52,38 @@ const UserProfile = () => {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const form = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      full_name: profile?.full_name || "",
+      phone: profile?.phone || "",
+      birth_month: profile?.birth_date ? new Date(profile.birth_date).getMonth().toString() : "",
+      birth_year: profile?.birth_date ? new Date(profile.birth_date).getFullYear().toString() : "",
+      gender: profile?.gender || undefined,
+      country: profile?.country || "BR",
+    },
+  });
+
+  const onSubmit = async (data: ProfileFormData) => {
     setIsLoading(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) throw new Error("Usuário não encontrado");
 
-      const birthMonth = formData.get("birth_month") as string;
-      const birthYear = formData.get("birth_year") as string;
-      const birthDate = birthMonth && birthYear 
-        ? new Date(parseInt(birthYear), parseInt(birthMonth) - 1, 1).toISOString()
+      const birthDate = data.birth_month && data.birth_year 
+        ? new Date(parseInt(data.birth_year), parseInt(data.birth_month)).toISOString()
         : null;
-
-      const profileData = {
-        full_name: formData.get("full_name") as string,
-        phone: formData.get("phone") as string,
-        birth_date: birthDate,
-        gender: formData.get("gender") as string,
-      };
 
       const { error } = await supabase
         .from("profiles")
-        .update(profileData)
+        .update({
+          full_name: data.full_name,
+          phone: data.phone,
+          birth_date: birthDate,
+          gender: data.gender,
+          country: data.country,
+        })
         .eq("id", user.id);
 
       if (error) throw error;
@@ -84,6 +104,16 @@ const UserProfile = () => {
     }
   };
 
+  const handleAvatarUpdate = async (url: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await supabase
+      .from("profiles")
+      .update({ avatar_url: url })
+      .eq("id", user.id);
+  };
+
   if (isProfileLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -91,10 +121,6 @@ const UserProfile = () => {
       </div>
     );
   }
-
-  const birthDate = profile?.birth_date ? new Date(profile.birth_date) : null;
-  const birthMonth = birthDate ? (birthDate.getMonth() + 1).toString() : "";
-  const birthYear = birthDate ? birthDate.getFullYear().toString() : "";
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -104,119 +130,168 @@ const UserProfile = () => {
             <CardTitle>Seu Perfil</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-4 mb-6">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src={profile?.avatar_url} />
-                <AvatarFallback>
-                  {profile?.full_name?.charAt(0) || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="text-lg font-medium">{profile?.full_name || "Usuário"}</h3>
-                <p className="text-sm text-gray-500">{profile?.email || "Email não informado"}</p>
-              </div>
+            <div className="mb-6">
+              <ProfilePhotoUpload
+                avatarUrl={profile?.avatar_url}
+                fullName={profile?.full_name}
+                onUploadComplete={handleAvatarUpdate}
+              />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="full_name">Nome Completo</Label>
-                <Input
-                  id="full_name"
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
                   name="full_name"
-                  defaultValue={profile?.full_name || ""}
-                  required
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome Completo</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={profile?.email || ""}
-                  disabled
-                  className="bg-gray-100"
-                />
-                <p className="text-sm text-gray-500">
-                  O e-mail não pode ser alterado pois é usado para autenticação
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Celular</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  defaultValue={profile?.phone || ""}
-                  placeholder="(00) 00000-0000"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="birth_month">Mês de Nascimento</Label>
-                  <Select name="birth_month" defaultValue={birthMonth}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o mês" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Janeiro</SelectItem>
-                      <SelectItem value="2">Fevereiro</SelectItem>
-                      <SelectItem value="3">Março</SelectItem>
-                      <SelectItem value="4">Abril</SelectItem>
-                      <SelectItem value="5">Maio</SelectItem>
-                      <SelectItem value="6">Junho</SelectItem>
-                      <SelectItem value="7">Julho</SelectItem>
-                      <SelectItem value="8">Agosto</SelectItem>
-                      <SelectItem value="9">Setembro</SelectItem>
-                      <SelectItem value="10">Outubro</SelectItem>
-                      <SelectItem value="11">Novembro</SelectItem>
-                      <SelectItem value="12">Dezembro</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={profile?.email || ""}
+                    disabled
+                    className="bg-gray-100"
+                  />
+                  <p className="text-sm text-gray-500">
+                    O e-mail não pode ser alterado pois é usado para autenticação
+                  </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="birth_year">Ano de Nascimento</Label>
-                  <Input
-                    id="birth_year"
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>País</FormLabel>
+                      <FormControl>
+                        <CountrySelect
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Celular</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="tel" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="birth_month"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mês de Nascimento</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o mês" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 12 }, (_, i) => (
+                              <SelectItem key={i} value={i.toString()}>
+                                {new Date(2000, i).toLocaleString(i18n.language, { month: 'long' })}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name="birth_year"
-                    type="number"
-                    min="1900"
-                    max={new Date().getFullYear()}
-                    defaultValue={birthYear}
-                    placeholder="AAAA"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ano de Nascimento</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            min="1900"
+                            max={new Date().getFullYear()}
+                            placeholder="AAAA"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="gender">Sexo</Label>
-                <Select name="gender" defaultValue={profile?.gender || ""}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o sexo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="masculino">Masculino</SelectItem>
-                    <SelectItem value="feminino">Feminino</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sexo</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o sexo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="masculino">
+                            {i18n.language === 'es' ? 'Masculino' : 
+                             i18n.language === 'en' ? 'Male' : 
+                             'Masculino'}
+                          </SelectItem>
+                          <SelectItem value="feminino">
+                            {i18n.language === 'es' ? 'Femenino' : 
+                             i18n.language === 'en' ? 'Female' : 
+                             'Feminino'}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate("/")}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Salvando..." : "Salvar Alterações"}
-                </Button>
-              </div>
-            </form>
+                <div className="flex justify-end gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate("/")}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? "Salvando..." : "Salvar Alterações"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </CardContent>
         </Card>
       </div>
