@@ -163,16 +163,20 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
 
           <div className="flex justify-between items-center pt-4 border-t">
             {isEditing ? (
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={handleCancelEdit}>
-                  Cancelar
-                </Button>
-                <Button onClick={handleSaveEdit}>
-                  Salvar Alterações
-                </Button>
-                <Button variant="default" onClick={handleGenerateInvoice}>
-                  Gerar Fatura
-                </Button>
+              <div className="flex w-full justify-between">
+                <div>
+                  <Button variant="outline" onClick={handleCancelEdit}>
+                    Cancelar
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveEdit}>
+                    Salvar Alterações
+                  </Button>
+                  <Button variant="default" onClick={handleGenerateInvoice}>
+                    Gerar Fatura
+                  </Button>
+                </div>
               </div>
             ) : (
               <InvoiceActions
