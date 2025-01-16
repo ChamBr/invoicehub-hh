@@ -38,5 +38,98 @@
         "inactive": "Inactive"
       }
     }
+  },
+  "products": {
+    "title": "Products & Services",
+    "add": "Add Product/Service",
+    "table": {
+      "empty": "No products found",
+      "name": "Name",
+      "type": "Type",
+      "price": "Price",
+      "stock": "Stock",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "new": "New Invoice",
+    "table": {
+      "empty": "No invoices found",
+      "number": "Number",
+      "customer": "Customer",
+      "date": "Date",
+      "due_date": "Due Date",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "personal_info": "Personal Information",
+    "contact": "Contact Information",
+    "preferences": "Preferences",
+    "save": "Save Changes",
+    "saving": "Saving..."
+  },
+  "company": {
+    "title": "Company Details",
+    "basic_info": "Basic Information",
+    "contact": "Contact Information",
+    "address": "Address",
+    "tax_info": "Tax Information",
+    "save": "Save Changes",
+    "saving": "Saving..."
+  },
+  "invoice_settings": {
+    "title": "Invoice Settings",
+    "tabs": {
+      "general": "General",
+      "templates": "Templates"
+    },
+    "currency": {
+      "currency": "Currency",
+      "due_days": "Due Days"
+    },
+    "numbering": {
+      "prefix": "Prefix",
+      "prefix_placeholder": "Ex: INV-",
+      "next_number": "Next Number"
+    },
+    "terms": {
+      "terms": "Terms & Conditions",
+      "footer": "Invoice Footer"
+    },
+    "saving": "Saving...",
+    "save": "Save Changes",
+    "success": "Settings updated successfully",
+    "error": "Error updating settings"
+  },
+  "feedback": {
+    "title": "Support & Feedback",
+    "type": {
+      "label": "Feedback Type",
+      "placeholder": "Select feedback type",
+      "bug": "Report Bug",
+      "feature": "Feature Request",
+      "support": "Support",
+      "other": "Other"
+    },
+    "form": {
+      "title": {
+        "label": "Title",
+        "placeholder": "Enter a brief title"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Describe your feedback or question in detail"
+      }
+    },
+    "submit": "Submit Feedback",
+    "submitting": "Submitting...",
+    "success": "Feedback submitted",
+    "error": "Error submitting feedback"
   }
 }

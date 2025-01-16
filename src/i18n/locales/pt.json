@@ -38,5 +38,98 @@
         "inactive": "Inativo"
       }
     }
+  },
+  "products": {
+    "title": "Produtos e Serviços",
+    "add": "Adicionar Produto/Serviço",
+    "table": {
+      "empty": "Nenhum produto encontrado",
+      "name": "Nome",
+      "type": "Tipo",
+      "price": "Preço",
+      "stock": "Estoque",
+      "status": "Status",
+      "actions": "Ações"
+    }
+  },
+  "invoices": {
+    "title": "Faturas",
+    "new": "Nova Fatura",
+    "table": {
+      "empty": "Nenhuma fatura encontrada",
+      "number": "Número",
+      "customer": "Cliente",
+      "date": "Data",
+      "due_date": "Vencimento",
+      "total": "Total",
+      "status": "Status",
+      "actions": "Ações"
+    }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "personal_info": "Informações Pessoais",
+    "contact": "Informações de Contato",
+    "preferences": "Preferências",
+    "save": "Salvar Alterações",
+    "saving": "Salvando..."
+  },
+  "company": {
+    "title": "Dados da Empresa",
+    "basic_info": "Informações Básicas",
+    "contact": "Informações de Contato",
+    "address": "Endereço",
+    "tax_info": "Informações Fiscais",
+    "save": "Salvar Alterações",
+    "saving": "Salvando..."
+  },
+  "invoice_settings": {
+    "title": "Configurações da Fatura",
+    "tabs": {
+      "general": "Geral",
+      "templates": "Modelos"
+    },
+    "currency": {
+      "currency": "Moeda",
+      "due_days": "Dias para Vencimento"
+    },
+    "numbering": {
+      "prefix": "Prefixo",
+      "prefix_placeholder": "Ex: FAT-",
+      "next_number": "Próximo Número"
+    },
+    "terms": {
+      "terms": "Termos e Condições",
+      "footer": "Rodapé da Fatura"
+    },
+    "saving": "Salvando...",
+    "save": "Salvar Alterações",
+    "success": "Configurações atualizadas com sucesso",
+    "error": "Erro ao atualizar configurações"
+  },
+  "feedback": {
+    "title": "Suporte & Feedback",
+    "type": {
+      "label": "Tipo de Feedback",
+      "placeholder": "Selecione o tipo de feedback",
+      "bug": "Reportar Bug",
+      "feature": "Sugestão de Funcionalidade",
+      "support": "Suporte",
+      "other": "Outro"
+    },
+    "form": {
+      "title": {
+        "label": "Título",
+        "placeholder": "Digite um título breve"
+      },
+      "description": {
+        "label": "Descrição",
+        "placeholder": "Descreva em detalhes seu feedback ou dúvida"
+      }
+    },
+    "submit": "Enviar Feedback",
+    "submitting": "Enviando...",
+    "success": "Feedback enviado",
+    "error": "Erro ao enviar feedback"
   }
 }

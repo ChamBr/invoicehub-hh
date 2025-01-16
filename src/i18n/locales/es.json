@@ -38,5 +38,98 @@
         "inactive": "Inactivo"
       }
     }
+  },
+  "products": {
+    "title": "Productos y Servicios",
+    "add": "Agregar Producto/Servicio",
+    "table": {
+      "empty": "No se encontraron productos",
+      "name": "Nombre",
+      "type": "Tipo",
+      "price": "Precio",
+      "stock": "Stock",
+      "status": "Estado",
+      "actions": "Acciones"
+    }
+  },
+  "invoices": {
+    "title": "Facturas",
+    "new": "Nueva Factura",
+    "table": {
+      "empty": "No se encontraron facturas",
+      "number": "Número",
+      "customer": "Cliente",
+      "date": "Fecha",
+      "due_date": "Vencimiento",
+      "total": "Total",
+      "status": "Estado",
+      "actions": "Acciones"
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "personal_info": "Información Personal",
+    "contact": "Información de Contacto",
+    "preferences": "Preferencias",
+    "save": "Guardar Cambios",
+    "saving": "Guardando..."
+  },
+  "company": {
+    "title": "Datos de la Empresa",
+    "basic_info": "Información Básica",
+    "contact": "Información de Contacto",
+    "address": "Dirección",
+    "tax_info": "Información Fiscal",
+    "save": "Guardar Cambios",
+    "saving": "Guardando..."
+  },
+  "invoice_settings": {
+    "title": "Configuración de Factura",
+    "tabs": {
+      "general": "General",
+      "templates": "Plantillas"
+    },
+    "currency": {
+      "currency": "Moneda",
+      "due_days": "Días de Vencimiento"
+    },
+    "numbering": {
+      "prefix": "Prefijo",
+      "prefix_placeholder": "Ej: FAC-",
+      "next_number": "Próximo Número"
+    },
+    "terms": {
+      "terms": "Términos y Condiciones",
+      "footer": "Pie de Factura"
+    },
+    "saving": "Guardando...",
+    "save": "Guardar Cambios",
+    "success": "Configuración actualizada con éxito",
+    "error": "Error al actualizar la configuración"
+  },
+  "feedback": {
+    "title": "Soporte & Feedback",
+    "type": {
+      "label": "Tipo de Feedback",
+      "placeholder": "Seleccione el tipo de feedback",
+      "bug": "Reportar Bug",
+      "feature": "Sugerencia de Funcionalidad",
+      "support": "Soporte",
+      "other": "Otro"
+    },
+    "form": {
+      "title": {
+        "label": "Título",
+        "placeholder": "Ingrese un título breve"
+      },
+      "description": {
+        "label": "Descripción",
+        "placeholder": "Describa en detalle su feedback o consulta"
+      }
+    },
+    "submit": "Enviar Feedback",
+    "submitting": "Enviando...",
+    "success": "Feedback enviado",
+    "error": "Error al enviar feedback"
   }
 }

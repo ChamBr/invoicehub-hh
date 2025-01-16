@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "react-i18next";
 import {
   Form,
   FormControl,
@@ -31,6 +32,7 @@ const formSchema = z.object({
 });
 
 const FeedbackIndex = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -57,8 +59,8 @@ const FeedbackIndex = () => {
       if (error) throw error;
 
       toast({
-        title: "Feedback enviado",
-        description: "Agradecemos seu feedback!",
+        title: t('feedback.success'),
+        description: t('feedback.success'),
       });
 
       form.reset();
@@ -66,8 +68,8 @@ const FeedbackIndex = () => {
       console.error("Erro ao enviar feedback:", error);
       toast({
         variant: "destructive",
-        title: "Erro",
-        description: "Não foi possível enviar seu feedback. Tente novamente.",
+        title: t('feedback.error'),
+        description: t('feedback.error'),
       });
     } finally {
       setIsSubmitting(false);
@@ -78,7 +80,7 @@ const FeedbackIndex = () => {
     <div className="container mx-auto max-w-2xl py-8">
       <Card>
         <CardHeader>
-          <CardTitle>Suporte & Feedback</CardTitle>
+          <CardTitle>{t('feedback.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -88,18 +90,18 @@ const FeedbackIndex = () => {
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tipo de Feedback</FormLabel>
+                    <FormLabel>{t('feedback.type.label')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione o tipo de feedback" />
+                          <SelectValue placeholder={t('feedback.type.placeholder')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="bug">Reportar Bug</SelectItem>
-                        <SelectItem value="feature">Sugestão de Funcionalidade</SelectItem>
-                        <SelectItem value="support">Suporte</SelectItem>
-                        <SelectItem value="other">Outro</SelectItem>
+                        <SelectItem value="bug">{t('feedback.type.bug')}</SelectItem>
+                        <SelectItem value="feature">{t('feedback.type.feature')}</SelectItem>
+                        <SelectItem value="support">{t('feedback.type.support')}</SelectItem>
+                        <SelectItem value="other">{t('feedback.type.other')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -112,9 +114,9 @@ const FeedbackIndex = () => {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Título</FormLabel>
+                    <FormLabel>{t('feedback.form.title.label')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Digite um título breve" {...field} />
+                      <Input placeholder={t('feedback.form.title.placeholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -126,10 +128,10 @@ const FeedbackIndex = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descrição</FormLabel>
+                    <FormLabel>{t('feedback.form.description.label')}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Descreva em detalhes seu feedback ou dúvida"
+                        placeholder={t('feedback.form.description.placeholder')}
                         className="min-h-[150px]"
                         {...field}
                       />
@@ -141,7 +143,7 @@ const FeedbackIndex = () => {
 
               <div className="flex justify-end">
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Enviando..." : "Enviar Feedback"}
+                  {isSubmitting ? t('feedback.submitting') : t('feedback.submit')}
                 </Button>
               </div>
             </form>
