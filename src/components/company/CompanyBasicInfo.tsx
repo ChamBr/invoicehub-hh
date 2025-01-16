@@ -34,7 +34,6 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
           <CountrySelect
             value={country}
             onValueChange={onCountryChange}
-            className="w-full"
           />
         </div>
         

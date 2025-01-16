@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { ImageIcon } from "lucide-react";
 
 interface LogoUploadProps {
   logoUrl?: string | null;
@@ -31,34 +31,43 @@ export const LogoUpload = ({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <Label htmlFor="logo">Logo da Empresa</Label>
-      <div className="flex items-center gap-4">
-        <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
-          {(logoPreview || logoUrl) && (
+      <div className="space-y-2">
+        <label
+          htmlFor="logo"
+          className="relative block w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary transition-colors"
+        >
+          {(logoPreview || logoUrl) ? (
             <img
               src={logoPreview || logoUrl}
               alt="Logo Preview"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain p-2"
             />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-gray-500">
+              <ImageIcon className="w-8 h-8 mb-2" />
+              <span className="text-sm">Clique para fazer upload do logo</span>
+            </div>
           )}
-        </div>
-        <div className="space-y-2">
-          <Input
+          <input
             id="logo"
             type="file"
             accept="image/*"
             onChange={handleLogoChange}
+            className="hidden"
           />
-          <div className="flex items-center gap-2">
-            <Switch
-              id="display_logo"
-              name="display_logo"
-              checked={displayLogo}
-              onCheckedChange={onDisplayLogoChange}
-            />
-            <Label htmlFor="display_logo">Exibir logo na fatura</Label>
-          </div>
+        </label>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="display_logo"
+            name="display_logo"
+            checked={displayLogo}
+            onCheckedChange={onDisplayLogoChange}
+          />
+          <Label htmlFor="display_logo" className="text-sm text-muted-foreground">
+            Exibir logo na fatura
+          </Label>
         </div>
       </div>
     </div>
