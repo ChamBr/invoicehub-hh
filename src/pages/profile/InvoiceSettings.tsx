@@ -33,12 +33,12 @@ const InvoiceSettings = () => {
       if (!user) throw new Error("User not authenticated");
 
       const invoiceData = {
-        invoice_prefix: formData.get('invoice_prefix'),
+        invoice_prefix: String(formData.get('invoice_prefix')),
         invoice_next_number: Number(formData.get('invoice_next_number')),
-        invoice_footer: formData.get('invoice_footer'),
-        invoice_terms: formData.get('invoice_terms'),
+        invoice_footer: String(formData.get('invoice_footer')),
+        invoice_terms: String(formData.get('invoice_terms')),
         invoice_due_days: Number(formData.get('invoice_due_days')),
-        invoice_currency: formData.get('invoice_currency'),
+        invoice_currency: String(formData.get('invoice_currency')),
       };
 
       const { error } = await supabase
