@@ -16,7 +16,7 @@ export const useCompanyProfile = () => {
         .from("company_profiles")
         .select("*")
         .eq("user_id", user.id)
-        .maybeSingle(); // Alterado de .single() para .maybeSingle()
+        .maybeSingle();
 
       if (error) {
         console.error("Erro ao buscar perfil da empresa:", error);
@@ -34,6 +34,25 @@ export const useCompanyProfile = () => {
 
       let logoUrl = companyProfile?.logo_url;
 
+      // Buscar cliente pelo email (se existir)
+      const email = formData.get('email')?.toString();
+      if (email) {
+        const { data: customerData, error: customerError } = await supabase
+          .from('customers')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (customerError) {
+          console.error("Erro ao buscar cliente:", customerError);
+        }
+        
+        // Se encontrou o cliente, podemos usar seus dados
+        if (customerData) {
+          console.log("Cliente encontrado:", customerData);
+        }
+      }
+
       const companyData = {
         user_id: user.id,
         company_name: formData.get('company_name')?.toString() || '',
@@ -48,7 +67,7 @@ export const useCompanyProfile = () => {
         display_phone: formData.get('display_phone') === 'true',
         tax_id: formData.get('tax_id')?.toString() || '',
         display_tax_id: formData.get('display_tax_id') === 'true',
-        email: formData.get('email')?.toString() || '',
+        email: email || '',
         website: formData.get('website')?.toString() || '',
         logo_url: logoUrl,
         display_logo: formData.get('display_logo') === 'true',
