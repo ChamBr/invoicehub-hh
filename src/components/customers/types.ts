@@ -1,11 +1,23 @@
 import { z } from "zod";
 
+const phoneRegexBR = /^\+55 \(\d{2}\) \d{5}-\d{4}$/;
+const phoneRegexUS = /^\+1 \(\d{3}\) \d{3}-\d{4}$/;
+
 export const customerFormSchema = z.object({
   type: z.enum(["personal", "company"]),
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   contactName: z.string().optional().nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
-  phone: z.string().optional().nullable(),
+  phone: z.string()
+    .refine((value) => {
+      if (!value) return true; // Permite valor vazio
+      const country = z.getContext()?.country;
+      if (country === "BR") return phoneRegexBR.test(value);
+      if (country === "US") return phoneRegexUS.test(value);
+      return true;
+    }, "Formato de telefone inválido")
+    .optional()
+    .nullable(),
   country: z.string().min(2, "País é obrigatório"),
   taxExempt: z.boolean().default(false),
   taxId: z.string().optional().nullable(),
