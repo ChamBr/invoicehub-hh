@@ -56,10 +56,11 @@ export function AddressAutocomplete({
 
   return (
     <div className="w-full">
-      {React.createElement(AddressAutofill, {
-        accessToken: token,
-        onRetrieve: handleRetrieve,
-        children: (
+      <AddressAutofill
+        accessToken={token}
+        onRetrieve={handleRetrieve}
+      >
+        {() => (
           <Input
             ref={inputRef}
             placeholder="Digite seu endereço"
@@ -67,8 +68,8 @@ export function AddressAutocomplete({
             onChange={onChange}
             {...props}
           />
-        )
-      })}
+        )}
+      </AddressAutofill>
     </div>
   );
 }
