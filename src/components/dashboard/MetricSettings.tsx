@@ -58,9 +58,26 @@ export function MetricSettings({ metrics, onUpdate }: MetricSettingsProps) {
       .filter((m) => m.isEnabled)
       .map((m) => m.id);
 
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Usuário não autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const { error } = await supabase
       .from("user_dashboard_metrics")
-      .upsert({ metrics: enabledMetrics }, { onConflict: "user_id" });
+      .upsert(
+        { 
+          user_id: user.id,
+          metrics: enabledMetrics 
+        }, 
+        { onConflict: "user_id" }
+      );
 
     if (error) {
       toast({
