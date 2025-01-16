@@ -18,6 +18,7 @@ export const customerFormSchema = z.object({
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
   zipCode: z.string().optional().nullable(),
+  status: z.enum(["active", "inactive"]).default("active"),
 });
 
 export type CustomerFormValues = z.infer<typeof customerFormSchema>;
