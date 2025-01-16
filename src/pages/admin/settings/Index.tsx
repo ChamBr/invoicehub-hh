@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mail, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,14 +41,14 @@ const AdminSettings = () => {
   });
 
   // Atualizar o formulário quando os dados forem carregados
-  useState(() => {
+  useEffect(() => {
     if (emailSettings) {
       form.reset({
         senderName: emailSettings.sender_name,
         senderEmail: emailSettings.sender_email
       });
     }
-  }, [emailSettings]);
+  }, [emailSettings, form]);
 
   const mutation = useMutation({
     mutationFn: async (values: { senderName: string; senderEmail: string }) => {
