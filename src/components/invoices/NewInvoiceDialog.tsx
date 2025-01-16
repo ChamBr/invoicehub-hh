@@ -67,7 +67,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         .from("invoices")
         .insert({
           customer_id: selectedCustomer,
-          status: "draft",
+          status: "pending", // Alterado de 'draft' para 'pending'
           due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           total: calculateTotal(items),
         })
