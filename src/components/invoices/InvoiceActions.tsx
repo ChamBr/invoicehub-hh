@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { FileEdit, Send, FileText } from "lucide-react";
+import { FileEdit, Send, FileText, XCircle } from "lucide-react";
 import { InvoiceStatus } from "./types";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -11,6 +11,8 @@ interface InvoiceActionsProps {
   invoiceId: string;
   onEdit: () => void;
   onStatusChange: (newStatus: InvoiceStatus) => Promise<void>;
+  pdfUrl?: string | null;
+  emailSentAt?: string | null;
 }
 
 export const InvoiceActions = ({
@@ -18,12 +20,11 @@ export const InvoiceActions = ({
   invoiceId,
   onEdit,
   onStatusChange,
+  pdfUrl,
+  emailSentAt,
 }: InvoiceActionsProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const canEdit = status === "draft" || status === "created";
-  const canSendOrPrint = status === "created";
-  const showCancelOption = status !== "draft" && status !== "cancelled";
 
   const handleGeneratePDF = async () => {
     setIsLoading(true);
@@ -38,6 +39,8 @@ export const InvoiceActions = ({
 
       const { pdfUrl } = await response.json();
       window.open(pdfUrl, "_blank");
+
+      await onStatusChange("pending");
 
       toast({
         title: "Sucesso",
@@ -66,7 +69,7 @@ export const InvoiceActions = ({
 
       if (!response.ok) throw new Error("Falha ao enviar fatura");
 
-      await onStatusChange("sent");
+      await onStatusChange("pending");
       
       toast({
         title: "Sucesso",
@@ -84,32 +87,73 @@ export const InvoiceActions = ({
     }
   };
 
+  const renderActionButtons = () => {
+    switch (status) {
+      case "draft":
+        return (
+          <Button variant="outline" onClick={onEdit}>
+            <FileEdit className="h-4 w-4 mr-2" />
+            Editar Rascunho
+          </Button>
+        );
+      
+      case "created":
+        return (
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onEdit}>
+              <FileEdit className="h-4 w-4 mr-2" />
+              Voltar para Rascunho
+            </Button>
+            <Button onClick={handleSend} disabled={isLoading}>
+              <Send className="h-4 w-4 mr-2" />
+              Enviar
+            </Button>
+            <Button variant="outline" onClick={handleGeneratePDF} disabled={isLoading}>
+              <FileText className="h-4 w-4 mr-2" />
+              Gerar PDF
+            </Button>
+          </div>
+        );
+      
+      case "pending":
+        return (
+          <div className="flex gap-2">
+            {!emailSentAt && (
+              <Button onClick={handleSend} disabled={isLoading}>
+                <Send className="h-4 w-4 mr-2" />
+                Reenviar
+              </Button>
+            )}
+            {pdfUrl ? (
+              <Button variant="outline" onClick={() => window.open(pdfUrl, "_blank")}>
+                <FileText className="h-4 w-4 mr-2" />
+                Ver PDF
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={handleGeneratePDF} disabled={isLoading}>
+                <FileText className="h-4 w-4 mr-2" />
+                Gerar PDF
+              </Button>
+            )}
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="flex gap-2">
-      {canEdit && (
-        <Button variant="outline" onClick={onEdit}>
-          <FileEdit className="h-4 w-4 mr-2" />
-          {status === "draft" ? "Editar" : "Voltar para Rascunho"}
-        </Button>
-      )}
-
-      {canSendOrPrint && (
-        <>
-          <Button onClick={handleSend} disabled={isLoading}>
-            <Send className="h-4 w-4 mr-2" />
-            Enviar
-          </Button>
-          <Button variant="outline" onClick={handleGeneratePDF} disabled={isLoading}>
-            <FileText className="h-4 w-4 mr-2" />
-            Gerar PDF
-          </Button>
-        </>
-      )}
-
-      {showCancelOption && (
+    <div className="flex gap-2 justify-between">
+      <div>{renderActionButtons()}</div>
+      
+      {status !== "draft" && status !== "cancelled" && (
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive">Cancelar Fatura</Button>
+            <Button variant="destructive">
+              <XCircle className="h-4 w-4 mr-2" />
+              Cancelar Fatura
+            </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

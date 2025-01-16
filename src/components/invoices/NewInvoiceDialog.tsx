@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { calculateTotal } from "./utils";
 import { InvoiceItem } from "./types";
+import { InvoiceViewDialog } from "./InvoiceViewDialog";
 
 interface NewInvoiceDialogProps {
   open: boolean;
@@ -22,6 +23,8 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
   const [isNewCustomerDialogOpen, setIsNewCustomerDialogOpen] = useState(false);
   const [items, setItems] = useState<InvoiceItem[]>([]);
+  const [createdInvoice, setCreatedInvoice] = useState<any>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   const handleCustomerSelect = (customerId: string) => {
     setSelectedCustomer(customerId);
@@ -43,7 +46,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     setIsNewCustomerDialogOpen(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (status: 'draft' | 'created') => {
     if (!selectedCustomer) {
       toast({
         variant: "destructive",
@@ -67,7 +70,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         .from("invoices")
         .insert({
           customer_id: selectedCustomer,
-          status: "draft",
+          status: status,
           due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           total: calculateTotal(items),
         })
@@ -84,6 +87,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         quantity: item.quantity,
         price: item.price,
         total: item.total,
+        has_tax: item.hasTax,
       }));
 
       const { error: itemsError } = await supabase
@@ -94,11 +98,18 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
 
       toast({
         title: "Sucesso",
-        description: "Fatura criada com sucesso!",
+        description: status === 'draft' 
+          ? "Fatura salva como rascunho!"
+          : "Fatura criada com sucesso!",
       });
 
-      onOpenChange(false);
-      navigate(`/invoices/${invoice.id}`);
+      if (status === 'created') {
+        setCreatedInvoice(invoice);
+        setIsViewDialogOpen(true);
+      } else {
+        onOpenChange(false);
+        navigate(`/invoices/${invoice.id}`);
+      }
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -110,53 +121,75 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Nova Fatura</DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <CustomerSelect
-              value={selectedCustomer}
-              onSelect={handleCustomerSelect}
-              onNewCustomer={() => setIsNewCustomerDialogOpen(true)}
-            />
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Nova Fatura</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <CustomerSelect
+                value={selectedCustomer}
+                onSelect={handleCustomerSelect}
+                onNewCustomer={() => setIsNewCustomerDialogOpen(true)}
+              />
 
-            {selectedCustomer && (
-              <>
-                <InvoiceItems
-                  items={items}
-                  onAdd={handleAddItem}
-                  onRemove={handleRemoveItem}
-                  onUpdate={handleUpdateItem}
-                />
+              {selectedCustomer && (
+                <>
+                  <InvoiceItems
+                    items={items}
+                    onAdd={handleAddItem}
+                    onRemove={handleRemoveItem}
+                    onUpdate={handleUpdateItem}
+                  />
 
-                <InvoiceSummary items={items} />
+                  <InvoiceSummary items={items} />
 
-                <div className="flex justify-end gap-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => onOpenChange(false)}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleSubmit}>
-                    Criar Fatura
-                  </Button>
-                </div>
-              </>
-            )}
+                  <div className="flex justify-end gap-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => onOpenChange(false)}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => handleSubmit('draft')}
+                    >
+                      Salvar como Rascunho
+                    </Button>
+                    <Button onClick={() => handleSubmit('created')}>
+                      Salvar e Gerar Fatura
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
-        <NewCustomerDialog
-          open={isNewCustomerDialogOpen}
-          onOpenChange={setIsNewCustomerDialogOpen}
-          onSuccess={handleNewCustomerSuccess}
+          <NewCustomerDialog
+            open={isNewCustomerDialogOpen}
+            onOpenChange={setIsNewCustomerDialogOpen}
+            onSuccess={handleNewCustomerSuccess}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {createdInvoice && (
+        <InvoiceViewDialog
+          invoice={createdInvoice}
+          open={isViewDialogOpen}
+          onOpenChange={(open) => {
+            setIsViewDialogOpen(open);
+            if (!open) {
+              onOpenChange(false);
+              navigate(`/invoices/${createdInvoice.id}`);
+            }
+          }}
         />
-      </DialogContent>
-    </Dialog>
+      )}
+    </>
   );
 }
