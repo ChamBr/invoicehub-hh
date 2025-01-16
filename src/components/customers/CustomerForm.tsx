@@ -66,7 +66,6 @@ export function CustomerForm() {
         <CustomerTypeSelect form={form} />
         <CustomerContactInfo form={form} />
         <AddressAutocomplete 
-          accessToken={process.env.MAPBOX_ACCESS_TOKEN}
           onSelect={(address) => {
             form.setValue('address', address.place_name);
             form.setValue('city', address.city);
