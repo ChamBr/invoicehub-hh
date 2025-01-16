@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ImageIcon } from "lucide-react";
@@ -13,10 +13,16 @@ interface LogoUploadProps {
 export const LogoUpload = ({
   logoUrl,
   onLogoChange,
-  displayLogo,
+  displayLogo = false,
   onDisplayLogoChange,
 }: LogoUploadProps) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (logoUrl) {
+      setLogoPreview(logoUrl);
+    }
+  }, [logoUrl]);
 
   const handleLogoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -35,7 +41,7 @@ export const LogoUpload = ({
       <div className="space-y-2">
         <label
           htmlFor="logo"
-          className="relative block w-full h-24 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary transition-colors"
+          className="relative block w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary transition-colors"
         >
           {(logoPreview || logoUrl) ? (
             <img
@@ -51,6 +57,7 @@ export const LogoUpload = ({
           )}
           <input
             id="logo"
+            name="logo"
             type="file"
             accept="image/*"
             onChange={handleLogoChange}

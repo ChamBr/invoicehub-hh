@@ -18,7 +18,7 @@ interface CompanyBasicInfoProps {
 export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
   companyName,
   taxId,
-  displayTaxId,
+  displayTaxId = false,
   country = 'BR',
   onCountryChange,
   onDisplayTaxIdChange,

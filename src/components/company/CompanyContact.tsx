@@ -16,7 +16,7 @@ export const CompanyContact = ({
   mobile,
   email,
   website,
-  displayPhone,
+  displayPhone = false,
   onDisplayPhoneChange,
 }: CompanyContactProps) => {
   return (
@@ -70,6 +70,9 @@ export const CompanyContact = ({
             name="website"
             type="url"
             defaultValue={website}
+            placeholder="https://exemplo.com"
+            pattern="https?://.*"
+            title="Digite uma URL válida começando com http:// ou https://"
           />
         </div>
       </div>

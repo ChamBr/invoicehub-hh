@@ -5,6 +5,7 @@ import { CompanyAddress } from "@/components/company/CompanyAddress";
 import { CompanyContact } from "@/components/company/CompanyContact";
 import { FormSection } from "@/components/forms/FormSection";
 import { FormActions } from "@/components/forms/FormActions";
+import { uploadAvatar } from "@/integrations/supabase/storage";
 
 interface CompanyFormProps {
   companyProfile: any;
@@ -32,24 +33,25 @@ export const CompanyForm = ({
     }
   }, [companyProfile?.country]);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    
+    // Garantir que todos os campos boolean sejam incluídos
+    formData.set('display_tax_id', formData.get('display_tax_id') === 'true' ? 'true' : 'false');
+    formData.set('display_phone', formData.get('display_phone') === 'true' ? 'true' : 'false');
+    formData.set('display_logo', formData.get('display_logo') === 'true' ? 'true' : 'false');
+    
+    // Definir país padrão se não estiver presente
+    if (!formData.get('country')) {
+      formData.set('country', companyProfile?.country || 'BR');
+    }
+
+    onSubmit(formData);
+  };
+
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      const formData = new FormData(e.currentTarget);
-      if (!formData.get('country')) {
-        formData.set('country', companyProfile?.country || 'BR');
-      }
-      if (!formData.has('display_tax_id')) {
-        formData.set('display_tax_id', 'false');
-      }
-      if (!formData.has('display_phone')) {
-        formData.set('display_phone', 'false');
-      }
-      if (!formData.has('display_logo')) {
-        formData.set('display_logo', 'false');
-      }
-      onSubmit(formData);
-    }} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-8">
           <LogoUpload
