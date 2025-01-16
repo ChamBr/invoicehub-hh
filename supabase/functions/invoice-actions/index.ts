@@ -14,17 +14,47 @@ const corsHeaders = {
 
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
-async function getActiveTemplate(companyId: string) {
-  console.log("Buscando template ativo para empresa:", companyId);
+async function getInvoiceData(invoiceId: string) {
+  console.log("Buscando dados da fatura:", invoiceId);
+  
+  const { data: invoice, error: invoiceError } = await supabase
+    .from("invoices")
+    .select(`
+      *,
+      customer:customers(name, email),
+      items:invoice_items(*)
+    `)
+    .eq("id", invoiceId)
+    .maybeSingle();
+
+  if (invoiceError) {
+    console.error("Erro ao buscar fatura:", invoiceError);
+    throw invoiceError;
+  }
+  
+  if (!invoice) {
+    console.error("Fatura não encontrada");
+    throw new Error("Fatura não encontrada");
+  }
+
+  return invoice;
+}
+
+async function getActiveTemplate(customerId: string) {
+  console.log("Buscando template ativo para cliente:", customerId);
+  
   const { data: company, error: companyError } = await supabase
     .from("company_profiles")
     .select("active_template_id")
-    .eq("user_id", companyId)
-    .single();
+    .eq("user_id", customerId)
+    .maybeSingle();
 
-  if (companyError) throw companyError;
+  if (companyError) {
+    console.error("Erro ao buscar perfil da empresa:", companyError);
+    throw companyError;
+  }
 
-  if (!company.active_template_id) {
+  if (!company?.active_template_id) {
     console.log("Nenhum template ativo encontrado, usando padrão");
     return null;
   }
@@ -33,9 +63,13 @@ async function getActiveTemplate(companyId: string) {
     .from("invoice_templates")
     .select("*")
     .eq("id", company.active_template_id)
-    .single();
+    .maybeSingle();
 
-  if (templateError) throw templateError;
+  if (templateError) {
+    console.error("Erro ao buscar template:", templateError);
+    throw templateError;
+  }
+
   return template;
 }
 
@@ -70,7 +104,7 @@ async function generatePDF(invoiceData: any, template: any) {
     y: height - 80,
     size: 12,
     font,
-    color: rgb(0.063, 0.725, 0.506), // Cor verde padrão (#10B981)
+    color: rgb(0.063, 0.725, 0.506),
   });
 
   // Informações do cliente
@@ -135,6 +169,21 @@ function hexToRgb(hex: string) {
     : [0, 0, 0];
 }
 
+async function uploadPDF(pdfBytes: Uint8Array, invoiceId: string) {
+  const pdfPath = `invoices/${invoiceId}.pdf`;
+  
+  const { error: storageError } = await supabase
+    .storage
+    .from('invoices-invoicehub')
+    .upload(pdfPath, pdfBytes, {
+      contentType: 'application/pdf',
+      upsert: true
+    });
+
+  if (storageError) throw storageError;
+  return pdfPath;
+}
+
 async function sendEmail(invoiceData: any, pdfUrl: string) {
   console.log("Enviando email para:", invoiceData.customer.email);
   if (!invoiceData.customer.email) {
@@ -180,18 +229,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Processando ação ${action} para fatura ${invoiceId}`);
 
     // Buscar dados da fatura
-    const { data: invoice, error: invoiceError } = await supabase
-      .from("invoices")
-      .select(`
-        *,
-        customer:customers(name, email),
-        items:invoice_items(*)
-      `)
-      .eq("id", invoiceId)
-      .single();
-
-    if (invoiceError) throw invoiceError;
-
+    const invoice = await getInvoiceData(invoiceId);
     let response = {};
 
     if (action === "generate-pdf" || action === "send") {
