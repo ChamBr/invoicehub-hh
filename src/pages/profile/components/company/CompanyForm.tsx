@@ -27,8 +27,17 @@ export const CompanyForm = ({
       formData.set('address_line2', address.line2 || '');
       formData.set('city', address.city || '');
       formData.set('state', address.state || '');
-      formData.set('zip_code', address.postalCode || '');
-      formData.set('country', address.country || '');
+      formData.set('zip_code', address.zip_code || '');
+      formData.set('country', address.country || companyProfile?.country || 'BR');
+      onSubmit(formData);
+    }
+  }, [onSubmit, companyProfile?.country]);
+
+  const handleCountryChange = useCallback((value: string) => {
+    const form = document.querySelector('form');
+    if (form) {
+      const formData = new FormData(form);
+      formData.set('country', value);
       onSubmit(formData);
     }
   }, [onSubmit]);
@@ -37,6 +46,10 @@ export const CompanyForm = ({
     <form onSubmit={(e) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
+      // Garantir que o país atual seja incluído no formData
+      if (!formData.get('country')) {
+        formData.set('country', companyProfile?.country || 'BR');
+      }
       onSubmit(formData);
     }} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -66,14 +79,7 @@ export const CompanyForm = ({
               taxId={companyProfile?.tax_id}
               displayTaxId={companyProfile?.display_tax_id}
               country={companyProfile?.country}
-              onCountryChange={(value) => {
-                const form = document.querySelector('form');
-                if (form) {
-                  const formData = new FormData(form);
-                  formData.set('country', value);
-                  onSubmit(formData);
-                }
-              }}
+              onCountryChange={handleCountryChange}
               onDisplayTaxIdChange={(checked) => {
                 const form = document.querySelector('form');
                 if (form) {

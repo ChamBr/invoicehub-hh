@@ -26,6 +26,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   const [localCity, setLocalCity] = React.useState(city || "");
   const [localState, setLocalState] = React.useState(state || "");
   const [localZipCode, setLocalZipCode] = React.useState(zipCode || "");
+  const [localAddressLine1, setLocalAddressLine1] = React.useState("");
 
   React.useEffect(() => {
     if (city !== undefined) setLocalCity(city);
@@ -33,23 +34,57 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
     if (zipCode !== undefined) setLocalZipCode(zipCode);
   }, [city, state, zipCode]);
 
+  const handleAddressLine1Change = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newAddressLine1 = e.target.value;
+    setLocalAddressLine1(newAddressLine1);
+    onAddressSelect({ 
+      line1: newAddressLine1,
+      line2: addressLine2,
+      city: localCity,
+      state: localState,
+      zip_code: localZipCode,
+      country
+    });
+  }, [addressLine2, localCity, localState, localZipCode, country, onAddressSelect]);
+
   const handleCityChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newCity = e.target.value;
     setLocalCity(newCity);
-    onAddressSelect({ city: newCity, state: localState, zip_code: localZipCode, country });
-  }, [localState, localZipCode, country, onAddressSelect]);
+    onAddressSelect({ 
+      line1: localAddressLine1,
+      line2: addressLine2,
+      city: newCity,
+      state: localState,
+      zip_code: localZipCode,
+      country
+    });
+  }, [localAddressLine1, addressLine2, localState, localZipCode, country, onAddressSelect]);
 
   const handleStateChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newState = e.target.value;
     setLocalState(newState);
-    onAddressSelect({ city: localCity, state: newState, zip_code: localZipCode, country });
-  }, [localCity, localZipCode, country, onAddressSelect]);
+    onAddressSelect({ 
+      line1: localAddressLine1,
+      line2: addressLine2,
+      city: localCity,
+      state: newState,
+      zip_code: localZipCode,
+      country
+    });
+  }, [localAddressLine1, addressLine2, localCity, localZipCode, country, onAddressSelect]);
 
   const handleZipCodeChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newZipCode = e.target.value;
     setLocalZipCode(newZipCode);
-    onAddressSelect({ city: localCity, state: localState, zip_code: newZipCode, country });
-  }, [localCity, localState, country, onAddressSelect]);
+    onAddressSelect({ 
+      line1: localAddressLine1,
+      line2: addressLine2,
+      city: localCity,
+      state: localState,
+      zip_code: newZipCode,
+      country
+    });
+  }, [localAddressLine1, addressLine2, localCity, localState, country, onAddressSelect]);
 
   return (
     <div className="space-y-4">
@@ -59,6 +94,8 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
         <Input
           id="address_line1"
           name="address_line1"
+          value={localAddressLine1}
+          onChange={handleAddressLine1Change}
           placeholder={t('company.address_line1_placeholder')}
         />
       </div>
