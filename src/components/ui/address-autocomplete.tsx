@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AddressAutofill } from "@mapbox/search-js-react";
+import { AddressAutofill, AddressAutofillProps } from "@mapbox/search-js-react";
 import { Input } from "./input";
 import { UseFormReturn } from "react-hook-form";
 import { useToast } from "./use-toast";
@@ -22,6 +22,7 @@ export function AddressAutocomplete({
 }: AddressAutocompleteProps) {
   const { toast } = useToast();
   const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const handleError = (error: any) => {
     console.error("Erro no autocompletar de endereço:", error);
@@ -56,11 +57,11 @@ export function AddressAutocomplete({
   return (
     <div className="w-full">
       <AddressAutofill 
-        accessToken={token} 
+        accessToken={token}
         onRetrieve={handleRetrieve}
-        onError={handleError}
       >
         <Input
+          ref={inputRef}
           placeholder="Digite seu endereço"
           value={value}
           onChange={onChange}
