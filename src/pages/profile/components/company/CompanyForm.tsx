@@ -46,9 +46,11 @@ export const CompanyForm = ({
     <form onSubmit={(e) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
-      // Garantir que o país atual seja incluído no formData
       if (!formData.get('country')) {
         formData.set('country', companyProfile?.country || 'BR');
+      }
+      if (!formData.get('display_tax_id')) {
+        formData.set('display_tax_id', 'false');
       }
       onSubmit(formData);
     }} className="space-y-8">

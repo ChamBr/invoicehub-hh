@@ -47,7 +47,6 @@ export const useCompanyProfile = () => {
           console.error("Erro ao buscar cliente:", customerError);
         }
         
-        // Se encontrou o cliente, podemos usar seus dados
         if (customerData) {
           console.log("Cliente encontrado:", customerData);
         }
