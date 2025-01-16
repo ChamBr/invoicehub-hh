@@ -8,6 +8,13 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -41,9 +48,17 @@ const UserProfile = () => {
       
       if (!user) throw new Error("Usuário não encontrado");
 
+      const birthMonth = formData.get("birth_month") as string;
+      const birthYear = formData.get("birth_year") as string;
+      const birthDate = birthMonth && birthYear 
+        ? new Date(parseInt(birthYear), parseInt(birthMonth) - 1, 1).toISOString()
+        : null;
+
       const profileData = {
         full_name: formData.get("full_name") as string,
-        company: formData.get("company") as string,
+        phone: formData.get("phone") as string,
+        birth_date: birthDate,
+        gender: formData.get("gender") as string,
       };
 
       const { error } = await supabase
@@ -77,6 +92,10 @@ const UserProfile = () => {
     );
   }
 
+  const birthDate = profile?.birth_date ? new Date(profile.birth_date) : null;
+  const birthMonth = birthDate ? (birthDate.getMonth() + 1).toString() : "";
+  const birthYear = birthDate ? birthDate.getFullYear().toString() : "";
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
@@ -94,7 +113,7 @@ const UserProfile = () => {
               </Avatar>
               <div>
                 <h3 className="text-lg font-medium">{profile?.full_name || "Usuário"}</h3>
-                <p className="text-sm text-gray-500">{profile?.company || "Empresa não informada"}</p>
+                <p className="text-sm text-gray-500">{profile?.email || "Email não informado"}</p>
               </div>
             </div>
 
@@ -110,12 +129,79 @@ const UserProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="company">Empresa</Label>
+                <Label htmlFor="email">E-mail</Label>
                 <Input
-                  id="company"
-                  name="company"
-                  defaultValue={profile?.company || ""}
+                  id="email"
+                  type="email"
+                  value={profile?.email || ""}
+                  disabled
+                  className="bg-gray-100"
                 />
+                <p className="text-sm text-gray-500">
+                  O e-mail não pode ser alterado pois é usado para autenticação
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Celular</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  defaultValue={profile?.phone || ""}
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="birth_month">Mês de Nascimento</Label>
+                  <Select name="birth_month" defaultValue={birthMonth}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o mês" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Janeiro</SelectItem>
+                      <SelectItem value="2">Fevereiro</SelectItem>
+                      <SelectItem value="3">Março</SelectItem>
+                      <SelectItem value="4">Abril</SelectItem>
+                      <SelectItem value="5">Maio</SelectItem>
+                      <SelectItem value="6">Junho</SelectItem>
+                      <SelectItem value="7">Julho</SelectItem>
+                      <SelectItem value="8">Agosto</SelectItem>
+                      <SelectItem value="9">Setembro</SelectItem>
+                      <SelectItem value="10">Outubro</SelectItem>
+                      <SelectItem value="11">Novembro</SelectItem>
+                      <SelectItem value="12">Dezembro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="birth_year">Ano de Nascimento</Label>
+                  <Input
+                    id="birth_year"
+                    name="birth_year"
+                    type="number"
+                    min="1900"
+                    max={new Date().getFullYear()}
+                    defaultValue={birthYear}
+                    placeholder="AAAA"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gender">Sexo</Label>
+                <Select name="gender" defaultValue={profile?.gender || ""}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o sexo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="masculino">Masculino</SelectItem>
+                    <SelectItem value="feminino">Feminino</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="flex justify-end gap-4">
