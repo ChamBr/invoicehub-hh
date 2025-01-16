@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/invoices/StatusBadge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeft, FileEdit, Send, FilePdf } from "lucide-react";
+import { ArrowLeft, FileEdit, Send, FileText } from "lucide-react";
 import { InvoiceStatus } from "@/components/invoices/types";
 
 export default function InvoiceDetails() {
@@ -123,7 +123,7 @@ export default function InvoiceDetails() {
                     Enviar
                   </Button>
                   <Button variant="outline" onClick={handleGeneratePDF}>
-                    <FilePdf className="h-4 w-4 mr-2" />
+                    <FileText className="h-4 w-4 mr-2" />
                     Gerar PDF
                   </Button>
                 </>
