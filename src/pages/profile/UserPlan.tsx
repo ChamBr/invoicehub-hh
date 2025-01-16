@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const UserPlan = () => {
   const { t } = useTranslation();
@@ -42,12 +42,14 @@ const UserPlan = () => {
 
       return subscription;
     },
-    onError: () => {
-      toast({
-        title: t('errors.load_subscription'),
-        description: t('errors.try_again'),
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: t('errors.load_subscription'),
+          description: t('errors.try_again'),
+          variant: "destructive",
+        });
+      }
     }
   });
 
