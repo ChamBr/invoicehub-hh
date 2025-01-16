@@ -9,13 +9,29 @@ export const customerFormSchema = z.object({
   contactName: z.string().optional().nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
   phone: z.string()
-    .refine((value, ctx) => {
-      if (!value) return true; // Permite valor vazio
-      const country = ctx.path[0] === "phone" ? (ctx.parent as any).country : "BR";
-      if (country === "BR") return phoneRegexBR.test(value);
-      if (country === "US") return phoneRegexUS.test(value);
+    .refine((value) => {
+      if (!value) return true;
       return true;
     }, "Formato de telefone inválido")
+    .superRefine((value, ctx) => {
+      if (!value) return;
+
+      const country = ctx.path[0] === "phone" ? (ctx.parent as any).country : "BR";
+      
+      if (country === "BR" && !phoneRegexBR.test(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Formato de telefone brasileiro inválido",
+        });
+      }
+      
+      if (country === "US" && !phoneRegexUS.test(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Formato de telefone americano inválido",
+        });
+      }
+    })
     .optional()
     .nullable(),
   country: z.string().min(2, "País é obrigatório"),
