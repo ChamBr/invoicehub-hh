@@ -28,6 +28,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { clearSession, handleSessionEnd, checkSessionValidity } = useSessionManagement(session, setSession);
@@ -71,6 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         handleSessionEnd("Ocorreu um erro ao inicializar sua sessão.");
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -89,7 +91,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           break;
           
         case "SIGNED_IN":
-          if (newSession) {
+          if (newSession && !isInitialized) {
             setSession(newSession);
             localStorage.setItem('supabase.auth.token', JSON.stringify({
               currentSession: {
@@ -140,7 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
       clearInterval(sessionCheck);
     };
-  }, [navigate, toast, clearSession, handleSessionEnd, checkSessionValidity]);
+  }, [navigate, toast, clearSession, handleSessionEnd, checkSessionValidity, isInitialized]);
 
   return (
     <AuthContext.Provider value={{ session, isLoading, clearSession }}>
