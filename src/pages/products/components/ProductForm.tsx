@@ -7,21 +7,32 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Product {
+  id?: string;
+  name: string;
+  description: string;
+  type: string;
+  price: string | number;
+  sku: string;
+  stock: string | number;
+}
+
 interface ProductFormProps {
+  product?: Product | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
+const ProductForm = ({ product, onSuccess, onCancel }: ProductFormProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    type: "product",
-    price: "",
-    sku: "",
-    stock: "0",
+    name: product?.name || "",
+    description: product?.description || "",
+    type: product?.type || "product",
+    price: product?.price?.toString() || "",
+    sku: product?.sku || "",
+    stock: product?.stock?.toString() || "0",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
