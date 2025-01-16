@@ -9,9 +9,9 @@ export const customerFormSchema = z.object({
   contactName: z.string().optional().nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
   phone: z.string()
-    .refine((value) => {
+    .refine((value, ctx) => {
       if (!value) return true; // Permite valor vazio
-      const country = z.getContext()?.country;
+      const country = ctx.path[0] === "phone" ? (ctx.parent as any).country : "BR";
       if (country === "BR") return phoneRegexBR.test(value);
       if (country === "US") return phoneRegexUS.test(value);
       return true;
