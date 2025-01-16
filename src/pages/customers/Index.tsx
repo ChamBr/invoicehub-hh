@@ -1,15 +1,22 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, UserPlus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { CustomerForm } from "@/components/customers/CustomerForm";
 
 const CustomersIndex = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: customers, error } = useQuery({
     queryKey: ["customers"],
@@ -32,6 +39,11 @@ const CustomersIndex = () => {
     });
   }
 
+  const handleSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["customers"] });
+    setIsDialogOpen(false);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -39,19 +51,24 @@ const CustomersIndex = () => {
           <Users className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Clientes</h1>
         </div>
-        <Button
-          onClick={() => navigate("/customers/new")}
-          className="flex items-center gap-2"
-        >
-          <UserPlus className="h-4 w-4" />
-          Novo Cliente
-        </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Novo Cliente
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Novo Cliente</DialogTitle>
+            </DialogHeader>
+            <CustomerForm onSuccess={handleSuccess} onCancel={() => setIsDialogOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="bg-white rounded-lg shadow">
-        {isLoading ? (
-          <div className="p-4">Carregando...</div>
-        ) : customers?.length === 0 ? (
+        {customers?.length === 0 ? (
           <div className="p-4 text-center text-gray-500">
             Nenhum cliente cadastrado
           </div>
@@ -79,7 +96,6 @@ const CustomersIndex = () => {
                   <tr
                     key={customer.id}
                     className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => navigate(`/customers/${customer.id}`)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       {customer.name}
