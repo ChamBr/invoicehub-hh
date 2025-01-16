@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { addressFormats } from "./types";
 
 interface CompanyAddressProps {
@@ -22,46 +21,15 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   onAddressSelect,
 }) => {
   const format = addressFormats[country] || addressFormats.BR;
-  const [addressInput, setAddressInput] = React.useState("");
   const [localCity, setLocalCity] = React.useState(city || "");
   const [localState, setLocalState] = React.useState(state || "");
   const [localZipCode, setLocalZipCode] = React.useState(zipCode || "");
 
-  // Atualiza estados locais quando as props mudam
   React.useEffect(() => {
     if (city !== undefined) setLocalCity(city);
     if (state !== undefined) setLocalState(state);
     if (zipCode !== undefined) setLocalZipCode(zipCode);
   }, [city, state, zipCode]);
-
-  const handleAddressSelect = React.useCallback((address: any) => {
-    if (!address) return;
-
-    const newCity = address.city || "";
-    const newState = address.state || "";
-    const newZipCode = address.postalCode || "";
-    
-    // Atualiza estados locais
-    setLocalCity(newCity);
-    setLocalState(newState);
-    setLocalZipCode(newZipCode);
-    
-    // Prepara os dados do endereço mantendo o país atual
-    const addressData = {
-      ...address,
-      country,
-      city: newCity,
-      state: newState,
-      zip_code: newZipCode,
-      address_line1: address.line1 || "",
-    };
-    
-    onAddressSelect(addressData);
-  }, [country, onAddressSelect]);
-
-  const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddressInput(e.target.value);
-  }, []);
 
   const handleCityChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newCity = e.target.value;
@@ -84,11 +52,14 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">{format.addressLabel}</h3>
-      <AddressAutocomplete 
-        onAddressSelect={handleAddressSelect}
-        value={addressInput}
-        onChange={handleInputChange}
-      />
+      <div className="space-y-2">
+        <Label htmlFor="address_line1">Endereço</Label>
+        <Input
+          id="address_line1"
+          name="address_line1"
+          placeholder="Rua, número"
+        />
+      </div>
       
       <div className="space-y-2">
         <Label htmlFor="address_line2">Complemento (Opcional)</Label>
