@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { PDFDocument, rgb } from "https://cdn.skypack.dev/pdf-lib";
 
-const RESEND_API_KEY = Deno.env.get("Resend-InvoiceHub");
+const RESEND_API_KEY = Deno.env.get("RESEND-InvoiceHub");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -15,6 +15,7 @@ const corsHeaders = {
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
 async function generatePDF(invoiceData: any) {
+  console.log("Gerando PDF para fatura:", invoiceData.id);
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage();
   const { width, height } = page.getSize();
@@ -52,6 +53,7 @@ async function generatePDF(invoiceData: any) {
 }
 
 async function uploadPDF(pdfBytes: Uint8Array, invoiceId: string) {
+  console.log("Fazendo upload do PDF para fatura:", invoiceId);
   const { data, error } = await supabase.storage
     .from("invoices-invoicehub")
     .upload(`${invoiceId}.pdf`, pdfBytes, {
@@ -64,6 +66,11 @@ async function uploadPDF(pdfBytes: Uint8Array, invoiceId: string) {
 }
 
 async function sendEmail(invoiceData: any, pdfUrl: string) {
+  console.log("Enviando email para:", invoiceData.customer.email);
+  if (!invoiceData.customer.email) {
+    throw new Error("Email do cliente não encontrado");
+  }
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -85,7 +92,9 @@ async function sendEmail(invoiceData: any, pdfUrl: string) {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to send email");
+    const errorData = await res.text();
+    console.error("Erro ao enviar email:", errorData);
+    throw new Error(`Falha ao enviar email: ${errorData}`);
   }
 
   return res.json();
@@ -98,6 +107,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { invoiceId, action } = await req.json();
+    console.log(`Processando ação ${action} para fatura ${invoiceId}`);
 
     // Buscar dados da fatura
     const { data: invoice, error: invoiceError } = await supabase
@@ -150,10 +160,17 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
     });
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    console.error("Erro na função invoice-actions:", error);
+    return new Response(
+      JSON.stringify({ 
+        error: error.message || "Erro interno do servidor",
+        details: error.toString()
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
+    );
   }
 };
 
