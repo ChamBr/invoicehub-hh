@@ -25,10 +25,14 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   const [addressInput, setAddressInput] = React.useState("");
 
   const handleAddressSelect = React.useCallback((address: any) => {
-    if (address && addressInput.length >= 3) {
+    if (address && addressInput.trim().length >= 3) {
       onAddressSelect(address);
     }
   }, [onAddressSelect, addressInput]);
+
+  const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddressInput(e.target.value);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -36,7 +40,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
       <AddressAutocomplete 
         onAddressSelect={handleAddressSelect}
         value={addressInput}
-        onChange={(e) => setAddressInput(e.target.value)}
+        onChange={handleInputChange}
       />
       
       <div className="space-y-2">
