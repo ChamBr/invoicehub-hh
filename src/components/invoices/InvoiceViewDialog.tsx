@@ -131,6 +131,12 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
     }
   };
 
+  const handleGenerateInvoice = async () => {
+    await handleSaveEdit();
+    await handleStatusChange('created');
+    setIsEditing(false);
+  };
+
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditedItems([]);
@@ -163,6 +169,9 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
                 </Button>
                 <Button onClick={handleSaveEdit}>
                   Salvar Alterações
+                </Button>
+                <Button variant="default" onClick={handleGenerateInvoice}>
+                  Gerar Fatura
                 </Button>
               </div>
             ) : (
