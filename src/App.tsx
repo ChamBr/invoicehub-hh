@@ -12,6 +12,7 @@ import Footer from "./components/layout/Footer";
 import Login from "./pages/auth/Login";
 import Index from "./pages/Index";
 import CustomersIndex from "./pages/customers/Index";
+import NewCustomer from "./pages/customers/New";
 import ProductsIndex from "./pages/products/Index";
 import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
@@ -42,6 +43,7 @@ const AppLayout = () => {
               <Routes>
                 <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
                 <Route path="/customers" element={<ProtectedRoute><CustomersIndex /></ProtectedRoute>} />
+                <Route path="/customers/new" element={<ProtectedRoute><NewCustomer /></ProtectedRoute>} />
                 <Route path="/products" element={<ProtectedRoute><ProductsIndex /></ProtectedRoute>} />
                 <Route path="/invoices" element={<ProtectedRoute><InvoicesIndex /></ProtectedRoute>} />
                 <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
