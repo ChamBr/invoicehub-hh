@@ -12,6 +12,10 @@ const UserMenu = () => {
 
   const handleLogout = async () => {
     try {
+      // Primeiro, limpar o localStorage para evitar conflitos
+      localStorage.removeItem('supabase.auth.token');
+      
+      // Tentar fazer o logout no Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
@@ -19,14 +23,12 @@ const UserMenu = () => {
         toast({
           variant: "destructive",
           title: "Erro ao sair",
-          description: error.message || "Tente novamente em alguns instantes",
+          description: "Ocorreu um erro ao tentar sair. Tente novamente.",
         });
         return;
       }
 
-      // Limpar qualquer estado local se necessário
-      localStorage.removeItem('supabase.auth.token');
-      
+      // Se chegou aqui, o logout foi bem sucedido
       toast({
         title: "Logout realizado",
         description: "Você foi desconectado com sucesso",
@@ -35,11 +37,17 @@ const UserMenu = () => {
       navigate("/login");
     } catch (error) {
       console.error("Erro inesperado ao fazer logout:", error);
+      
+      // Em caso de erro, forçar a limpeza da sessão
+      localStorage.clear(); // Limpa todo o localStorage por segurança
+      
       toast({
         variant: "destructive",
         title: "Erro ao sair",
-        description: "Ocorreu um erro inesperado. Tente novamente.",
+        description: "Houve um problema, mas você foi desconectado por segurança.",
       });
+      
+      navigate("/login");
     }
   };
 
