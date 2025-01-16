@@ -1,15 +1,15 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CustomerSelect } from "../pages/invoices/new/components/CustomerSelect";
-import InvoiceItems from "../pages/invoices/new/components/InvoiceItems";
-import InvoiceSummary from "../pages/invoices/new/components/InvoiceSummary";
-import NewCustomerDialog from "../pages/invoices/new/components/NewCustomerDialog";
+import CustomerSelect from "./CustomerSelect";
+import InvoiceItems from "./InvoiceItems";
+import InvoiceSummary from "./InvoiceSummary";
+import NewCustomerDialog from "./NewCustomerDialog";
 import { useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "../ui/use-toast";
-import { calculateTotal } from "../pages/invoices/new/utils";
-import { InvoiceItem } from "../pages/invoices/new/types";
+import { useToast } from "@/components/ui/use-toast";
+import { calculateTotal } from "./utils";
+import { InvoiceItem } from "./types";
 
 interface NewInvoiceDialogProps {
   open: boolean;
