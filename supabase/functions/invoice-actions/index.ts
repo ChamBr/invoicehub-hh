@@ -154,8 +154,7 @@ async function generatePDF(invoiceData: any, template: any) {
     color: rgb(0, 0, 0),
   });
 
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  return await pdfDoc.save();
 }
 
 function hexToRgb(hex: string) {
