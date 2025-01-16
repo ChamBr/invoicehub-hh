@@ -26,9 +26,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Verificar sessão atual
-    const checkSession = async () => {
+    const initializeAuth = async () => {
       try {
+        // Verificar sessão atual
         const { data: { session: currentSession }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -55,29 +55,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    checkSession();
+    initializeAuth();
 
     // Configurar listener para mudanças na autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
       console.log("Auth state changed:", event);
-      setSession(newSession);
-
-      if (event === "SIGNED_OUT") {
-        navigate("/login");
-        toast({
-          title: "Sessão encerrada",
-          description: "Você foi desconectado do sistema",
-        });
-      } else if (event === "SIGNED_IN") {
-        toast({
-          title: "Login realizado",
-          description: "Bem-vindo ao sistema",
-        });
-        navigate("/");
-      } else if (event === "TOKEN_REFRESHED") {
-        console.log("Token refreshed successfully");
-      } else if (event === "USER_UPDATED") {
-        setSession(newSession);
+      
+      switch (event) {
+        case "SIGNED_OUT":
+          setSession(null);
+          navigate("/login");
+          toast({
+            title: "Sessão encerrada",
+            description: "Você foi desconectado do sistema",
+          });
+          break;
+          
+        case "SIGNED_IN":
+          setSession(newSession);
+          toast({
+            title: "Login realizado",
+            description: "Bem-vindo ao sistema",
+          });
+          navigate("/");
+          break;
+          
+        case "TOKEN_REFRESHED":
+          console.log("Token atualizado com sucesso");
+          setSession(newSession);
+          break;
+          
+        case "USER_UPDATED":
+          setSession(newSession);
+          break;
       }
 
       setIsLoading(false);
