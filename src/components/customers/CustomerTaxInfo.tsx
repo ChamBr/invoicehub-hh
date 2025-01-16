@@ -34,7 +34,12 @@ export function CustomerTaxInfo({ form }: CustomerTaxInfoProps) {
               <FormControl>
                 <Switch
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    if (checked) {
+                      form.setValue("taxId", "");
+                    }
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -42,7 +47,7 @@ export function CustomerTaxInfo({ form }: CustomerTaxInfoProps) {
         />
       </div>
 
-      {!taxExempt && (
+      {!form.getValues("taxExempt") && (
         <FormField
           control={form.control}
           name="taxId"
