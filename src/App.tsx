@@ -3,7 +3,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import BaseLayout from "@/components/layout/BaseLayout";
 
 // Pages
 import Login from "@/pages/auth/Login";
@@ -36,9 +35,7 @@ function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <Index />
-                  </BaseLayout>
+                  <Index />
                 </ProtectedRoute>
               }
             />
@@ -47,9 +44,7 @@ function App() {
               path="/customers"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <CustomersIndex />
-                  </BaseLayout>
+                  <CustomersIndex />
                 </ProtectedRoute>
               }
             />
@@ -58,9 +53,7 @@ function App() {
               path="/customers/new"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <NewCustomer />
-                  </BaseLayout>
+                  <NewCustomer />
                 </ProtectedRoute>
               }
             />
@@ -69,9 +62,7 @@ function App() {
               path="/products"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <ProductsIndex />
-                  </BaseLayout>
+                  <ProductsIndex />
                 </ProtectedRoute>
               }
             />
@@ -80,9 +71,7 @@ function App() {
               path="/invoices"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <InvoicesIndex />
-                  </BaseLayout>
+                  <InvoicesIndex />
                 </ProtectedRoute>
               }
             />
@@ -91,9 +80,7 @@ function App() {
               path="/plans"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <PlansIndex />
-                  </BaseLayout>
+                  <PlansIndex />
                 </ProtectedRoute>
               }
             />
@@ -102,9 +89,7 @@ function App() {
               path="/feedback"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <FeedbackIndex />
-                  </BaseLayout>
+                  <FeedbackIndex />
                 </ProtectedRoute>
               }
             />
@@ -113,9 +98,7 @@ function App() {
               path="/admin"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <AdminIndex />
-                  </BaseLayout>
+                  <AdminIndex />
                 </ProtectedRoute>
               }
             />
@@ -124,9 +107,7 @@ function App() {
               path="/admin/customers"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <AdminCustomersIndex />
-                  </BaseLayout>
+                  <AdminCustomersIndex />
                 </ProtectedRoute>
               }
             />
@@ -135,9 +116,7 @@ function App() {
               path="/admin/integrations"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <AdminIntegrationsIndex />
-                  </BaseLayout>
+                  <AdminIntegrationsIndex />
                 </ProtectedRoute>
               }
             />
@@ -146,9 +125,7 @@ function App() {
               path="/admin/plans"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <AdminPlansIndex />
-                  </BaseLayout>
+                  <AdminPlansIndex />
                 </ProtectedRoute>
               }
             />
@@ -157,9 +134,7 @@ function App() {
               path="/admin/reports"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <AdminReportsIndex />
-                  </BaseLayout>
+                  <AdminReportsIndex />
                 </ProtectedRoute>
               }
             />
@@ -168,9 +143,7 @@ function App() {
               path="/admin/settings"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <AdminSettingsIndex />
-                  </BaseLayout>
+                  <AdminSettingsIndex />
                 </ProtectedRoute>
               }
             />
@@ -179,9 +152,7 @@ function App() {
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <BaseLayout>
-                    <ProfileIndex />
-                  </BaseLayout>
+                  <ProfileIndex />
                 </ProtectedRoute>
               }
             />

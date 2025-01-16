@@ -2,7 +2,8 @@ import * as React from "react";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { Input } from "./input";
 import { UseFormReturn } from "react-hook-form";
-import { useToast } from "./use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface AddressAutocompleteProps {
   value?: string;
@@ -20,29 +21,20 @@ export function AddressAutocomplete({
   onAddressSelect,
   ...props
 }: AddressAutocompleteProps) {
-  const { toast } = useToast();
-  const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
-  const handleError = (error: any) => {
-    console.error("Erro no autocompletar de endereço:", error);
-    toast({
-      title: "Erro ao carregar endereço",
-      description: "Não foi possível carregar o autocompletar de endereço",
-      variant: "destructive",
-    });
-  };
+  const { data: config } = useQuery({
+    queryKey: ["mapbox-token"],
+    queryFn: async () => {
+      const { data } = await supabase.functions.invoke('get-mapbox-token');
+      return data;
+    },
+  });
 
   const handleRetrieve = (res: any) => {
-    try {
-      if (onSelect) onSelect(res);
-      if (onAddressSelect) onAddressSelect(res);
-    } catch (error) {
-      handleError(error);
-    }
+    if (onSelect) onSelect(res);
+    if (onAddressSelect) onAddressSelect(res);
   };
 
-  if (!token) {
+  if (!config?.token) {
     return (
       <Input
         placeholder="Carregando autocompletar de endereço..."
@@ -56,17 +48,15 @@ export function AddressAutocomplete({
 
   return (
     <div className="w-full">
-      {React.createElement(AddressAutofill, {
-        accessToken: token,
-        onRetrieve: handleRetrieve,
-        children: React.createElement(Input, {
-          ref: inputRef,
-          placeholder: "Digite seu endereço",
-          value: value,
-          onChange: onChange,
-          ...props
-        })
-      })}
+      {/* @ts-ignore */}
+      <AddressAutofill accessToken={config.token} onRetrieve={handleRetrieve}>
+        <Input
+          placeholder="Digite seu endereço"
+          value={value}
+          onChange={onChange}
+          {...props}
+        />
+      </AddressAutofill>
     </div>
   );
 }
