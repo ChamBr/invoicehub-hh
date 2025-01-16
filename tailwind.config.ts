@@ -25,13 +25,13 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#0066CC", // Azul principal do template
-          dark: "#004C99",
-          light: "#E6F0FF",
+          DEFAULT: "#9b87f5", // Primary Purple
+          dark: "#7E69AB", // Secondary Purple
+          light: "#D6BCFA", // Light Purple
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#004C99",
+          DEFAULT: "#6E59A5", // Tertiary Purple
           foreground: "#FFFFFF",
         },
         destructive: {
@@ -43,17 +43,17 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#E6F0FF",
-          foreground: "#004C99",
+          DEFAULT: "#D6BCFA", // Light Purple
+          foreground: "#1A1F2C", // Dark Purple
         },
         card: {
           DEFAULT: "#FFFFFF",
           foreground: "#1F2937",
         },
         invoice: {
-          blue: "#0066CC",
-          lightBlue: "#E6F0FF",
-          tableHeader: "#004C99",
+          blue: "#0066CC", // Mantendo apenas para os templates de invoice
+          lightBlue: "#E6F0FF", // Mantendo apenas para os templates de invoice
+          tableHeader: "#004C99", // Mantendo apenas para os templates de invoice
         }
       },
       borderRadius: {
