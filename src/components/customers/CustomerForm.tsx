@@ -15,19 +15,26 @@ import { Input } from "@/components/ui/input";
 interface CustomerFormProps {
   onSuccess: () => void;
   onCancel: () => void;
+  initialData?: CustomerFormValues | null;
 }
 
-export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
+export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormProps) {
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
     defaultValues: {
-      type: "personal",
-      taxExempt: false,
-      country: "BR",
+      type: initialData?.type || "personal",
+      taxExempt: initialData?.taxExempt || false,
+      country: initialData?.country || "BR",
+      name: initialData?.name || "",
+      email: initialData?.email || "",
+      phone: initialData?.phone || "",
+      notes: initialData?.notes || "",
+      taxId: initialData?.taxId || "",
+      contactName: initialData?.contactName || "",
     },
   });
 
-  const { isSubmitting, handleSubmit } = useCustomerSubmit(onSuccess);
+  const { isSubmitting, handleSubmit } = useCustomerSubmit(onSuccess, initialData?.id);
 
   return (
     <Form {...form}>

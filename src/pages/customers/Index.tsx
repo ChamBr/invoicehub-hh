@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, UserPlus } from "lucide-react";
+import { Users, UserPlus, Pencil, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,11 +12,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CustomerForm } from "@/components/customers/CustomerForm";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const CustomersIndex = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customerToDelete, setCustomerToDelete] = useState(null);
 
   const { data: customers, error } = useQuery({
     queryKey: ["customers"],
@@ -31,6 +43,33 @@ const CustomersIndex = () => {
     },
   });
 
+  const handleDelete = async (customerId) => {
+    try {
+      const { error } = await supabase
+        .from("customers")
+        .delete()
+        .eq("id", customerId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Cliente excluído com sucesso",
+        description: "O cliente foi removido do sistema",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao excluir cliente",
+        description: "Ocorreu um erro ao tentar excluir o cliente",
+      });
+    } finally {
+      setCustomerToDelete(null);
+    }
+  };
+
   if (error) {
     toast({
       variant: "destructive",
@@ -39,9 +78,20 @@ const CustomersIndex = () => {
     });
   }
 
-  const handleSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ["customers"] });
-    setIsDialogOpen(false);
+  const handleEditClick = (customer, e) => {
+    e.stopPropagation();
+    setSelectedCustomer(customer);
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteClick = (customer, e) => {
+    e.stopPropagation();
+    setCustomerToDelete(customer);
+  };
+
+  const handleRowClick = (customer) => {
+    setSelectedCustomer(customer);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -60,9 +110,22 @@ const CustomersIndex = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Novo Cliente</DialogTitle>
+              <DialogTitle>
+                {selectedCustomer ? "Editar Cliente" : "Novo Cliente"}
+              </DialogTitle>
             </DialogHeader>
-            <CustomerForm onSuccess={handleSuccess} onCancel={() => setIsDialogOpen(false)} />
+            <CustomerForm
+              onSuccess={() => {
+                setIsDialogOpen(false);
+                setSelectedCustomer(null);
+                queryClient.invalidateQueries({ queryKey: ["customers"] });
+              }}
+              onCancel={() => {
+                setIsDialogOpen(false);
+                setSelectedCustomer(null);
+              }}
+              initialData={selectedCustomer}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -89,12 +152,16 @@ const CustomersIndex = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {customers?.map((customer) => (
                   <tr
                     key={customer.id}
+                    onClick={() => handleRowClick(customer)}
                     className="hover:bg-gray-50 cursor-pointer"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -117,6 +184,24 @@ const CustomersIndex = () => {
                         {customer.status === "active" ? "Ativo" : "Inativo"}
                       </span>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => handleEditClick(customer, e)}
+                        className="mr-2"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => handleDeleteClick(customer, e)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -124,6 +209,30 @@ const CustomersIndex = () => {
           </div>
         )}
       </div>
+
+      <AlertDialog
+        open={!!customerToDelete}
+        onOpenChange={(open) => !open && setCustomerToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o cliente {customerToDelete?.name}?
+              Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => handleDelete(customerToDelete?.id)}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
