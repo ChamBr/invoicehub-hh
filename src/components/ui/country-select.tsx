@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/popover";
 
 const countries = [
-  { label: "Brasil", value: "BR" },
   { label: "Estados Unidos", value: "US" },
+  { label: "Brasil", value: "BR" },
   { label: "Portugal", value: "PT" },
   { label: "Espanha", value: "ES" },
 ] as const;
@@ -29,14 +29,16 @@ export interface CountrySelectProps {
 }
 
 export function CountrySelect({ 
-  value = "BR", 
+  value, 
   onValueChange, 
   disabled = false 
 }: CountrySelectProps) {
   const [open, setOpen] = React.useState(false);
 
-  // Garante que o valor inicial seja válido
-  const selectedCountry = countries.find((country) => country.value === value) || countries[0];
+  // Garante que o valor inicial seja válido, usando US como padrão
+  const selectedCountry = countries.find((country) => country.value === value) || 
+                         countries.find((country) => country.value === "US") || 
+                         countries[0];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -69,7 +71,7 @@ export function CountrySelect({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === country.value ? "opacity-100" : "opacity-0"
+                    selectedCountry.value === country.value ? "opacity-100" : "opacity-0"
                   )}
                 />
                 {country.label}
