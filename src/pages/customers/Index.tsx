@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, UserPlus, Pencil, Trash2 } from "lucide-react";
+import { Users, UserPlus, Pencil, Trash2, Building2, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -141,7 +141,13 @@ const CustomersIndex = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tipo
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Nome
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nome da Empresa
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Email
@@ -165,7 +171,17 @@ const CustomersIndex = () => {
                     className="hover:bg-gray-50 cursor-pointer"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {customer.name}
+                      {customer.type === "company" ? (
+                        <Building2 className="h-5 w-5 text-gray-500" />
+                      ) : (
+                        <User className="h-5 w-5 text-gray-500" />
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {customer.type === "company" ? customer.contact_name : customer.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {customer.type === "company" ? customer.name : "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {customer.email}
