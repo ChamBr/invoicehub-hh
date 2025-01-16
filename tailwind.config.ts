@@ -25,13 +25,13 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#9b87f5", // Primary Purple
-          dark: "#7E69AB", // Secondary Purple
-          light: "#D6BCFA", // Light Purple
+          DEFAULT: "#10B981", // Emerald green
+          dark: "#065F46", // Forest green
+          light: "#ECFDF5", // Light green
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#6E59A5", // Tertiary Purple
+          DEFAULT: "#065F46", // Forest green
           foreground: "#FFFFFF",
         },
         destructive: {
@@ -43,12 +43,12 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#D6BCFA", // Light Purple
-          foreground: "#1A1F2C", // Dark Purple
+          DEFAULT: "#ECFDF5", // Light green
+          foreground: "#1F2937", // Dark slate
         },
         card: {
-          DEFAULT: "#FFFFFF",
-          foreground: "#1F2937",
+          DEFAULT: "#FFFFFF", // Clean white
+          foreground: "#1F2937", // Dark slate
         },
         invoice: {
           blue: "#0066CC", // Mantendo apenas para os templates de invoice
