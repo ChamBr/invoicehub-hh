@@ -5,7 +5,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { InvoiceNumberingForm } from "@/components/invoice-settings/InvoiceNumberingForm";
 import { InvoiceCurrencyForm } from "@/components/invoice-settings/InvoiceCurrencyForm";
 import { InvoiceTermsForm } from "@/components/invoice-settings/InvoiceTermsForm";
+import { InvoiceTemplateList } from "@/components/invoice-settings/InvoiceTemplateList";
 import { useTranslation } from 'react-i18next';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const InvoiceSettings = () => {
   const { toast } = useToast();
@@ -74,38 +76,53 @@ const InvoiceSettings = () => {
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        updateInvoiceSettings.mutate(formData);
-      }} className="bg-white rounded-lg shadow p-6 space-y-6">
-        <h2 className="text-2xl font-bold">{t('invoice_settings.title')}</h2>
+      <Tabs defaultValue="general" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="general">Configurações Gerais</TabsTrigger>
+          <TabsTrigger value="templates">Templates</TabsTrigger>
+        </TabsList>
 
-        <InvoiceNumberingForm
-          defaultPrefix={companyProfile?.invoice_prefix}
-          defaultNextNumber={companyProfile?.invoice_next_number}
-        />
+        <TabsContent value="general">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            updateInvoiceSettings.mutate(formData);
+          }} className="bg-white rounded-lg shadow p-6 space-y-6">
+            <h2 className="text-2xl font-bold">{t('invoice_settings.title')}</h2>
 
-        <InvoiceCurrencyForm
-          defaultCurrency={companyProfile?.invoice_currency}
-          defaultDueDays={companyProfile?.invoice_due_days}
-        />
+            <InvoiceNumberingForm
+              defaultPrefix={companyProfile?.invoice_prefix}
+              defaultNextNumber={companyProfile?.invoice_next_number}
+            />
 
-        <InvoiceTermsForm
-          defaultTerms={companyProfile?.invoice_terms}
-          defaultFooter={companyProfile?.invoice_footer}
-        />
+            <InvoiceCurrencyForm
+              defaultCurrency={companyProfile?.invoice_currency}
+              defaultDueDays={companyProfile?.invoice_due_days}
+            />
 
-        <Button
-          type="submit"
-          className="w-full md:w-auto"
-          disabled={updateInvoiceSettings.isPending}
-        >
-          {updateInvoiceSettings.isPending 
-            ? t('invoice_settings.saving')
-            : t('invoice_settings.save')}
-        </Button>
-      </form>
+            <InvoiceTermsForm
+              defaultTerms={companyProfile?.invoice_terms}
+              defaultFooter={companyProfile?.invoice_footer}
+            />
+
+            <Button
+              type="submit"
+              className="w-full md:w-auto"
+              disabled={updateInvoiceSettings.isPending}
+            >
+              {updateInvoiceSettings.isPending 
+                ? t('invoice_settings.saving')
+                : t('invoice_settings.save')}
+            </Button>
+          </form>
+        </TabsContent>
+
+        <TabsContent value="templates">
+          <div className="bg-white rounded-lg shadow p-6">
+            <InvoiceTemplateList />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
