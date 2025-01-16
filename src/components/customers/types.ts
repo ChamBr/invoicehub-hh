@@ -17,7 +17,8 @@ export const customerFormSchema = z.object({
     .transform((value, ctx) => {
       if (!value) return null;
 
-      const country = ctx.parent?.country || "BR";
+      const parentData = ctx.input as { country?: string };
+      const country = parentData.country || "BR";
       
       if (country === "BR" && !phoneRegexBR.test(value)) {
         ctx.addIssue({
