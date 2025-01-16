@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       company_profiles: {
         Row: {
+          active_template_id: string | null
           address_line1: string | null
           address_line2: string | null
           city: string | null
@@ -40,6 +41,7 @@ export type Database = {
           zip_code: string | null
         }
         Insert: {
+          active_template_id?: string | null
           address_line1?: string | null
           address_line2?: string | null
           city?: string | null
@@ -69,6 +71,7 @@ export type Database = {
           zip_code?: string | null
         }
         Update: {
+          active_template_id?: string | null
           address_line1?: string | null
           address_line2?: string | null
           city?: string | null
@@ -97,7 +100,15 @@ export type Database = {
           website?: string | null
           zip_code?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "company_profiles_active_template_id_fkey"
+            columns: ["active_template_id"]
+            isOneToOne: false
+            referencedRelation: "invoice_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       configurations: {
         Row: {

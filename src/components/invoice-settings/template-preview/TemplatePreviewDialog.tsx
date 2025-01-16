@@ -56,10 +56,11 @@ export const TemplatePreviewDialog = ({
           </DialogTitle>
         </DialogHeader>
         
-        <div className="p-6 border rounded-lg space-y-8" style={{
+        <div className="p-6 border rounded-lg" style={{
           fontFamily: template.content.body.fontFamily,
           fontSize: template.content.body.fontSize,
           lineHeight: template.content.body.lineHeight,
+          backgroundColor: template.content.header.backgroundColor,
         }}>
           <PreviewHeader content={template.content} company={sampleCompany} />
           <PreviewCustomer 
