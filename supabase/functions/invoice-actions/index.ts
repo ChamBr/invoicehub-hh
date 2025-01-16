@@ -138,7 +138,6 @@ const handler = async (req: Request): Promise<Response> => {
           .from("invoices")
           .update({
             email_sent_at: new Date().toISOString(),
-            status: "sent",
           })
           .eq("id", invoiceId);
 

@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { InvoiceStatus } from "./types";
 import { ActionButtons } from "./InvoiceActions/ActionButtons";
 import { CancelDialog } from "./InvoiceActions/CancelDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 interface InvoiceActionsProps {
   status: InvoiceStatus;
@@ -27,15 +28,13 @@ export const InvoiceActions = ({
   const handleGeneratePDF = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/invoice-actions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ invoiceId, action: "generate-pdf" }),
+      const { data, error } = await supabase.functions.invoke("invoice-actions", {
+        body: { invoiceId, action: "generate-pdf" },
       });
 
-      if (!response.ok) throw new Error("Falha ao gerar PDF");
+      if (error) throw error;
 
-      const { pdfUrl } = await response.json();
+      const { pdfUrl } = data;
       window.open(pdfUrl, "_blank");
 
       await onStatusChange("pending");
@@ -59,13 +58,11 @@ export const InvoiceActions = ({
   const handleSend = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/invoice-actions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ invoiceId, action: "send" }),
+      const { error } = await supabase.functions.invoke("invoice-actions", {
+        body: { invoiceId, action: "send" },
       });
 
-      if (!response.ok) throw new Error("Falha ao enviar fatura");
+      if (error) throw error;
 
       await onStatusChange("pending");
       
