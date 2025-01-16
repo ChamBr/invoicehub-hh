@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { FileEdit, Send, FileText, XCircle } from "lucide-react";
-import { InvoiceStatus } from "./types";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { InvoiceStatus } from "./types";
+import { ActionButtons } from "./InvoiceActions/ActionButtons";
+import { CancelDialog } from "./InvoiceActions/CancelDialog";
 
 interface InvoiceActionsProps {
   status: InvoiceStatus;
@@ -87,90 +85,26 @@ export const InvoiceActions = ({
     }
   };
 
-  const renderActionButtons = () => {
-    switch (status) {
-      case "draft":
-        return (
-          <Button variant="outline" onClick={onEdit}>
-            <FileEdit className="h-4 w-4 mr-2" />
-            Editar Rascunho
-          </Button>
-        );
-      
-      case "created":
-        return (
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={onEdit}>
-              <FileEdit className="h-4 w-4 mr-2" />
-              Voltar para Rascunho
-            </Button>
-            <Button onClick={handleSend} disabled={isLoading}>
-              <Send className="h-4 w-4 mr-2" />
-              Enviar
-            </Button>
-            <Button variant="outline" onClick={handleGeneratePDF} disabled={isLoading}>
-              <FileText className="h-4 w-4 mr-2" />
-              Gerar PDF
-            </Button>
-          </div>
-        );
-      
-      case "pending":
-        return (
-          <div className="flex gap-2">
-            {!emailSentAt && (
-              <Button onClick={handleSend} disabled={isLoading}>
-                <Send className="h-4 w-4 mr-2" />
-                Reenviar
-              </Button>
-            )}
-            {pdfUrl ? (
-              <Button variant="outline" onClick={() => window.open(pdfUrl, "_blank")}>
-                <FileText className="h-4 w-4 mr-2" />
-                Ver PDF
-              </Button>
-            ) : (
-              <Button variant="outline" onClick={handleGeneratePDF} disabled={isLoading}>
-                <FileText className="h-4 w-4 mr-2" />
-                Gerar PDF
-              </Button>
-            )}
-          </div>
-        );
-      
-      default:
-        return null;
-    }
+  const handleCancel = async () => {
+    await onStatusChange("cancelled");
   };
 
   return (
     <div className="flex gap-2 justify-between">
-      <div>{renderActionButtons()}</div>
+      <ActionButtons
+        status={status}
+        isLoading={isLoading}
+        emailSentAt={emailSentAt}
+        pdfUrl={pdfUrl}
+        onEdit={onEdit}
+        onSend={handleSend}
+        onGeneratePDF={handleGeneratePDF}
+      />
       
-      {status !== "draft" && status !== "cancelled" && (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">
-              <XCircle className="h-4 w-4 mr-2" />
-              Cancelar Fatura
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Cancelar Fatura</AlertDialogTitle>
-              <AlertDialogDescription>
-                Tem certeza que deseja cancelar esta fatura? Esta ação não pode ser desfeita.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Não</AlertDialogCancel>
-              <AlertDialogAction onClick={() => onStatusChange("cancelled")}>
-                Sim, cancelar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
+      <CancelDialog 
+        status={status}
+        onCancel={handleCancel}
+      />
     </div>
   );
 };
