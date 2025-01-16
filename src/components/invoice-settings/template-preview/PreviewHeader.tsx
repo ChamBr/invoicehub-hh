@@ -22,49 +22,43 @@ interface PreviewHeaderProps {
 
 export const PreviewHeader = ({ content, company }: PreviewHeaderProps) => {
   return (
-    <div className="space-y-6">
-      {/* Título e Logo */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-4xl font-bold text-invoice-blue">FATURA</h1>
-          <p className="text-sm text-gray-500 mt-1">INV-2024001</p>
-        </div>
-        {content.header.showLogo && (
-          <div className="border-2 border-dashed border-gray-300 rounded p-4 text-center w-48 h-24">
-            <span className="text-gray-500">Seu Logo Aqui</span>
-          </div>
-        )}
+    <div className="space-y-8">
+      {/* Cabeçalho com INVOICE e Número */}
+      <div className="flex justify-between items-center border-b border-[#33C3F0] pb-4">
+        <h1 className="text-3xl font-bold text-[#1EAEDB]">INVOICE</h1>
+        <p className="text-lg text-[#1EAEDB]">INV-2024001</p>
       </div>
 
-      {/* Informações da Empresa e Fatura */}
-      <div className="grid grid-cols-3 gap-4 bg-invoice-lightBlue p-4 rounded-lg">
-        {/* Dados da Empresa */}
-        <div>
-          <h2 className="font-semibold text-invoice-blue mb-2">{company.name}</h2>
+      {/* Grid de informações importantes */}
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <p className="text-sm text-gray-600 mb-1">Date:</p>
+          <p className="font-medium">{new Date().toLocaleDateString('pt-BR')}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <p className="text-sm text-gray-600 mb-1">Invoice No.</p>
+          <p className="font-medium">INV-2024001</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <p className="text-sm text-gray-600 mb-1">Date payment due</p>
+          <p className="font-medium">{new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('pt-BR')}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <p className="text-sm text-gray-600 mb-1">Lead time</p>
+          <p className="font-medium">2 weeks</p>
+        </div>
+      </div>
+
+      {/* Informações da Empresa e Cliente */}
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-[#1EAEDB] mb-3">{company.name}</h2>
           <div className="text-sm space-y-1 text-gray-600">
             <p>{company.address}</p>
-            <p>{company.city}, {company.state}</p>
-            <p>{company.zipCode}</p>
-          </div>
-        </div>
-
-        {/* Contato */}
-        <div>
-          <h2 className="font-semibold text-invoice-blue mb-2">Contato</h2>
-          <div className="text-sm space-y-1 text-gray-600">
+            <p>{company.city}, {company.state} {company.zipCode}</p>
             <p>{company.phone}</p>
             <p>{company.email}</p>
             <p>{company.website}</p>
-          </div>
-        </div>
-
-        {/* Dados da Fatura */}
-        <div>
-          <h2 className="font-semibold text-invoice-blue mb-2">Detalhes</h2>
-          <div className="text-sm space-y-1 text-gray-600">
-            <p><span className="font-medium">Data:</span> {new Date().toLocaleDateString('pt-BR')}</p>
-            <p><span className="font-medium">Vencimento:</span> {new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('pt-BR')}</p>
-            <p><span className="font-medium">Forma de Pagamento:</span> PIX</p>
           </div>
         </div>
       </div>
