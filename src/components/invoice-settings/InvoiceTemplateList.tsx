@@ -1,14 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Eye, FileText, Check } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import { InvoiceTemplate } from "@/components/invoices/templates/types";
 import { TemplatePreviewDialog } from "./template-preview/TemplatePreviewDialog";
 import { useToast } from "@/components/ui/use-toast";
-import { Badge } from "@/components/ui/badge";
+import { TemplateList } from "./template-list/TemplateList";
 
 const SAMPLE_COMPANY = {
   name: "InvoiceHub",
@@ -129,56 +125,16 @@ export const InvoiceTemplateList = () => {
     <div className="space-y-6">
       <h3 className="text-lg font-medium">Templates de Fatura</h3>
       
-      <ScrollArea className="h-[400px] rounded-md border p-4">
-        <div className="space-y-4">
-          {templates?.map((template) => (
-            <Card key={template.id}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <FileText className="h-5 w-5 text-gray-500" />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium">{template.name}</h3>
-                        {template.id === companyProfile?.active_template_id && (
-                          <Badge variant="secondary" className="text-xs">
-                            Ativo
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-500">{template.description}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setPreviewTemplate(template);
-                        setIsPreviewOpen(true);
-                      }}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Visualizar
-                    </Button>
-                    {template.id !== companyProfile?.active_template_id && (
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => activateTemplate.mutate(template.id)}
-                        disabled={activateTemplate.isPending}
-                      >
-                        <Check className="h-4 w-4 mr-2" />
-                        Ativar
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
+      <TemplateList
+        templates={templates || []}
+        activeTemplateId={companyProfile?.active_template_id}
+        onPreview={(template) => {
+          setPreviewTemplate(template);
+          setIsPreviewOpen(true);
+        }}
+        onActivate={(templateId) => activateTemplate.mutate(templateId)}
+        isActivating={activateTemplate.isPending}
+      />
 
       <TemplatePreviewDialog
         template={previewTemplate}
