@@ -53,9 +53,9 @@ export const CompanyForm = ({
       }
       
       // Garantir que todos os campos boolean sejam incluídos
-      formData.set('display_tax_id', formData.get('display_tax_id') === 'true' ? 'true' : 'false');
-      formData.set('display_phone', formData.get('display_phone') === 'true' ? 'true' : 'false');
-      formData.set('display_logo', formData.get('display_logo') === 'true' ? 'true' : 'false');
+      formData.set('display_tax_id', formData.get('display_tax_id') === 'on' ? 'true' : 'false');
+      formData.set('display_phone', formData.get('display_phone') === 'on' ? 'true' : 'false');
+      formData.set('display_logo', formData.get('display_logo') === 'on' ? 'true' : 'false');
       
       // Definir país padrão se não estiver presente
       if (!formData.get('country')) {
