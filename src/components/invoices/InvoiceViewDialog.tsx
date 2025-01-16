@@ -43,7 +43,6 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
 
       if (error) throw error;
 
-      // Mapear os dados para corresponder à interface InvoiceItem
       return {
         ...data,
         items: data.items.map((item: any) => ({

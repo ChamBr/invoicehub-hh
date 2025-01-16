@@ -1,6 +1,6 @@
 import { InvoiceDetailsItems } from "../InvoiceDetailsItems";
 import { Invoice } from "../types";
-import { InvoiceItems } from "../InvoiceItems";
+import InvoiceItems from "../InvoiceItems";
 
 interface InvoiceContentProps {
   invoice: Invoice;
@@ -23,7 +23,10 @@ export const InvoiceContent = ({ invoice, isEditing = false }: InvoiceContentPro
         {isEditing ? (
           <InvoiceItems 
             items={invoice.items} 
-            onItemsChange={() => {}} // Implementar a lógica de atualização
+            onAdd={() => {}}
+            onRemove={() => {}}
+            onUpdate={() => {}}
+            readOnly={false}
           />
         ) : (
           <InvoiceDetailsItems items={invoice.items} />
