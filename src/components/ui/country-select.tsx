@@ -18,8 +18,8 @@ import {
 const countries = [
   { label: "Estados Unidos", value: "US" },
   { label: "Brasil", value: "BR" },
-  { label: "Portugal", value: "PT" },
   { label: "Espanha", value: "ES" },
+  { label: "Portugal", value: "PT" },
 ] as const;
 
 export interface CountrySelectProps {
@@ -29,17 +29,16 @@ export interface CountrySelectProps {
 }
 
 export function CountrySelect({ 
-  value, 
+  value = "US", 
   onValueChange, 
   disabled = false 
 }: CountrySelectProps) {
   const [open, setOpen] = React.useState(false);
 
-  // Inicializa com o país selecionado ou Estados Unidos como padrão
+  // Garante que sempre tenhamos um país selecionado válido
   const selectedCountry = React.useMemo(() => {
-    if (!value) return countries[0]; // Estados Unidos como padrão
     const found = countries.find((country) => country.value === value);
-    return found || countries[0];
+    return found || countries[0]; // Retorna Estados Unidos se nenhum país for encontrado
   }, [value]);
 
   return (
