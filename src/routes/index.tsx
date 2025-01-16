@@ -1,5 +1,5 @@
 import { Routes as RouterRoutes, Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Pages
 import Index from "@/pages/Index";
