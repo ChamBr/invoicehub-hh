@@ -1,8 +1,6 @@
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { invoiceStatusConfig, type InvoiceStatus } from "@/components/invoices/types";
-import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { type InvoiceStatus } from "@/components/invoices/types";
+import { StatusBadge } from "@/components/invoices/StatusBadge";
 
 const invoices = [
   {
@@ -29,20 +27,6 @@ const invoices = [
 ];
 
 export function RecentInvoices() {
-  const getStatusIcon = (status: InvoiceStatus) => {
-    const icons = {
-      paid: CheckCircle2,
-      pending: Clock,
-      overdue: AlertCircle,
-      draft: CheckCircle2,
-      created: CheckCircle2,
-      sent: CheckCircle2,
-      cancelled: CheckCircle2,
-    };
-    const Icon = icons[status];
-    return <Icon className="h-4 w-4 mr-1" />;
-  };
-
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Faturas Recentes</h3>
@@ -58,16 +42,7 @@ export function RecentInvoices() {
             </div>
             <div className="text-right space-y-1">
               <p className="font-medium">{invoice.amount}</p>
-              <Badge
-                variant="outline"
-                className={cn(
-                  "capitalize inline-flex items-center",
-                  invoiceStatusConfig[invoice.status].color
-                )}
-              >
-                {getStatusIcon(invoice.status)}
-                {invoiceStatusConfig[invoice.status].label}
-              </Badge>
+              <StatusBadge status={invoice.status} />
             </div>
           </div>
         ))}

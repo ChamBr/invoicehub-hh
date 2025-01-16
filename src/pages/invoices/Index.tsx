@@ -3,13 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { PlusCircle, CheckCircle2, Clock, AlertCircle, Send, FileText, XCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { NewInvoiceDialog } from "@/components/invoices/NewInvoiceDialog";
-import { Invoice, invoiceStatusConfig, InvoiceStatus } from "@/components/invoices/types";
-import { cn } from "@/lib/utils";
+import { Invoice } from "@/components/invoices/types";
+import { StatusBadge } from "@/components/invoices/StatusBadge";
 
 const InvoicesIndex = () => {
   const navigate = useNavigate();
@@ -35,20 +34,6 @@ const InvoicesIndex = () => {
       return data as Invoice[];
     },
   });
-
-  const getStatusIcon = (status: InvoiceStatus) => {
-    const icons = {
-      draft: FileText,
-      created: CheckCircle2,
-      sent: Send,
-      pending: Clock,
-      overdue: AlertCircle,
-      cancelled: XCircle,
-      paid: CheckCircle2,
-    };
-    const Icon = icons[status];
-    return <Icon className="h-4 w-4 mr-1" />;
-  };
 
   if (isLoading) {
     return (
@@ -95,16 +80,7 @@ const InvoicesIndex = () => {
                     {new Date(invoice.due_date).toLocaleDateString("pt-BR")}
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "flex w-fit items-center gap-1",
-                        invoiceStatusConfig[invoice.status].color
-                      )}
-                    >
-                      {getStatusIcon(invoice.status)}
-                      <span>{invoiceStatusConfig[invoice.status].label}</span>
-                    </Badge>
+                    <StatusBadge status={invoice.status} />
                   </TableCell>
                   <TableCell className="text-right">
                     {new Intl.NumberFormat("pt-BR", {
