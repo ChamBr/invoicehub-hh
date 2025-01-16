@@ -20,5 +20,23 @@
       "submit": "Support & Feedback",
       "list": "Feedback List"
     }
+  },
+  "customers": {
+    "title": "Customers",
+    "add": "Add Customer",
+    "table": {
+      "empty": "No customers found",
+      "type": "Type",
+      "name": "Name",
+      "company_name": "Company Name",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "details": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    }
   }
 }

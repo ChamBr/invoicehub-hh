@@ -10,7 +10,7 @@
     "company": "Mi Empresa",
     "invoice_settings": "Personalizar Factura",
     "admin": {
-      "customers": "Clientes",
+      "subscribers": "Base de Usuarios",
       "plans": "Planes",
       "integrations": "Integraciones",
       "reports": "Informes",
@@ -21,28 +21,22 @@
       "list": "Lista de Feedback"
     }
   },
-  "invoice_settings": {
-    "title": "Configuración de Factura",
-    "tabs": {
-      "general": "General",
-      "templates": "Plantillas"
+  "customers": {
+    "title": "Clientes",
+    "add": "Agregar Cliente",
+    "table": {
+      "empty": "No se encontraron clientes",
+      "type": "Tipo",
+      "name": "Nombre",
+      "company_name": "Nombre de la Empresa",
+      "status": "Estado",
+      "actions": "Acciones"
     },
-    "currency": {
-      "currency": "Moneda",
-      "due_days": "Días de Vencimiento"
-    },
-    "numbering": {
-      "prefix": "Prefijo",
-      "prefix_placeholder": "Ej: FAC-",
-      "next_number": "Próximo Número"
-    },
-    "terms": {
-      "terms": "Términos y Condiciones",
-      "footer": "Pie de Factura"
-    },
-    "saving": "Guardando...",
-    "save": "Guardar Cambios",
-    "success": "Configuración actualizada con éxito",
-    "error": "Error al actualizar la configuración"
+    "details": {
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+      }
+    }
   }
 }
