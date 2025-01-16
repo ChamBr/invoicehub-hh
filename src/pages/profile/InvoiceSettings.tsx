@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { InvoiceNumberingForm } from "@/components/invoice-settings/InvoiceNumberingForm";
+import { InvoiceCurrencyForm } from "@/components/invoice-settings/InvoiceCurrencyForm";
+import { InvoiceTermsForm } from "@/components/invoice-settings/InvoiceTermsForm";
 
 const InvoiceSettings = () => {
   const { toast } = useToast();
@@ -67,7 +67,7 @@ const InvoiceSettings = () => {
   });
 
   if (isLoading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="p-8">Carregando...</div>;
   }
 
   return (
@@ -79,68 +79,20 @@ const InvoiceSettings = () => {
       }} className="bg-white rounded-lg shadow p-6 space-y-6">
         <h2 className="text-2xl font-bold">Configurações de Fatura</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="invoice_prefix">Prefixo da Fatura</Label>
-            <Input
-              id="invoice_prefix"
-              name="invoice_prefix"
-              defaultValue={companyProfile?.invoice_prefix}
-              placeholder="Ex: INV"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="invoice_next_number">Próximo Número</Label>
-            <Input
-              id="invoice_next_number"
-              name="invoice_next_number"
-              type="number"
-              defaultValue={companyProfile?.invoice_next_number}
-              min="1"
-            />
-          </div>
-        </div>
+        <InvoiceNumberingForm
+          defaultPrefix={companyProfile?.invoice_prefix}
+          defaultNextNumber={companyProfile?.invoice_next_number}
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="invoice_currency">Moeda</Label>
-          <Input
-            id="invoice_currency"
-            name="invoice_currency"
-            defaultValue={companyProfile?.invoice_currency || 'USD'}
-            placeholder="USD"
-          />
-        </div>
+        <InvoiceCurrencyForm
+          defaultCurrency={companyProfile?.invoice_currency}
+          defaultDueDays={companyProfile?.invoice_due_days}
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="invoice_due_days">Prazo de Pagamento (dias)</Label>
-          <Input
-            id="invoice_due_days"
-            name="invoice_due_days"
-            type="number"
-            defaultValue={companyProfile?.invoice_due_days}
-            min="0"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="invoice_terms">Termos e Condições</Label>
-          <Textarea
-            id="invoice_terms"
-            name="invoice_terms"
-            defaultValue={companyProfile?.invoice_terms}
-            rows={4}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="invoice_footer">Rodapé da Fatura</Label>
-          <Textarea
-            id="invoice_footer"
-            name="invoice_footer"
-            defaultValue={companyProfile?.invoice_footer}
-            rows={3}
-          />
-        </div>
+        <InvoiceTermsForm
+          defaultTerms={companyProfile?.invoice_terms}
+          defaultFooter={companyProfile?.invoice_footer}
+        />
 
         <Button
           type="submit"
