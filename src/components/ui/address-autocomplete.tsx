@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AddressAutofill, AddressAutofillProps } from "@mapbox/search-js-react";
+import { AddressAutofill } from "@mapbox/search-js-react";
 import { Input } from "./input";
 import { UseFormReturn } from "react-hook-form";
 import { useToast } from "./use-toast";
@@ -56,18 +56,19 @@ export function AddressAutocomplete({
 
   return (
     <div className="w-full">
-      <AddressAutofill 
-        accessToken={token}
-        onRetrieve={handleRetrieve}
-      >
-        <Input
-          ref={inputRef}
-          placeholder="Digite seu endereço"
-          value={value}
-          onChange={onChange}
-          {...props}
-        />
-      </AddressAutofill>
+      {React.createElement(AddressAutofill, {
+        accessToken: token,
+        onRetrieve: handleRetrieve,
+        children: (
+          <Input
+            ref={inputRef}
+            placeholder="Digite seu endereço"
+            value={value}
+            onChange={onChange}
+            {...props}
+          />
+        )
+      })}
     </div>
   );
 }
