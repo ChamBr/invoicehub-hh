@@ -23,7 +23,7 @@ const countries = [
 ] as const;
 
 export interface CountrySelectProps {
-  value: string;
+  value?: string;
   onValueChange: (value: string) => void;
   disabled?: boolean;
 }
@@ -35,10 +35,12 @@ export function CountrySelect({
 }: CountrySelectProps) {
   const [open, setOpen] = React.useState(false);
 
-  // Garante que o valor inicial seja válido, usando US como padrão
-  const selectedCountry = countries.find((country) => country.value === value) || 
-                         countries.find((country) => country.value === "US") || 
-                         countries[0];
+  // Inicializa com o país selecionado ou Estados Unidos como padrão
+  const selectedCountry = React.useMemo(() => {
+    if (!value) return countries[0]; // Estados Unidos como padrão
+    const found = countries.find((country) => country.value === value);
+    return found || countries[0];
+  }, [value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
