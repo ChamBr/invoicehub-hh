@@ -1,11 +1,11 @@
 export type InvoiceStatus = 'draft' | 'created' | 'sent' | 'pending' | 'overdue' | 'cancelled' | 'paid';
 
 export interface InvoiceItem {
+  id: string;
   productId: string | null;
   description: string;
   quantity: number;
   price: number;
-  hasTax: boolean;
   total: number;
 }
 
@@ -17,6 +17,7 @@ export interface Invoice {
   due_date: string;
   total: number;
   notes?: string;
+  items?: InvoiceItem[];
   customer?: {
     name: string;
   };
