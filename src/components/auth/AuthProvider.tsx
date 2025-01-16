@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSessionManagement } from "@/hooks/use-session";
 
 interface AuthContextType {
   session: Session | null;
@@ -29,44 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  // Função para limpar a sessão e storage local
-  const clearSession = () => {
-    setSession(null);
-    localStorage.clear(); // Limpa todo o localStorage
-  };
-
-  // Função para limpar a sessão e redirecionar para login
-  const handleSessionEnd = (message: string) => {
-    clearSession();
-    navigate("/login");
-    toast({
-      title: "Sessão encerrada",
-      description: message,
-    });
-  };
-
-  // Função para verificar a validade da sessão
-  const checkSessionValidity = (currentSession: Session) => {
-    const expirationTime = new Date(currentSession.expires_at! * 1000);
-    const now = new Date();
-    const timeUntilExpiration = expirationTime.getTime() - now.getTime();
-
-    if (timeUntilExpiration <= 0) {
-      handleSessionEnd("Sua sessão expirou. Por favor, faça login novamente.");
-      return false;
-    }
-
-    if (timeUntilExpiration < 5 * 60 * 1000) {
-      toast({
-        title: "Atenção",
-        description: "Sua sessão irá expirar em breve. Por favor, faça login novamente.",
-        duration: 10000,
-      });
-    }
-
-    return true;
-  };
+  const { clearSession, handleSessionEnd, checkSessionValidity } = useSessionManagement(session, setSession);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -151,7 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
       clearInterval(sessionCheck);
     };
-  }, [navigate, toast]);
+  }, [navigate, toast, clearSession, handleSessionEnd, checkSessionValidity]);
 
   return (
     <AuthContext.Provider value={{ session, isLoading, clearSession }}>
