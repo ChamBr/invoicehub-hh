@@ -10,8 +10,8 @@ import {
 import { useTranslation } from "react-i18next"
 
 const countries = [
-  { code: "USA", name: "United States" },
-  { code: "BRA", name: "Brazil" },
+  { code: "US", name: "United States" },
+  { code: "BR", name: "Brazil" },
 ]
 
 interface CountrySelectProps {
