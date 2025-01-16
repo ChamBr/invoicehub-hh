@@ -29,14 +29,24 @@ export default function InvoiceDetails() {
             quantity,
             price,
             total,
-            hasTax
+            has_tax
           )
         `)
         .eq("id", id)
         .single();
 
       if (error) throw error;
-      return data;
+      
+      // Transformar has_tax para hasTax para manter consistência com a interface
+      const transformedData = {
+        ...data,
+        items: data.items?.map(item => ({
+          ...item,
+          hasTax: item.has_tax
+        }))
+      };
+
+      return transformedData;
     },
   });
 

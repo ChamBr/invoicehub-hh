@@ -6,6 +6,7 @@ import { InvoiceDetailsItems } from "./InvoiceDetailsItems";
 import { StatusBadge } from "./StatusBadge";
 import { InvoiceActions } from "./InvoiceActions";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface InvoiceViewDialogProps {
   invoice: Invoice | null;

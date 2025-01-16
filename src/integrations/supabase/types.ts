@@ -260,6 +260,7 @@ export type Database = {
       invoice_items: {
         Row: {
           description: string
+          has_tax: boolean | null
           id: string
           invoice_id: string
           price: number
@@ -269,6 +270,7 @@ export type Database = {
         }
         Insert: {
           description: string
+          has_tax?: boolean | null
           id?: string
           invoice_id: string
           price: number
@@ -278,6 +280,7 @@ export type Database = {
         }
         Update: {
           description?: string
+          has_tax?: boolean | null
           id?: string
           invoice_id?: string
           price?: number
