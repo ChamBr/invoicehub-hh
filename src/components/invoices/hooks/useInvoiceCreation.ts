@@ -6,6 +6,14 @@ import { InvoiceItem } from "../types";
 import { calculateTotal } from "../utils";
 import { useQuery } from "@tanstack/react-query";
 
+interface InvoiceData {
+  customer_id: string;
+  status: 'draft' | 'created';
+  due_date: string;
+  total: number;
+  template_id?: string;
+}
+
 export const useInvoiceCreation = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -13,7 +21,6 @@ export const useInvoiceCreation = () => {
   const [items, setItems] = useState<InvoiceItem[]>([]);
   const [createdInvoice, setCreatedInvoice] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>();
 
   // Buscar o template ativo do perfil da empresa
   const { data: activeTemplate } = useQuery({
@@ -33,7 +40,7 @@ export const useInvoiceCreation = () => {
           )
         `)
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile?.active_template_id) return null;
 
@@ -44,6 +51,7 @@ export const useInvoiceCreation = () => {
     },
   });
 
+  // Handlers para gerenciamento de items
   const handleCustomerSelect = (customerId: string) => {
     setSelectedCustomer(customerId);
   };
@@ -60,14 +68,15 @@ export const useInvoiceCreation = () => {
     setItems(items.map((item, i) => (i === index ? updatedItem : item)));
   };
 
-  const handleSubmit = async (status: 'draft' | 'created') => {
+  // Validações
+  const validateInvoiceData = () => {
     if (!selectedCustomer) {
       toast({
         variant: "destructive",
         title: "Erro",
         description: "Por favor, selecione um cliente.",
       });
-      return;
+      return false;
     }
 
     if (items.length === 0) {
@@ -76,38 +85,58 @@ export const useInvoiceCreation = () => {
         title: "Erro",
         description: "Adicione pelo menos um item à fatura.",
       });
-      return;
+      return false;
     }
 
+    return true;
+  };
+
+  // Criação da fatura
+  const createInvoice = async (invoiceData: InvoiceData) => {
+    const { data: invoice, error: invoiceError } = await supabase
+      .from("invoices")
+      .insert(invoiceData)
+      .select()
+      .single();
+
+    if (invoiceError) throw invoiceError;
+    return invoice;
+  };
+
+  // Criação dos itens da fatura
+  const createInvoiceItems = async (invoiceId: string) => {
+    const invoiceItems = items.map((item) => ({
+      invoice_id: invoiceId,
+      product_id: item.productId || null,
+      description: item.description,
+      quantity: item.quantity,
+      price: item.price,
+      total: item.total,
+      has_tax: item.hasTax,
+    }));
+
+    const { error: itemsError } = await supabase
+      .from("invoice_items")
+      .insert(invoiceItems);
+
+    if (itemsError) throw itemsError;
+  };
+
+  // Handler principal de submissão
+  const handleSubmit = async (status: 'draft' | 'created') => {
+    if (!validateInvoiceData()) return;
+
     try {
-      const { data: invoice, error: invoiceError } = await supabase
-        .from("invoices")
-        .insert({
-          customer_id: selectedCustomer,
-          status: status,
-          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          total: calculateTotal(items),
-          template_id: activeTemplate?.id,
-        })
-        .select()
-        .single();
+      const invoiceData: InvoiceData = {
+        customer_id: selectedCustomer!,
+        status,
+        due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        total: calculateTotal(items),
+        template_id: activeTemplate?.id,
+      };
 
-      if (invoiceError) throw invoiceError;
-
-      const invoiceItems = items.map((item) => ({
-        invoice_id: invoice.id,
-        product_id: item.productId || null,
-        description: item.description,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.total,
-      }));
-
-      const { error: itemsError } = await supabase
-        .from("invoice_items")
-        .insert(invoiceItems);
-
-      if (itemsError) throw itemsError;
+      const invoice = await createInvoice(invoiceData);
+      await createInvoiceItems(invoice.id);
 
       toast({
         title: "Sucesso",
@@ -137,8 +166,7 @@ export const useInvoiceCreation = () => {
     items,
     createdInvoice,
     isViewDialogOpen,
-    selectedTemplate,
-    setSelectedTemplate,
+    activeTemplate,
     setIsViewDialogOpen,
     handleCustomerSelect,
     handleAddItem,
