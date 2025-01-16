@@ -87,8 +87,8 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="container max-w-4xl mx-auto px-4 py-8">
+      <div className="space-y-6">
         <Card>
           <CardContent className="pt-6">
             <ProfileHeader

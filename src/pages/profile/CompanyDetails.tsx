@@ -128,82 +128,84 @@ const CompanyDetails = () => {
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto">
+    <div className="container max-w-4xl mx-auto px-4 py-8">
       <form onSubmit={(e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         updateCompanyProfile.mutate(formData);
-      }} className="bg-white rounded-lg shadow p-6 space-y-6">
-        <h2 className="text-2xl font-bold">Informações da Empresa</h2>
+      }} className="space-y-6">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-2xl font-bold mb-6">Informações da Empresa</h2>
 
-        <LogoUpload
-          logoUrl={companyProfile?.logo_url}
-          onLogoChange={setLogoFile}
-          displayLogo={companyProfile?.display_logo}
-          onDisplayLogoChange={(checked) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('display_logo', checked.toString());
-              updateCompanyProfile.mutate(formData);
-            }
-          }}
-        />
+          <LogoUpload
+            logoUrl={companyProfile?.logo_url}
+            onLogoChange={setLogoFile}
+            displayLogo={companyProfile?.display_logo}
+            onDisplayLogoChange={(checked) => {
+              const form = document.querySelector('form');
+              if (form) {
+                const formData = new FormData(form);
+                formData.set('display_logo', checked.toString());
+                updateCompanyProfile.mutate(formData);
+              }
+            }}
+          />
 
-        <CompanyBasicInfo
-          companyName={companyProfile?.company_name}
-          taxId={companyProfile?.tax_id}
-          displayTaxId={companyProfile?.display_tax_id}
-          country={companyProfile?.country}
-          onCountryChange={(value) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('country', value);
-              updateCompanyProfile.mutate(formData);
-            }
-          }}
-          onDisplayTaxIdChange={(checked) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('display_tax_id', checked.toString());
-              updateCompanyProfile.mutate(formData);
-            }
-          }}
-        />
+          <CompanyBasicInfo
+            companyName={companyProfile?.company_name}
+            taxId={companyProfile?.tax_id}
+            displayTaxId={companyProfile?.display_tax_id}
+            country={companyProfile?.country}
+            onCountryChange={(value) => {
+              const form = document.querySelector('form');
+              if (form) {
+                const formData = new FormData(form);
+                formData.set('country', value);
+                updateCompanyProfile.mutate(formData);
+              }
+            }}
+            onDisplayTaxIdChange={(checked) => {
+              const form = document.querySelector('form');
+              if (form) {
+                const formData = new FormData(form);
+                formData.set('display_tax_id', checked.toString());
+                updateCompanyProfile.mutate(formData);
+              }
+            }}
+          />
 
-        <CompanyAddress
-          addressLine2={companyProfile?.address_line2}
-          city={companyProfile?.city}
-          state={companyProfile?.state}
-          zipCode={companyProfile?.zip_code}
-          onAddressSelect={handleAddressSelect}
-        />
+          <CompanyAddress
+            addressLine2={companyProfile?.address_line2}
+            city={companyProfile?.city}
+            state={companyProfile?.state}
+            zipCode={companyProfile?.zip_code}
+            onAddressSelect={handleAddressSelect}
+          />
 
-        <CompanyContact
-          phone={companyProfile?.phone}
-          mobile={companyProfile?.mobile}
-          email={companyProfile?.email}
-          website={companyProfile?.website}
-          displayPhone={companyProfile?.display_phone}
-          onDisplayPhoneChange={(checked) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('display_phone', checked.toString());
-              updateCompanyProfile.mutate(formData);
-            }
-          }}
-        />
+          <CompanyContact
+            phone={companyProfile?.phone}
+            mobile={companyProfile?.mobile}
+            email={companyProfile?.email}
+            website={companyProfile?.website}
+            displayPhone={companyProfile?.display_phone}
+            onDisplayPhoneChange={(checked) => {
+              const form = document.querySelector('form');
+              if (form) {
+                const formData = new FormData(form);
+                formData.set('display_phone', checked.toString());
+                updateCompanyProfile.mutate(formData);
+              }
+            }}
+          />
 
-        <Button
-          type="submit"
-          className="w-full md:w-auto"
-          disabled={updateCompanyProfile.isPending}
-        >
-          {updateCompanyProfile.isPending ? "Salvando..." : "Salvar Alterações"}
-        </Button>
+          <Button
+            type="submit"
+            className="w-full md:w-auto"
+            disabled={updateCompanyProfile.isPending}
+          >
+            {updateCompanyProfile.isPending ? "Salvando..." : "Salvar Alterações"}
+          </Button>
+        </div>
       </form>
     </div>
   );
