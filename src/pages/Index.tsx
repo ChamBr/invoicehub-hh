@@ -60,7 +60,7 @@ const defaultMetrics: DashboardMetric[] = [
     id: "overdue",
     title: "Overdue Invoices",
     value: "23",
-    secondaryValue: "R$ 12.450,00",
+    secondaryValue: "$12,450.00",
     icon: "AlertCircle",
     isEnabled: true,
     order: 3,
