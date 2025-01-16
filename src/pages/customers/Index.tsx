@@ -37,7 +37,7 @@ const CustomersIndex = () => {
     name: customer.name,
     contactName: customer.contact_name,
     email: customer.email,
-    country: "BR", // Default value since it's required
+    country: "BR",
     phone: customer.phone,
     taxExempt: customer.tax_exempt,
     taxId: customer.tax_id,
@@ -106,11 +106,13 @@ const CustomersIndex = () => {
     <div className="container mx-auto px-4 py-8">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <CustomerHeader />
-        <CustomerTable
-          customers={customers}
-          onRowClick={handleRowClick}
-          onDeleteClick={handleDeleteClick}
-        />
+        <div className="mt-8 bg-white rounded-lg shadow-sm">
+          <CustomerTable
+            customers={customers}
+            onRowClick={handleRowClick}
+            onDeleteClick={handleDeleteClick}
+          />
+        </div>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>
