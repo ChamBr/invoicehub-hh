@@ -19,7 +19,7 @@ import FeedbackIndex from "./pages/feedback/Index";
 import UserProfile from "./pages/profile/UserProfile";
 import CompanyDetails from "./pages/profile/CompanyDetails";
 import InvoiceSettings from "./pages/profile/InvoiceSettings";
-import AdminCustomers from "./pages/admin/customers/Index";
+import AdminSubscribers from "./pages/admin/subscribers/Index";
 import AdminPlans from "./pages/admin/plans/Index";
 import AdminIntegrations from "./pages/admin/integrations/Index";
 import AdminReports from "./pages/admin/reports/Index";
@@ -53,7 +53,7 @@ const AppLayout = () => {
                 <Route path="/profile/invoice-settings" element={<ProtectedRoute><InvoiceSettings /></ProtectedRoute>} />
                 
                 {/* Rotas administrativas */}
-                <Route path="/admin/customers" element={<ProtectedRoute><AdminCustomers /></ProtectedRoute>} />
+                <Route path="/admin/subscribers" element={<ProtectedRoute><AdminSubscribers /></ProtectedRoute>} />
                 <Route path="/admin/plans" element={<ProtectedRoute><AdminPlans /></ProtectedRoute>} />
                 <Route path="/admin/integrations" element={<ProtectedRoute><AdminIntegrations /></ProtectedRoute>} />
                 <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>} />
