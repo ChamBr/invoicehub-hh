@@ -14,18 +14,21 @@ export const customerFormSchema = z.object({
       if (!value) return true;
       return true;
     }, "Formato de telefone inválido")
-    .transform((value, ctx) => {
-      if (!value) return null;
+    .superRefine((value, ctx) => {
+      if (!value) return;
 
-      const parentData = ctx.input as { country?: string };
-      const country = parentData.country || "BR";
+      const formData = ctx.path.reduce((acc, key, index) => {
+        if (index === ctx.path.length - 1) return acc;
+        return acc[key as keyof typeof acc];
+      }, ctx.data as any);
+
+      const country = formData?.country || "BR";
       
       if (country === "BR" && !phoneRegexBR.test(value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Formato de telefone brasileiro inválido",
         });
-        return z.NEVER;
       }
       
       if (country === "US" && !phoneRegexUS.test(value)) {
@@ -33,10 +36,7 @@ export const customerFormSchema = z.object({
           code: z.ZodIssueCode.custom,
           message: "Formato de telefone americano inválido",
         });
-        return z.NEVER;
       }
-
-      return value;
     })
     .optional()
     .nullable(),
