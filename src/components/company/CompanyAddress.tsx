@@ -5,6 +5,7 @@ import { AddressField } from "./AddressField";
 import { useAddressState } from "./hooks/useAddressState";
 
 interface CompanyAddressProps {
+  addressLine1?: string;
   addressLine2?: string;
   city?: string;
   state?: string;
@@ -14,6 +15,7 @@ interface CompanyAddressProps {
 }
 
 export const CompanyAddress: React.FC<CompanyAddressProps> = ({
+  addressLine1,
   addressLine2,
   city,
   state,
@@ -25,12 +27,13 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   const format = addressFormats[country] || addressFormats.BR;
 
   const {
-    addressLine1,
+    addressLine1: localAddressLine1,
     city: localCity,
     state: localState,
     zipCode: localZipCode,
     updateAddress,
   } = useAddressState({
+    initialAddressLine1: addressLine1,
     initialCity: city,
     initialState: state,
     initialZipCode: zipCode,
@@ -44,7 +47,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
       
       <AddressField
         id="address_line1"
-        value={addressLine1}
+        value={localAddressLine1}
         onChange={(value) => updateAddress('line1', value, addressLine2)}
         label={t('company.address_line1')}
         placeholder={t('company.address_line1_placeholder')}

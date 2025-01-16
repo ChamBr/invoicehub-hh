@@ -10,6 +10,7 @@ interface Address {
 }
 
 interface UseAddressStateProps {
+  initialAddressLine1?: string;
   initialCity?: string;
   initialState?: string;
   initialZipCode?: string;
@@ -18,13 +19,14 @@ interface UseAddressStateProps {
 }
 
 export const useAddressState = ({
+  initialAddressLine1 = '',
   initialCity = '',
   initialState = '',
   initialZipCode = '',
   initialCountry = 'BR',
   onAddressSelect,
 }: UseAddressStateProps) => {
-  const [addressLine1, setAddressLine1] = useState('');
+  const [addressLine1, setAddressLine1] = useState(initialAddressLine1);
   const [city, setCity] = useState(initialCity);
   const [state, setState] = useState(initialState);
   const [zipCode, setZipCode] = useState(initialZipCode);

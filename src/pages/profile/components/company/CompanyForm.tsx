@@ -39,8 +39,14 @@ export const CompanyForm = ({
       if (!formData.get('country')) {
         formData.set('country', companyProfile?.country || 'BR');
       }
-      if (!formData.get('display_tax_id')) {
+      if (!formData.has('display_tax_id')) {
         formData.set('display_tax_id', 'false');
+      }
+      if (!formData.has('display_phone')) {
+        formData.set('display_phone', 'false');
+      }
+      if (!formData.has('display_logo')) {
+        formData.set('display_logo', 'false');
       }
       onSubmit(formData);
     }} className="space-y-8">
@@ -86,6 +92,7 @@ export const CompanyForm = ({
         <div className="space-y-8">
           <FormSection>
             <CompanyAddress
+              addressLine1={companyProfile?.address_line1}
               addressLine2={companyProfile?.address_line2}
               city={companyProfile?.city}
               state={companyProfile?.state}
