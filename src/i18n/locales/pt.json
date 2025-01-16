@@ -6,9 +6,9 @@
     "customers": "Clientes",
     "products": "Produtos",
     "invoices": "Faturas",
-    "profile": "Perfil",
-    "company": "Empresa",
-    "invoice_settings": "Personalizar Invoice",
+    "profile": "Meu Perfil",
+    "company": "Minha Empresa",
+    "invoice_settings": "Personalizar Fatura",
     "admin": {
       "customers": "Clientes",
       "plans": "Planos",
@@ -21,68 +21,28 @@
       "list": "Lista de Feedback"
     }
   },
-  "customers": {
-    "form": {
-      "title": "Novo Cliente",
-      "edit_title": "Editar Cliente",
-      "company_name": "Nome da Empresa",
-      "company_name_placeholder": "Digite o nome da empresa",
-      "name": "Nome",
-      "name_placeholder": "Digite o nome completo",
-      "country": "País",
-      "email": "Email",
-      "email_placeholder": "email@exemplo.com",
-      "phone": "Telefone",
-      "phone_placeholder": "Digite o telefone",
-      "tax_exempt": "Isenção de Impostos",
-      "tax_exempt_description": "O cliente está isento de impostos?",
-      "notes": "Observações",
-      "notes_placeholder": "Adicione observações sobre o cliente",
-      "type": {
-        "label": "Tipo",
-        "personal": "Pessoa Física",
-        "company": "Empresa"
-      }
+  "invoice_settings": {
+    "title": "Configurações da Fatura",
+    "tabs": {
+      "general": "Geral",
+      "templates": "Modelos"
     },
-    "details": {
-      "edit": "Editar Cliente",
-      "contact": "Contato",
-      "not_informed": "Não informado",
-      "status": {
-        "label": "Status",
-        "active": "Ativo",
-        "inactive": "Inativo"
-      }
+    "currency": {
+      "currency": "Moeda",
+      "due_days": "Dias para Vencimento"
     },
-    "table": {
-      "type": "Tipo",
-      "name": "Nome",
-      "company_name": "Nome da Empresa",
-      "status": "Status",
-      "actions": "Ações",
-      "empty": "Nenhum cliente cadastrado"
+    "numbering": {
+      "prefix": "Prefixo",
+      "prefix_placeholder": "Ex: FAT-",
+      "next_number": "Próximo Número"
     },
-    "delete": {
-      "title": "Confirmar exclusão",
-      "description": "Tem certeza que deseja excluir este cliente?",
-      "cancel": "Cancelar",
-      "confirm": "Confirmar"
+    "terms": {
+      "terms": "Termos e Condições",
+      "footer": "Rodapé da Fatura"
     },
-    "validation": {
-      "required": "Este campo é obrigatório",
-      "email": "Por favor insira um email válido",
-      "phone": "Por favor insira um telefone válido",
-      "min_length": "Deve ter pelo menos {{count}} caracteres",
-      "max_length": "Deve ter no máximo {{count}} caracteres"
-    }
-  },
-  "dashboard": {
-    "welcome": "Bem-vindo ao seu painel",
-    "metrics": {
-      "revenue": "Receita Total",
-      "growth": "Crescimento Mensal",
-      "clients": "Clientes Ativos",
-      "overdue": "Faturas Vencidas"
-    }
+    "saving": "Salvando...",
+    "save": "Salvar Alterações",
+    "success": "Configurações atualizadas com sucesso",
+    "error": "Erro ao atualizar configurações"
   }
 }

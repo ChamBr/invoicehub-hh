@@ -78,8 +78,8 @@ const InvoiceSettings = () => {
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <Tabs defaultValue="general" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="general">Configurações Gerais</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
+          <TabsTrigger value="general">{t('invoice_settings.tabs.general')}</TabsTrigger>
+          <TabsTrigger value="templates">{t('invoice_settings.tabs.templates')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general">

@@ -6,8 +6,8 @@
     "customers": "Clientes",
     "products": "Productos",
     "invoices": "Facturas",
-    "profile": "Perfil",
-    "company": "Empresa",
+    "profile": "Mi Perfil",
+    "company": "Mi Empresa",
     "invoice_settings": "Personalizar Factura",
     "admin": {
       "customers": "Clientes",
@@ -21,68 +21,28 @@
       "list": "Lista de Feedback"
     }
   },
-  "customers": {
-    "form": {
-      "title": "Nuevo Cliente",
-      "edit_title": "Editar Cliente",
-      "company_name": "Nombre de la Empresa",
-      "company_name_placeholder": "Ingrese el nombre de la empresa",
-      "name": "Nombre",
-      "name_placeholder": "Ingrese el nombre completo",
-      "country": "País",
-      "email": "Correo electrónico",
-      "email_placeholder": "correo@ejemplo.com",
-      "phone": "Teléfono",
-      "phone_placeholder": "Ingrese el número de teléfono",
-      "tax_exempt": "Exención de Impuestos",
-      "tax_exempt_description": "¿El cliente está exento de impuestos?",
-      "notes": "Notas",
-      "notes_placeholder": "Agregue notas sobre el cliente",
-      "type": {
-        "label": "Tipo",
-        "personal": "Persona",
-        "company": "Empresa"
-      }
+  "invoice_settings": {
+    "title": "Configuración de Factura",
+    "tabs": {
+      "general": "General",
+      "templates": "Plantillas"
     },
-    "details": {
-      "edit": "Editar Cliente",
-      "contact": "Contacto",
-      "not_informed": "No informado",
-      "status": {
-        "label": "Estado",
-        "active": "Activo",
-        "inactive": "Inactivo"
-      }
+    "currency": {
+      "currency": "Moneda",
+      "due_days": "Días de Vencimiento"
     },
-    "table": {
-      "type": "Tipo",
-      "name": "Nombre",
-      "company_name": "Nombre de la Empresa",
-      "status": "Estado",
-      "actions": "Acciones",
-      "empty": "No hay clientes registrados"
+    "numbering": {
+      "prefix": "Prefijo",
+      "prefix_placeholder": "Ej: FAC-",
+      "next_number": "Próximo Número"
     },
-    "delete": {
-      "title": "Confirmar eliminación",
-      "description": "¿Está seguro de que desea eliminar este cliente?",
-      "cancel": "Cancelar",
-      "confirm": "Confirmar"
+    "terms": {
+      "terms": "Términos y Condiciones",
+      "footer": "Pie de Factura"
     },
-    "validation": {
-      "required": "Este campo es obligatorio",
-      "email": "Por favor ingrese un correo electrónico válido",
-      "phone": "Por favor ingrese un número de teléfono válido",
-      "min_length": "Debe tener al menos {{count}} caracteres",
-      "max_length": "Debe tener como máximo {{count}} caracteres"
-    }
-  },
-  "dashboard": {
-    "welcome": "Bienvenido a su panel de control",
-    "metrics": {
-      "revenue": "Ingresos Totales",
-      "growth": "Crecimiento Mensual",
-      "clients": "Clientes Activos",
-      "overdue": "Facturas Vencidas"
-    }
+    "saving": "Guardando...",
+    "save": "Guardar Cambios",
+    "success": "Configuración actualizada con éxito",
+    "error": "Error al actualizar la configuración"
   }
 }

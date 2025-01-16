@@ -22,6 +22,7 @@ export const InvoiceNumberingForm = ({
           name="invoice_prefix"
           defaultValue={defaultPrefix}
           placeholder={t('invoice_settings.numbering.prefix_placeholder')}
+          className="focus:ring-2 focus:ring-primary focus:border-primary invalid:border-red-500 invalid:ring-red-500"
         />
       </div>
       <div className="space-y-2">
@@ -32,6 +33,7 @@ export const InvoiceNumberingForm = ({
           type="number"
           defaultValue={defaultNextNumber}
           min="1"
+          className="focus:ring-2 focus:ring-primary focus:border-primary invalid:border-red-500 invalid:ring-red-500"
         />
       </div>
     </div>

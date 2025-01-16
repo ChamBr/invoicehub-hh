@@ -22,6 +22,7 @@ export const InvoiceCurrencyForm = ({
           name="invoice_currency"
           defaultValue={defaultCurrency || 'USD'}
           placeholder="USD"
+          className="focus:ring-2 focus:ring-primary focus:border-primary invalid:border-red-500 invalid:ring-red-500"
         />
       </div>
       <div className="space-y-2">
@@ -32,6 +33,7 @@ export const InvoiceCurrencyForm = ({
           type="number"
           defaultValue={defaultDueDays}
           min="0"
+          className="focus:ring-2 focus:ring-primary focus:border-primary invalid:border-red-500 invalid:ring-red-500"
         />
       </div>
     </div>
