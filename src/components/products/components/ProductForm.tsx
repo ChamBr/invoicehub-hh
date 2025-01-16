@@ -2,12 +2,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ProductTypeField } from "./form/ProductTypeField";
+import { ProductBasicFields } from "./form/ProductBasicFields";
+import { ProductPricingFields } from "./form/ProductPricingFields";
+import { ProductStockField } from "./form/ProductStockField";
+import { ProductFormActions } from "./form/ProductFormActions";
 
 const productSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
@@ -73,88 +75,11 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('products.form.name')}</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('products.form.description')}</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('products.form.price')}</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                  value={field.value}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="sku"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('products.form.sku')}</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="stock"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('products.form.stock')}</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  value={field.value}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            {t('common.actions.cancel')}
-          </Button>
-          <Button type="submit">
-            {t('common.actions.create')}
-          </Button>
-        </div>
+        <ProductTypeField form={form} />
+        <ProductBasicFields form={form} />
+        <ProductPricingFields form={form} />
+        <ProductStockField form={form} show={form.watch("type") === "product"} />
+        <ProductFormActions onCancel={onCancel} isLoading={form.formState.isSubmitting} />
       </form>
     </Form>
   );
