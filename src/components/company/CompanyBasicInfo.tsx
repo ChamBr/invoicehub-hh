@@ -36,16 +36,19 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-2">
           <Label htmlFor="country">{t('company.country')}</Label>
           <CountrySelect
-            value={country}
+            defaultValue={country}
             onValueChange={handleCountryChange}
-            countries={['BR', 'US']}
+            options={[
+              { value: 'BR', label: 'Brasil' },
+              { value: 'US', label: 'United States' }
+            ]}
           />
         </div>
-        <div className="space-y-2 md:col-span-2">
+        <div className="col-span-6">
           <Label htmlFor="company_name">{t('company.name')}</Label>
           <Input
             id="company_name"
@@ -55,29 +58,27 @@ export const CompanyBasicInfo: React.FC<CompanyBasicInfoProps> = ({
             required
           />
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="tax_id">{format.taxIdLabel}</Label>
-        <div className="space-y-2">
+        <div className="col-span-4">
+          <Label htmlFor="tax_id">{format.taxIdLabel}</Label>
           <Input
             id="tax_id"
             name="tax_id"
             defaultValue={taxId}
             placeholder={format.taxIdMask}
           />
-          <div className="flex items-center gap-2">
-            <Switch
-              id="display_tax_id"
-              name="display_tax_id"
-              checked={displayTaxId}
-              onCheckedChange={handleDisplayTaxIdChange}
-            />
-            <Label htmlFor="display_tax_id" className="text-sm text-muted-foreground">
-              {t('company.display_tax_id')}
-            </Label>
-          </div>
         </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Switch
+          id="display_tax_id"
+          name="display_tax_id"
+          checked={displayTaxId}
+          onCheckedChange={handleDisplayTaxIdChange}
+        />
+        <Label htmlFor="display_tax_id" className="text-sm text-muted-foreground">
+          {t('company.display_tax_id')}
+        </Label>
       </div>
     </div>
   );
