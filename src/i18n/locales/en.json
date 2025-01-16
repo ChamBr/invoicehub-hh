@@ -22,6 +22,23 @@
       "list": "Feedback List"
     }
   },
+  "company": {
+    "title": "Company Details",
+    "basic_info": "Basic Information",
+    "contact": "Contact Information",
+    "address": "Address",
+    "country": "Country",
+    "name": "Company Name",
+    "name_placeholder": "Enter your company name",
+    "display_tax_id": "Display Tax ID on invoice",
+    "address_line1": "Address",
+    "address_line1_placeholder": "Street, number",
+    "address_line2": "Additional Address (Optional)",
+    "address_line2_placeholder": "Apartment, suite, unit, etc.",
+    "tax_info": "Tax Information",
+    "save": "Save Changes",
+    "saving": "Saving..."
+  },
   "customers": {
     "title": "Customers",
     "add": "Add Customer",
@@ -83,15 +100,6 @@
       "subscribe": "Subscribe to a Plan",
       "change": "Change Plan"
     }
-  },
-  "company": {
-    "title": "Company Details",
-    "basic_info": "Basic Information",
-    "contact": "Contact Information",
-    "address": "Address",
-    "tax_info": "Tax Information",
-    "save": "Save Changes",
-    "saving": "Saving..."
   },
   "invoice_settings": {
     "title": "Invoice Settings",

@@ -2,6 +2,7 @@ import * as React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { addressFormats } from "./types";
+import { useTranslation } from "react-i18next";
 
 interface CompanyAddressProps {
   addressLine2?: string;
@@ -20,6 +21,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   country = 'BR',
   onAddressSelect,
 }) => {
+  const { t } = useTranslation();
   const format = addressFormats[country] || addressFormats.BR;
   const [localCity, setLocalCity] = React.useState(city || "");
   const [localState, setLocalState] = React.useState(state || "");
@@ -51,27 +53,37 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">{format.addressLabel}</h3>
+      <h3 className="text-lg font-semibold">{t('company.address')}</h3>
       <div className="space-y-2">
-        <Label htmlFor="address_line1">Endereço</Label>
+        <Label htmlFor="address_line1">{t('company.address_line1')}</Label>
         <Input
           id="address_line1"
           name="address_line1"
-          placeholder="Rua, número"
+          placeholder={t('company.address_line1_placeholder')}
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="address_line2">Complemento (Opcional)</Label>
+        <Label htmlFor="address_line2">{t('company.address_line2')}</Label>
         <Input
           id="address_line2"
           name="address_line2"
           defaultValue={addressLine2}
-          placeholder="Apartamento, sala, etc."
+          placeholder={t('company.address_line2_placeholder')}
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="zip_code">{format.zipLabel}</Label>
+          <Input
+            id="zip_code"
+            name="zip_code"
+            value={localZipCode}
+            onChange={handleZipCodeChange}
+            placeholder={format.zipLabel}
+          />
+        </div>
         <div className="space-y-2">
           <Label htmlFor="city">{format.cityLabel}</Label>
           <Input
@@ -90,16 +102,6 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
             value={localState}
             onChange={handleStateChange}
             placeholder={format.stateLabel}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="zip_code">{format.zipLabel}</Label>
-          <Input
-            id="zip_code"
-            name="zip_code"
-            value={localZipCode}
-            onChange={handleZipCodeChange}
-            placeholder={format.zipLabel}
           />
         </div>
       </div>
