@@ -48,20 +48,6 @@ export const PreviewHeader = ({ content, company }: PreviewHeaderProps) => {
           <p className="font-medium">2 weeks</p>
         </div>
       </div>
-
-      {/* Informações da Empresa e Cliente */}
-      <div className="grid grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <h2 className="text-xl font-semibold text-[#1EAEDB] mb-3">{company.name}</h2>
-          <div className="text-sm space-y-1 text-gray-600">
-            <p>{company.address}</p>
-            <p>{company.city}, {company.state} {company.zipCode}</p>
-            <p>{company.phone}</p>
-            <p>{company.email}</p>
-            <p>{company.website}</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
