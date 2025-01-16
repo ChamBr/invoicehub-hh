@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { PDFDocument, rgb } from "https://cdn.skypack.dev/pdf-lib";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const RESEND_API_KEY = Deno.env.get("Resend-InvoiceHub");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -53,7 +53,7 @@ async function generatePDF(invoiceData: any) {
 
 async function uploadPDF(pdfBytes: Uint8Array, invoiceId: string) {
   const { data, error } = await supabase.storage
-    .from("invoices")
+    .from("invoices-invoicehub")
     .upload(`${invoiceId}.pdf`, pdfBytes, {
       contentType: "application/pdf",
       upsert: true,
@@ -118,7 +118,7 @@ const handler = async (req: Request): Promise<Response> => {
       // Gerar PDF
       const pdfBytes = await generatePDF(invoice);
       const pdfPath = await uploadPDF(pdfBytes, invoice.id);
-      const pdfUrl = `${SUPABASE_URL}/storage/v1/object/public/invoices/${pdfPath}`;
+      const pdfUrl = `${SUPABASE_URL}/storage/v1/object/public/invoices-invoicehub/${pdfPath}`;
 
       // Atualizar URL do PDF na fatura
       await supabase
