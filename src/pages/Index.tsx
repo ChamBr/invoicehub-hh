@@ -6,7 +6,6 @@ import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { RecentInvoices } from "@/components/dashboard/RecentInvoices";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
 
 interface DashboardMetric {
   id: string;
@@ -76,15 +75,11 @@ const Index = () => {
     const fetchUserMetrics = async () => {
       const { data: userMetrics, error } = await supabase
         .from("user_dashboard_metrics")
-        .select("*")
-        .single();
+        .select("metrics")
+        .maybeSingle();
 
-      if (error && error.code !== "PGNF") {
-        toast({
-          title: "Error",
-          description: "Failed to load dashboard preferences",
-          variant: "destructive",
-        });
+      if (error && error.code !== "PGRST116") {
+        console.error("Error fetching metrics:", error);
         return;
       }
 
@@ -100,10 +95,6 @@ const Index = () => {
     fetchUserMetrics();
   }, []);
 
-  const enabledMetrics = metrics
-    .filter((metric) => metric.isEnabled)
-    .sort((a, b) => a.order - b.order);
-
   const handleMetricsUpdate = (enabledMetricIds: string[]) => {
     const updatedMetrics = metrics.map((metric) => ({
       ...metric,
@@ -111,6 +102,10 @@ const Index = () => {
     }));
     setMetrics(updatedMetrics);
   };
+
+  const enabledMetrics = metrics
+    .filter((metric) => metric.isEnabled)
+    .sort((a, b) => a.order - b.order);
 
   return (
     <div className="flex-grow p-8">
