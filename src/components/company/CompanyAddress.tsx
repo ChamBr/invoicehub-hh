@@ -23,14 +23,27 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
 }) => {
   const format = addressFormats[country] || addressFormats.BR;
   const [addressInput, setAddressInput] = React.useState("");
+  const [localCity, setLocalCity] = React.useState(city || "");
+  const [localState, setLocalState] = React.useState(state || "");
+  const [localZipCode, setLocalZipCode] = React.useState(zipCode || "");
 
   const handleAddressSelect = React.useCallback((address: any) => {
     if (address && addressInput.trim().length >= 3) {
-      // Mantém o país atual ao invés de usar o do endereço selecionado
+      // Atualiza os campos locais
+      setLocalCity(address.city || "");
+      setLocalState(address.state || "");
+      setLocalZipCode(address.postalCode || "");
+      
+      // Prepara os dados do endereço mantendo o país atual
       const addressData = {
         ...address,
-        country: country // Mantém o país atual
+        country: country, // Mantém o país atual
+        city: address.city || "",
+        state: address.state || "",
+        zip_code: address.postalCode || "",
+        address_line1: address.line1 || "",
       };
+      
       onAddressSelect(addressData);
     }
   }, [onAddressSelect, addressInput, country]);
@@ -64,7 +77,9 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
           <Input
             id="city"
             name="city"
-            defaultValue={city}
+            value={localCity}
+            onChange={(e) => setLocalCity(e.target.value)}
+            placeholder={format.cityLabel}
           />
         </div>
         <div className="space-y-2">
@@ -72,7 +87,9 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
           <Input
             id="state"
             name="state"
-            defaultValue={state}
+            value={localState}
+            onChange={(e) => setLocalState(e.target.value)}
+            placeholder={format.stateLabel}
           />
         </div>
         <div className="space-y-2">
@@ -80,7 +97,9 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
           <Input
             id="zip_code"
             name="zip_code"
-            defaultValue={zipCode}
+            value={localZipCode}
+            onChange={(e) => setLocalZipCode(e.target.value)}
+            placeholder={format.zipLabel}
           />
         </div>
       </div>
