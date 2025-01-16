@@ -20,7 +20,7 @@ const countries = [
   { label: "Estados Unidos", value: "US" },
   { label: "Portugal", value: "PT" },
   { label: "Espanha", value: "ES" },
-];
+] as const;
 
 export interface CountrySelectProps {
   value: string;
@@ -28,8 +28,16 @@ export interface CountrySelectProps {
   disabled?: boolean;
 }
 
-export function CountrySelect({ value, onValueChange, disabled }: CountrySelectProps) {
+export function CountrySelect({ 
+  value = "BR", 
+  onValueChange, 
+  disabled = false 
+}: CountrySelectProps) {
   const [open, setOpen] = React.useState(false);
+
+  // Garante que o valor inicial seja válido
+  const selectedCountry = countries.find((country) => country.value === value);
+  const displayValue = selectedCountry ? selectedCountry.label : "Selecione um país...";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,14 +49,12 @@ export function CountrySelect({ value, onValueChange, disabled }: CountrySelectP
           className="w-full justify-between"
           disabled={disabled}
         >
-          {value
-            ? countries.find((country) => country.value === value)?.label
-            : "Selecione um país..."}
+          {displayValue}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+        <Command shouldFilter={true}>
           <CommandInput placeholder="Procurar país..." />
           <CommandEmpty>Nenhum país encontrado.</CommandEmpty>
           <CommandGroup>
@@ -57,7 +63,7 @@ export function CountrySelect({ value, onValueChange, disabled }: CountrySelectP
                 key={country.value}
                 value={country.value}
                 onSelect={(currentValue) => {
-                  onValueChange(currentValue);
+                  onValueChange(currentValue === value ? "" : currentValue);
                   setOpen(false);
                 }}
               >
