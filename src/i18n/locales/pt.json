@@ -10,7 +10,7 @@
     "company": "Minha Empresa",
     "invoice_settings": "Personalizar Fatura",
     "admin": {
-      "customers": "Clientes",
+      "subscribers": "Base de Usuários",
       "plans": "Planos",
       "integrations": "Integrações",
       "reports": "Relatórios",
@@ -20,29 +20,5 @@
       "submit": "Suporte & Feedback",
       "list": "Lista de Feedback"
     }
-  },
-  "invoice_settings": {
-    "title": "Configurações da Fatura",
-    "tabs": {
-      "general": "Geral",
-      "templates": "Modelos"
-    },
-    "currency": {
-      "currency": "Moeda",
-      "due_days": "Dias para Vencimento"
-    },
-    "numbering": {
-      "prefix": "Prefixo",
-      "prefix_placeholder": "Ex: FAT-",
-      "next_number": "Próximo Número"
-    },
-    "terms": {
-      "terms": "Termos e Condições",
-      "footer": "Rodapé da Fatura"
-    },
-    "saving": "Salvando...",
-    "save": "Salvar Alterações",
-    "success": "Configurações atualizadas com sucesso",
-    "error": "Erro ao atualizar configurações"
   }
 }

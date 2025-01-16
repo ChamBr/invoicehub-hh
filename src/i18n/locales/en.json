@@ -10,7 +10,7 @@
     "company": "My Company",
     "invoice_settings": "Customize Invoice",
     "admin": {
-      "customers": "Customers",
+      "subscribers": "User Base",
       "plans": "Plans",
       "integrations": "Integrations",
       "reports": "Reports",
@@ -20,29 +20,5 @@
       "submit": "Support & Feedback",
       "list": "Feedback List"
     }
-  },
-  "invoice_settings": {
-    "title": "Invoice Settings",
-    "tabs": {
-      "general": "General",
-      "templates": "Templates"
-    },
-    "currency": {
-      "currency": "Currency",
-      "due_days": "Due Days"
-    },
-    "numbering": {
-      "prefix": "Prefix",
-      "prefix_placeholder": "Ex: INV-",
-      "next_number": "Next Number"
-    },
-    "terms": {
-      "terms": "Terms and Conditions",
-      "footer": "Invoice Footer"
-    },
-    "saving": "Saving...",
-    "save": "Save Changes",
-    "success": "Settings updated successfully",
-    "error": "Error updating settings"
   }
 }

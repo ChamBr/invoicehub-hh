@@ -44,9 +44,9 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
   ],
   admin: [
     {
-      to: "/admin/customers",
+      to: "/admin/subscribers",
       icon: createElement(Users, { className: "h-4 w-4" }),
-      label: t('navigation.admin.customers')
+      label: t('navigation.admin.subscribers')
     },
     {
       to: "/admin/plans",
