@@ -8,9 +8,10 @@
     "invoices": "Invoices",
     "profile": "My Profile",
     "company": "My Company",
+    "plan": "My Plan",
     "invoice_settings": "Customize Invoice",
     "admin": {
-      "subscribers": "User Base",
+      "subscribers": "Subscribers",
       "plans": "Plans",
       "integrations": "Integrations",
       "reports": "Reports",
@@ -72,7 +73,16 @@
     "contact": "Contact Information",
     "preferences": "Preferences",
     "save": "Save Changes",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "plan": {
+      "title": "My Plan",
+      "monthly": "month",
+      "yearly": "year",
+      "features": "Included Features",
+      "no_subscription": "You don't have an active plan yet",
+      "subscribe": "Subscribe to a Plan",
+      "change": "Change Plan"
+    }
   },
   "company": {
     "title": "Company Details",

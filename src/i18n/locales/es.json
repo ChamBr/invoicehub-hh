@@ -8,9 +8,10 @@
     "invoices": "Facturas",
     "profile": "Mi Perfil",
     "company": "Mi Empresa",
+    "plan": "Mi Plan",
     "invoice_settings": "Personalizar Factura",
     "admin": {
-      "subscribers": "Base de Usuarios",
+      "subscribers": "Suscriptores",
       "plans": "Planes",
       "integrations": "Integraciones",
       "reports": "Informes",
@@ -72,16 +73,16 @@
     "contact": "Información de Contacto",
     "preferences": "Preferencias",
     "save": "Guardar Cambios",
-    "saving": "Guardando..."
-  },
-  "company": {
-    "title": "Datos de la Empresa",
-    "basic_info": "Información Básica",
-    "contact": "Información de Contacto",
-    "address": "Dirección",
-    "tax_info": "Información Fiscal",
-    "save": "Guardar Cambios",
-    "saving": "Guardando..."
+    "saving": "Guardando...",
+    "plan": {
+      "title": "Mi Plan",
+      "monthly": "mes",
+      "yearly": "año",
+      "features": "Características Incluidas",
+      "no_subscription": "Aún no tienes un plan activo",
+      "subscribe": "Suscribirse a un Plan",
+      "change": "Cambiar Plan"
+    }
   },
   "invoice_settings": {
     "title": "Configuración de Factura",
