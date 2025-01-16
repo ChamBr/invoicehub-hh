@@ -16,7 +16,7 @@ export const useCompanyProfile = () => {
         .from("company_profiles")
         .select("*")
         .eq("user_id", user.id)
-        .maybeSingle();
+        .maybeSingle(); // Alterado de .single() para .maybeSingle()
 
       if (error) throw error;
       return data;
