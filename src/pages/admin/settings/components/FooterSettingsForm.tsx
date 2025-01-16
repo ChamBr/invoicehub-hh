@@ -3,6 +3,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { FormRow } from "@/components/forms/FormRow";
 import { FormSection } from "@/components/forms/FormSection";
 import { FormActions } from "@/components/forms/FormActions";
@@ -24,7 +25,7 @@ interface FooterSettingsFormData {
 
 export const FooterSettingsForm = () => {
   const { data: settings, isLoading, updateSettings } = useFooterSettings();
-  const { register, handleSubmit, watch } = useForm<FooterSettingsFormData>({
+  const { register, handleSubmit, watch, setValue } = useForm<FooterSettingsFormData>({
     values: settings || {
       left_text: "",
       center_text: "",
@@ -48,6 +49,12 @@ export const FooterSettingsForm = () => {
   };
 
   const formValues = watch();
+
+  // Função auxiliar para converter px em número
+  const pxToNumber = (px: string) => parseInt(px.replace('px', ''));
+  
+  // Função auxiliar para converter número em px
+  const numberToPx = (num: number) => `${num}px`;
 
   return (
     <>
@@ -75,9 +82,20 @@ export const FooterSettingsForm = () => {
 
           <FormSection title="Estilo">
             <FormRow>
-              <div className="space-y-2">
-                <Label htmlFor="font_size">Tamanho da Fonte</Label>
-                <Input id="font_size" {...register("font_size")} />
+              <div className="space-y-4 w-full">
+                <div className="space-y-2">
+                  <Label>Tamanho da Fonte (px)</Label>
+                  <Slider
+                    min={8}
+                    max={24}
+                    step={1}
+                    value={[pxToNumber(formValues.font_size)]}
+                    onValueChange={(value) => setValue("font_size", numberToPx(value[0]))}
+                  />
+                  <div className="text-sm text-muted-foreground text-right">
+                    {pxToNumber(formValues.font_size)}px
+                  </div>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="text_color">Cor do Texto</Label>
@@ -88,20 +106,35 @@ export const FooterSettingsForm = () => {
                   className="h-10 p-1"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="text_alpha">Transparência (0-1)</Label>
-                <Input 
-                  id="text_alpha" 
-                  type="number" 
-                  step="0.1" 
-                  min="0" 
-                  max="1" 
-                  {...register("text_alpha", { valueAsNumber: true })} 
-                />
+              <div className="space-y-4 w-full">
+                <div className="space-y-2">
+                  <Label>Transparência</Label>
+                  <Slider
+                    min={0}
+                    max={1}
+                    step={0.1}
+                    value={[formValues.text_alpha]}
+                    onValueChange={(value) => setValue("text_alpha", value[0])}
+                  />
+                  <div className="text-sm text-muted-foreground text-right">
+                    {formValues.text_alpha.toFixed(1)}
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="container_height">Altura do Container</Label>
-                <Input id="container_height" {...register("container_height")} />
+              <div className="space-y-4 w-full">
+                <div className="space-y-2">
+                  <Label>Altura do Container (px)</Label>
+                  <Slider
+                    min={20}
+                    max={100}
+                    step={1}
+                    value={[pxToNumber(formValues.container_height)]}
+                    onValueChange={(value) => setValue("container_height", numberToPx(value[0]))}
+                  />
+                  <div className="text-sm text-muted-foreground text-right">
+                    {pxToNumber(formValues.container_height)}px
+                  </div>
+                </div>
               </div>
             </FormRow>
           </FormSection>
@@ -111,7 +144,8 @@ export const FooterSettingsForm = () => {
               <div className="flex items-center space-x-2">
                 <Switch 
                   id="show_refresh_button" 
-                  {...register("show_refresh_button")} 
+                  checked={formValues.show_refresh_button}
+                  onCheckedChange={(checked) => setValue("show_refresh_button", checked)}
                 />
                 <Label htmlFor="show_refresh_button">Mostrar Botão de Atualizar</Label>
               </div>
