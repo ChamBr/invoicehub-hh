@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { getStatusColor, getStatusLabel, InvoiceStatus } from "@/components/invoices/types";
+import { invoiceStatusConfig, type InvoiceStatus } from "@/components/invoices/types";
+import * as Icons from "lucide-react";
 
 const invoices = [
   {
@@ -28,6 +29,11 @@ const invoices = [
 ];
 
 export function RecentInvoices() {
+  const renderStatusIcon = (status: InvoiceStatus) => {
+    const IconComponent = Icons[invoiceStatusConfig[status].icon as keyof typeof Icons];
+    return <IconComponent className="h-4 w-4 mr-1" />;
+  };
+
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Faturas Recentes</h3>
@@ -35,7 +41,7 @@ export function RecentInvoices() {
         {invoices.map((invoice) => (
           <div
             key={invoice.id}
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <div className="space-y-1">
               <p className="font-medium">{invoice.client}</p>
@@ -46,11 +52,12 @@ export function RecentInvoices() {
               <Badge
                 variant="outline"
                 className={cn(
-                  "capitalize",
-                  getStatusColor(invoice.status)
+                  "capitalize inline-flex items-center",
+                  invoiceStatusConfig[invoice.status].color
                 )}
               >
-                {getStatusLabel(invoice.status)}
+                {renderStatusIcon(invoice.status)}
+                {invoiceStatusConfig[invoice.status].label}
               </Badge>
             </div>
           </div>

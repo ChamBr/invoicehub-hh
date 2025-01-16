@@ -22,28 +22,51 @@ export interface Invoice {
   };
 }
 
-export const getStatusColor = (status: InvoiceStatus) => {
-  const colors = {
-    draft: 'bg-gray-100 text-gray-800 border-gray-500',
-    created: 'bg-blue-100 text-blue-800 border-blue-500',
-    sent: 'bg-indigo-100 text-indigo-800 border-indigo-500',
-    pending: 'bg-yellow-100 text-yellow-800 border-yellow-500',
-    overdue: 'bg-red-100 text-red-800 border-red-500',
-    cancelled: 'bg-rose-100 text-rose-800 border-rose-500',
-    paid: 'bg-green-100 text-green-800 border-green-500',
-  };
-  return colors[status];
-};
+// Objeto de configuração para status das faturas
+export const invoiceStatusConfig = {
+  draft: {
+    label: 'Rascunho',
+    color: 'bg-gray-100 text-gray-800 border-gray-500',
+    icon: 'FileText'
+  },
+  created: {
+    label: 'Criada',
+    color: 'bg-blue-100 text-blue-800 border-blue-500',
+    icon: 'CheckCircle2'
+  },
+  sent: {
+    label: 'Enviada',
+    color: 'bg-indigo-100 text-indigo-800 border-indigo-500',
+    icon: 'Send'
+  },
+  pending: {
+    label: 'Pendente',
+    color: 'bg-yellow-100 text-yellow-800 border-yellow-500',
+    icon: 'Clock'
+  },
+  overdue: {
+    label: 'Vencida',
+    color: 'bg-red-100 text-red-800 border-red-500',
+    icon: 'AlertCircle'
+  },
+  cancelled: {
+    label: 'Cancelada',
+    color: 'bg-rose-100 text-rose-800 border-rose-500',
+    icon: 'XCircle'
+  },
+  paid: {
+    label: 'Paga',
+    color: 'bg-green-100 text-green-800 border-green-500',
+    icon: 'CheckCircle2'
+  }
+} as const;
 
-export const getStatusLabel = (status: InvoiceStatus): string => {
-  const labels = {
-    draft: 'Rascunho',
-    created: 'Criada',
-    sent: 'Enviada',
-    pending: 'Pendente',
-    overdue: 'Vencida',
-    cancelled: 'Cancelada',
-    paid: 'Paga',
-  };
-  return labels[status];
-};
+// Funções auxiliares
+export const getStatusColor = (status: InvoiceStatus): string => 
+  invoiceStatusConfig[status].color;
+
+export const getStatusLabel = (status: InvoiceStatus): string => 
+  invoiceStatusConfig[status].label;
+
+export const getStatusIcon = (status: InvoiceStatus): string => 
+  invoiceStatusConfig[status].icon;

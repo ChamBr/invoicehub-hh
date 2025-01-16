@@ -4,24 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, CheckCircle2, AlertCircle, XCircle, FileText, Send, Clock } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import * as Icons from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { NewInvoiceDialog } from "@/components/invoices/NewInvoiceDialog";
-import { Invoice, InvoiceStatus, getStatusColor, getStatusLabel } from "@/components/invoices/types";
-
-const InvoiceStatusIcon = ({ status }: { status: InvoiceStatus }) => {
-  const icons = {
-    draft: <FileText className="h-4 w-4" />,
-    created: <CheckCircle2 className="h-4 w-4" />,
-    sent: <Send className="h-4 w-4" />,
-    pending: <Clock className="h-4 w-4" />,
-    overdue: <AlertCircle className="h-4 w-4" />,
-    cancelled: <XCircle className="h-4 w-4" />,
-    paid: <CheckCircle2 className="h-4 w-4" />,
-  };
-  return icons[status];
-};
+import { Invoice, invoiceStatusConfig, InvoiceStatus } from "@/components/invoices/types";
 
 const InvoicesIndex = () => {
   const navigate = useNavigate();
@@ -47,6 +35,11 @@ const InvoicesIndex = () => {
       return data as Invoice[];
     },
   });
+
+  const renderStatusIcon = (status: InvoiceStatus) => {
+    const IconComponent = Icons[invoiceStatusConfig[status].icon as keyof typeof Icons];
+    return <IconComponent className="h-4 w-4 mr-1" />;
+  };
 
   if (isLoading) {
     return (
@@ -95,10 +88,10 @@ const InvoicesIndex = () => {
                   <TableCell>
                     <Badge
                       variant="outline"
-                      className={`flex w-fit items-center gap-1 ${getStatusColor(invoice.status)}`}
+                      className={`flex w-fit items-center gap-1 ${invoiceStatusConfig[invoice.status].color}`}
                     >
-                      <InvoiceStatusIcon status={invoice.status} />
-                      <span>{getStatusLabel(invoice.status)}</span>
+                      {renderStatusIcon(invoice.status)}
+                      <span>{invoiceStatusConfig[invoice.status].label}</span>
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
