@@ -6,6 +6,7 @@ import { InvoiceContent } from "./InvoiceViewDialog/InvoiceContent";
 import { InvoiceActions } from "./InvoiceActions";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 interface InvoiceViewDialogProps {
   invoice: Invoice | null;
@@ -15,6 +16,34 @@ interface InvoiceViewDialogProps {
 
 export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDialogProps) {
   const [currentStatus, setCurrentStatus] = useState<Invoice['status']>(invoice?.status);
+
+  const { data: invoiceWithItems } = useQuery({
+    queryKey: ["invoice", invoice?.id],
+    queryFn: async () => {
+      if (!invoice) return null;
+      
+      const { data, error } = await supabase
+        .from("invoices")
+        .select(`
+          *,
+          customer:customers(name),
+          items:invoice_items(
+            id,
+            description,
+            quantity,
+            price,
+            total,
+            has_tax
+          )
+        `)
+        .eq("id", invoice.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!invoice,
+  });
 
   if (!invoice) return null;
 
@@ -40,11 +69,14 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
-        <InvoiceHeader invoice={invoice} currentStatus={currentStatus || invoice.status} />
+        <InvoiceHeader 
+          invoice={invoiceWithItems || invoice} 
+          currentStatus={currentStatus || invoice.status} 
+        />
         
         <div className="space-y-6">
-          <InvoiceInfo invoice={invoice} />
-          <InvoiceContent invoice={invoice} />
+          <InvoiceInfo invoice={invoiceWithItems || invoice} />
+          <InvoiceContent invoice={invoiceWithItems || invoice} />
 
           <div className="pt-4 border-t">
             <InvoiceActions
