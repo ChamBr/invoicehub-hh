@@ -36,8 +36,7 @@ export function CountrySelect({
   const [open, setOpen] = React.useState(false);
 
   // Garante que o valor inicial seja válido
-  const selectedCountry = countries.find((country) => country.value === value);
-  const displayValue = selectedCountry ? selectedCountry.label : "Selecione um país...";
+  const selectedCountry = countries.find((country) => country.value === value) || countries[0];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -49,12 +48,12 @@ export function CountrySelect({
           className="w-full justify-between"
           disabled={disabled}
         >
-          {displayValue}
+          {selectedCountry.label}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command shouldFilter={true}>
+        <Command>
           <CommandInput placeholder="Procurar país..." />
           <CommandEmpty>Nenhum país encontrado.</CommandEmpty>
           <CommandGroup>
@@ -63,7 +62,7 @@ export function CountrySelect({
                 key={country.value}
                 value={country.value}
                 onSelect={(currentValue) => {
-                  onValueChange(currentValue === value ? "" : currentValue);
+                  onValueChange(currentValue);
                   setOpen(false);
                 }}
               >
