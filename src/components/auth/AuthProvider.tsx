@@ -5,30 +5,37 @@ import { useSessionManagement } from "@/hooks/use-session";
 
 interface AuthContextType {
   session: Session | null;
-  loading: boolean;
+  isLoading: boolean;
+  clearSession: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
-  loading: true,
+  isLoading: true,
+  clearSession: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const { checkSessionValidity } = useSessionManagement(session, setSession);
+
+  const clearSession = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setLoading(false);
+      setIsLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      setLoading(false);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -45,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [session, checkSessionValidity]);
 
   return (
-    <AuthContext.Provider value={{ session, loading }}>
+    <AuthContext.Provider value={{ session, isLoading, clearSession }}>
       {children}
     </AuthContext.Provider>
   );
