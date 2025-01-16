@@ -39,7 +39,7 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
     {
       to: "/feedback",
       icon: createElement(MessageSquare, { className: "h-4 w-4" }),
-      label: t('navigation.feedback.submit')
+      label: "Suporte & Feedback"
     }
   ],
   admin: [
