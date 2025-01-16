@@ -18,7 +18,11 @@ import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
 import FeedbackIndex from "./pages/feedback/Index";
 import ProfileIndex from "./pages/profile/Index";
-import AdminIndex from "./pages/admin/Index";
+import AdminCustomers from "./pages/admin/customers/Index";
+import AdminPlans from "./pages/admin/plans/Index";
+import AdminIntegrations from "./pages/admin/integrations/Index";
+import AdminReports from "./pages/admin/reports/Index";
+import AdminSettings from "./pages/admin/settings/Index";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +47,13 @@ const AppLayout = () => {
                 <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
                 <Route path="/feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><ProfileIndex /></ProtectedRoute>} />
-                <Route path="/admin" element={<ProtectedRoute><AdminIndex /></ProtectedRoute>} />
+                
+                {/* Novas rotas administrativas */}
+                <Route path="/admin/customers" element={<ProtectedRoute><AdminCustomers /></ProtectedRoute>} />
+                <Route path="/admin/plans" element={<ProtectedRoute><AdminPlans /></ProtectedRoute>} />
+                <Route path="/admin/integrations" element={<ProtectedRoute><AdminIntegrations /></ProtectedRoute>} />
+                <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>} />
+                <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
               </Routes>
             </main>
             <Footer />

@@ -1,7 +1,19 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { Menu, Users, Package, FileText, MessageSquare, UserCircle, Settings, AlignLeft } from "lucide-react";
+import { 
+  Users, 
+  Package, 
+  FileText, 
+  MessageSquare, 
+  UserCircle, 
+  Settings, 
+  AlignLeft,
+  CreditCard,
+  BarChart,
+  Wallet,
+  Sliders
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +40,33 @@ const Sidebar = () => {
         label: t('navigation.invoices')
       }
     ],
+    admin: [
+      {
+        to: "/admin/customers",
+        icon: <Users className="h-4 w-4" />,
+        label: "Clientes"
+      },
+      {
+        to: "/admin/plans",
+        icon: <CreditCard className="h-4 w-4" />,
+        label: "Planos"
+      },
+      {
+        to: "/admin/integrations",
+        icon: <Wallet className="h-4 w-4" />,
+        label: "Integrações"
+      },
+      {
+        to: "/admin/reports",
+        icon: <BarChart className="h-4 w-4" />,
+        label: "Relatórios"
+      },
+      {
+        to: "/admin/settings",
+        icon: <Sliders className="h-4 w-4" />,
+        label: "Configurações"
+      }
+    ],
     user: [
       {
         to: "/profile",
@@ -38,13 +77,6 @@ const Sidebar = () => {
         to: "/feedback",
         icon: <MessageSquare className="h-4 w-4" />,
         label: t('navigation.feedback.submit')
-      }
-    ],
-    admin: [
-      {
-        to: "/admin",
-        icon: <Settings className="h-4 w-4" />,
-        label: t('navigation.admin')
       }
     ]
   };
@@ -97,8 +129,8 @@ const Sidebar = () => {
 
       <div className="flex-1 py-6 space-y-6 overflow-y-auto">
         <MenuGroup title={t('navigation.records')} items={menuItems.records} />
+        <MenuGroup title="Administração" items={menuItems.admin} />
         <MenuGroup title={t('navigation.user')} items={menuItems.user} />
-        <MenuGroup title={t('navigation.admin')} items={menuItems.admin} />
       </div>
     </div>
   );
