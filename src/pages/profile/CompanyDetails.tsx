@@ -43,7 +43,6 @@ const CompanyDetails = () => {
         const fileExt = logoFile.name.split('.').pop();
         const filePath = `${user.id}-${Date.now()}.${fileExt}`;
 
-        // Primeiro, remover o logo antigo se existir
         if (companyProfile?.logo_url) {
           const oldPath = companyProfile.logo_url.split('/').pop();
           if (oldPath) {
@@ -68,20 +67,20 @@ const CompanyDetails = () => {
 
       const companyData = {
         user_id: user.id,
-        company_name: formData.get('company_name'),
-        address_line1: formData.get('address_line1'),
-        address_line2: formData.get('address_line2'),
-        city: formData.get('city'),
-        state: formData.get('state'),
-        zip_code: formData.get('zip_code'),
-        country: formData.get('country'),
-        phone: formData.get('phone'),
-        mobile: formData.get('mobile'),
+        company_name: formData.get('company_name')?.toString(),
+        address_line1: formData.get('address_line1')?.toString(),
+        address_line2: formData.get('address_line2')?.toString(),
+        city: formData.get('city')?.toString(),
+        state: formData.get('state')?.toString(),
+        zip_code: formData.get('zip_code')?.toString(),
+        country: formData.get('country')?.toString(),
+        phone: formData.get('phone')?.toString(),
+        mobile: formData.get('mobile')?.toString(),
         display_phone: formData.get('display_phone') === 'true',
-        tax_id: formData.get('tax_id'),
+        tax_id: formData.get('tax_id')?.toString(),
         display_tax_id: formData.get('display_tax_id') === 'true',
-        email: formData.get('email'),
-        website: formData.get('website'),
+        email: formData.get('email')?.toString(),
+        website: formData.get('website')?.toString(),
         logo_url: logoUrl,
         display_logo: formData.get('display_logo') === 'true',
       };
@@ -151,34 +150,51 @@ const CompanyDetails = () => {
       }} className="bg-white rounded-lg shadow p-6 space-y-6">
         <h2 className="text-2xl font-bold">Informações da Empresa</h2>
 
-        <div className="space-y-2">
-          <Label htmlFor="logo">Logo da Empresa</Label>
-          <div className="flex items-center gap-4">
-            <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
-              {(logoPreview || companyProfile?.logo_url) && (
-                <img
-                  src={logoPreview || companyProfile?.logo_url}
-                  alt="Logo Preview"
-                  className="w-full h-full object-contain"
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="logo">Logo da Empresa</Label>
+            <div className="flex items-center gap-4">
+              <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
+                {(logoPreview || companyProfile?.logo_url) && (
+                  <img
+                    src={logoPreview || companyProfile?.logo_url}
+                    alt="Logo Preview"
+                    className="w-full h-full object-contain"
+                  />
+                )}
+              </div>
+              <div className="space-y-2">
+                <Input
+                  id="logo"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoChange}
                 />
-              )}
-            </div>
-            <div className="space-y-2">
-              <Input
-                id="logo"
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
-              />
-              <div className="flex items-center gap-2">
-                <Switch
-                  id="display_logo"
-                  name="display_logo"
-                  defaultChecked={companyProfile?.display_logo}
-                />
-                <Label htmlFor="display_logo">Exibir logo na fatura</Label>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="display_logo"
+                    name="display_logo"
+                    defaultChecked={companyProfile?.display_logo}
+                  />
+                  <Label htmlFor="display_logo">Exibir logo na fatura</Label>
+                </div>
               </div>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="country">País</Label>
+            <CountrySelect
+              value={companyProfile?.country || 'BR'}
+              onValueChange={(value) => {
+                const form = document.querySelector('form');
+                if (form) {
+                  const formData = new FormData(form);
+                  formData.set('country', value);
+                  updateCompanyProfile.mutate(formData);
+                }
+              }}
+            />
           </div>
         </div>
 
@@ -249,20 +265,6 @@ const CompanyDetails = () => {
                 defaultValue={companyProfile?.zip_code}
               />
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="country">País</Label>
-            <CountrySelect
-              value={companyProfile?.country || 'BR'}
-              onValueChange={(value) => {
-                const form = document.querySelector('form');
-                if (form) {
-                  const formData = new FormData(form);
-                  formData.set('country', value);
-                  updateCompanyProfile.mutate(formData);
-                }
-              }}
-            />
           </div>
         </div>
 
