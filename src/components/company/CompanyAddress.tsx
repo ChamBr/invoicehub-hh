@@ -29,19 +29,19 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
 
   // Atualiza estados locais quando as props mudam
   React.useEffect(() => {
-    setLocalCity(city || "");
-    setLocalState(state || "");
-    setLocalZipCode(zipCode || "");
+    if (city !== undefined) setLocalCity(city);
+    if (state !== undefined) setLocalState(state);
+    if (zipCode !== undefined) setLocalZipCode(zipCode);
   }, [city, state, zipCode]);
 
   const handleAddressSelect = React.useCallback((address: any) => {
     if (!address) return;
 
-    // Atualiza os campos locais
     const newCity = address.city || "";
     const newState = address.state || "";
     const newZipCode = address.postalCode || "";
     
+    // Atualiza estados locais
     setLocalCity(newCity);
     setLocalState(newState);
     setLocalZipCode(newZipCode);
@@ -49,7 +49,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
     // Prepara os dados do endereço mantendo o país atual
     const addressData = {
       ...address,
-      country, // Mantém o país atual
+      country,
       city: newCity,
       state: newState,
       zip_code: newZipCode,
@@ -62,6 +62,24 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAddressInput(e.target.value);
   }, []);
+
+  const handleCityChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newCity = e.target.value;
+    setLocalCity(newCity);
+    onAddressSelect({ city: newCity, state: localState, zip_code: localZipCode, country });
+  }, [localState, localZipCode, country, onAddressSelect]);
+
+  const handleStateChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newState = e.target.value;
+    setLocalState(newState);
+    onAddressSelect({ city: localCity, state: newState, zip_code: localZipCode, country });
+  }, [localCity, localZipCode, country, onAddressSelect]);
+
+  const handleZipCodeChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newZipCode = e.target.value;
+    setLocalZipCode(newZipCode);
+    onAddressSelect({ city: localCity, state: localState, zip_code: newZipCode, country });
+  }, [localCity, localState, country, onAddressSelect]);
 
   return (
     <div className="space-y-4">
@@ -89,7 +107,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
             id="city"
             name="city"
             value={localCity}
-            onChange={(e) => setLocalCity(e.target.value)}
+            onChange={handleCityChange}
             placeholder={format.cityLabel}
           />
         </div>
@@ -99,7 +117,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
             id="state"
             name="state"
             value={localState}
-            onChange={(e) => setLocalState(e.target.value)}
+            onChange={handleStateChange}
             placeholder={format.stateLabel}
           />
         </div>
@@ -109,7 +127,7 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
             id="zip_code"
             name="zip_code"
             value={localZipCode}
-            onChange={(e) => setLocalZipCode(e.target.value)}
+            onChange={handleZipCodeChange}
             placeholder={format.zipLabel}
           />
         </div>
