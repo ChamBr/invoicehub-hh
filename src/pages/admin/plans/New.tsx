@@ -32,16 +32,16 @@ const NewPlan = () => {
     );
 
     try {
-      const { error } = await supabase.from("plans").insert([
-        {
-          name: formData.get("name"),
-          description: formData.get("description"),
-          price: parseFloat(formData.get("price") as string),
-          billing_period: formData.get("billing_period"),
-          features: featuresObject,
-          status: "active",
-        },
-      ]);
+      const planData = {
+        name: formData.get("name") as string,
+        description: formData.get("description") as string,
+        price: parseFloat(formData.get("price") as string),
+        billing_period: formData.get("billing_period") as string,
+        features: featuresObject,
+        status: "active",
+      };
+
+      const { error } = await supabase.from("plans").insert(planData);
 
       if (error) throw error;
 
