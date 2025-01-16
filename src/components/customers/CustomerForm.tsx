@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { CustomerTypeSelect } from "./CustomerTypeSelect";
 import { CustomerContactInfo } from "./CustomerContactInfo";
