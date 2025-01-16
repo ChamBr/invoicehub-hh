@@ -38,12 +38,6 @@ export const useSessionManagement = (
 
       if (newSession) {
         setSession(newSession);
-        localStorage.setItem('supabase.auth.token', JSON.stringify({
-          currentSession: {
-            access_token: newSession.access_token,
-            refresh_token: newSession.refresh_token,
-          }
-        }));
         return true;
       }
 
@@ -55,24 +49,25 @@ export const useSessionManagement = (
     }
   };
 
-  const checkSessionValidity = async (currentSession: Session) => {
-    const expirationTime = new Date(currentSession.expires_at! * 1000);
+  const checkSessionValidity = async () => {
+    if (!session) return;
+    
+    const expirationTime = new Date(session.expires_at! * 1000);
     const now = new Date();
     const timeUntilExpiration = expirationTime.getTime() - now.getTime();
 
     // Se a sessão já expirou
     if (timeUntilExpiration <= 0) {
-      const refreshSuccessful = await refreshSession(currentSession);
+      const refreshSuccessful = await refreshSession(session);
       if (!refreshSuccessful) {
         handleSessionEnd("Sua sessão expirou. Por favor, faça login novamente.");
-        return false;
       }
-      return true;
+      return;
     }
 
     // Se a sessão vai expirar em menos de 5 minutos, tenta renovar
     if (timeUntilExpiration < 5 * 60 * 1000) {
-      const refreshSuccessful = await refreshSession(currentSession);
+      const refreshSuccessful = await refreshSession(session);
       if (!refreshSuccessful) {
         toast({
           title: "Atenção",
@@ -81,8 +76,6 @@ export const useSessionManagement = (
         });
       }
     }
-
-    return true;
   };
 
   return {

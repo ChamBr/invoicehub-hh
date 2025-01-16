@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { useAuthSession } from './hooks/useAuthSession';
 import { useAuthSubscription } from './hooks/useAuthSubscription';
@@ -11,11 +11,19 @@ interface AuthContextType {
   clearSession: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<AuthContextType>({
   session: null,
   isLoading: true,
   clearSession: () => {},
 });
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const {
@@ -30,13 +38,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Inicializa a autenticação
   React.useEffect(() => {
     initializeAuth();
-  }, []);
+  }, [initializeAuth]);
 
   // Gerencia as mudanças de estado da autenticação
   useAuthSubscription(setSession, handleSessionEnd);
 
   // Verifica a validade da sessão periodicamente
-  useSessionCheck(session, checkSessionValidity);
+  useSessionCheck(session, () => checkSessionValidity(session));
 
   return (
     <AuthContext.Provider value={{ session, isLoading, clearSession }}>
