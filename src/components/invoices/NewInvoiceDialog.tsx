@@ -75,7 +75,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
           status: status,
           due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           total: calculateTotal(items),
-          template_id: selectedTemplate, // Adicionado o template_id
+          template_id: selectedTemplate,
         })
         .select()
         .single();

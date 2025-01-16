@@ -453,6 +453,7 @@ export type Database = {
           pdf_generated_at: string | null
           pdf_url: string | null
           status: Database["public"]["Enums"]["invoice_status"] | null
+          template_id: string | null
           total: number
         }
         Insert: {
@@ -465,6 +466,7 @@ export type Database = {
           pdf_generated_at?: string | null
           pdf_url?: string | null
           status?: Database["public"]["Enums"]["invoice_status"] | null
+          template_id?: string | null
           total?: number
         }
         Update: {
@@ -477,6 +479,7 @@ export type Database = {
           pdf_generated_at?: string | null
           pdf_url?: string | null
           status?: Database["public"]["Enums"]["invoice_status"] | null
+          template_id?: string | null
           total?: number
         }
         Relationships: [
@@ -485,6 +488,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "invoice_templates"
             referencedColumns: ["id"]
           },
         ]
