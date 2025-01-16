@@ -1,19 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { CountrySelect } from "@/components/ui/country-select";
-import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
+import { LogoUpload } from "@/components/company/LogoUpload";
+import { CompanyBasicInfo } from "@/components/company/CompanyBasicInfo";
+import { CompanyAddress } from "@/components/company/CompanyAddress";
+import { CompanyContact } from "@/components/company/CompanyContact";
 
 const CompanyDetails = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const { data: companyProfile, isLoading } = useQuery({
     queryKey: ["company-profile"],
@@ -111,18 +109,6 @@ const CompanyDetails = () => {
     },
   });
 
-  const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setLogoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleAddressSelect = (address: any) => {
     const form = document.querySelector('form');
     if (form) {
@@ -150,177 +136,66 @@ const CompanyDetails = () => {
       }} className="bg-white rounded-lg shadow p-6 space-y-6">
         <h2 className="text-2xl font-bold">Informações da Empresa</h2>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="logo">Logo da Empresa</Label>
-            <div className="flex items-center gap-4">
-              <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
-                {(logoPreview || companyProfile?.logo_url) && (
-                  <img
-                    src={logoPreview || companyProfile?.logo_url}
-                    alt="Logo Preview"
-                    className="w-full h-full object-contain"
-                  />
-                )}
-              </div>
-              <div className="space-y-2">
-                <Input
-                  id="logo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                />
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="display_logo"
-                    name="display_logo"
-                    defaultChecked={companyProfile?.display_logo}
-                  />
-                  <Label htmlFor="display_logo">Exibir logo na fatura</Label>
-                </div>
-              </div>
-            </div>
-          </div>
+        <LogoUpload
+          logoUrl={companyProfile?.logo_url}
+          onLogoChange={setLogoFile}
+          displayLogo={companyProfile?.display_logo}
+          onDisplayLogoChange={(checked) => {
+            const form = document.querySelector('form');
+            if (form) {
+              const formData = new FormData(form);
+              formData.set('display_logo', checked.toString());
+              updateCompanyProfile.mutate(formData);
+            }
+          }}
+        />
 
-          <div className="space-y-2">
-            <Label htmlFor="country">País</Label>
-            <CountrySelect
-              value={companyProfile?.country || 'BR'}
-              onValueChange={(value) => {
-                const form = document.querySelector('form');
-                if (form) {
-                  const formData = new FormData(form);
-                  formData.set('country', value);
-                  updateCompanyProfile.mutate(formData);
-                }
-              }}
-            />
-          </div>
-        </div>
+        <CompanyBasicInfo
+          companyName={companyProfile?.company_name}
+          taxId={companyProfile?.tax_id}
+          displayTaxId={companyProfile?.display_tax_id}
+          country={companyProfile?.country}
+          onCountryChange={(value) => {
+            const form = document.querySelector('form');
+            if (form) {
+              const formData = new FormData(form);
+              formData.set('country', value);
+              updateCompanyProfile.mutate(formData);
+            }
+          }}
+          onDisplayTaxIdChange={(checked) => {
+            const form = document.querySelector('form');
+            if (form) {
+              const formData = new FormData(form);
+              formData.set('display_tax_id', checked.toString());
+              updateCompanyProfile.mutate(formData);
+            }
+          }}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="company_name">Nome da Empresa</Label>
-            <Input
-              id="company_name"
-              name="company_name"
-              defaultValue={companyProfile?.company_name}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="tax_id">CNPJ/CPF</Label>
-            <div className="space-y-2">
-              <Input
-                id="tax_id"
-                name="tax_id"
-                defaultValue={companyProfile?.tax_id}
-              />
-              <div className="flex items-center gap-2">
-                <Switch
-                  id="display_tax_id"
-                  name="display_tax_id"
-                  defaultChecked={companyProfile?.display_tax_id}
-                />
-                <Label htmlFor="display_tax_id">Exibir CNPJ/CPF na fatura</Label>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CompanyAddress
+          addressLine2={companyProfile?.address_line2}
+          city={companyProfile?.city}
+          state={companyProfile?.state}
+          zipCode={companyProfile?.zip_code}
+          onAddressSelect={handleAddressSelect}
+        />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Endereço</h3>
-          <AddressAutocomplete onAddressSelect={handleAddressSelect} />
-          <div className="space-y-2">
-            <Label htmlFor="address_line2">Complemento (Opcional)</Label>
-            <Input
-              id="address_line2"
-              name="address_line2"
-              defaultValue={companyProfile?.address_line2}
-              placeholder="Apartamento, sala, etc."
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="city">Cidade</Label>
-              <Input
-                id="city"
-                name="city"
-                defaultValue={companyProfile?.city}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="state">Estado</Label>
-              <Input
-                id="state"
-                name="state"
-                defaultValue={companyProfile?.state}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="zip_code">CEP</Label>
-              <Input
-                id="zip_code"
-                name="zip_code"
-                defaultValue={companyProfile?.zip_code}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Contato</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Telefone</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                defaultValue={companyProfile?.phone}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="mobile">Celular</Label>
-              <Input
-                id="mobile"
-                name="mobile"
-                type="tel"
-                defaultValue={companyProfile?.mobile}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Switch
-              id="display_phone"
-              name="display_phone"
-              defaultChecked={companyProfile?.display_phone}
-            />
-            <Label htmlFor="display_phone">
-              Exibir telefone/celular na fatura
-            </Label>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                defaultValue={companyProfile?.email}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
-              <Input
-                id="website"
-                name="website"
-                type="url"
-                defaultValue={companyProfile?.website}
-              />
-            </div>
-          </div>
-        </div>
+        <CompanyContact
+          phone={companyProfile?.phone}
+          mobile={companyProfile?.mobile}
+          email={companyProfile?.email}
+          website={companyProfile?.website}
+          displayPhone={companyProfile?.display_phone}
+          onDisplayPhoneChange={(checked) => {
+            const form = document.querySelector('form');
+            if (form) {
+              const formData = new FormData(form);
+              formData.set('display_phone', checked.toString());
+              updateCompanyProfile.mutate(formData);
+            }
+          }}
+        />
 
         <Button
           type="submit"
