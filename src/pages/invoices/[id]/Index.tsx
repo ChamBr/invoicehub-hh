@@ -60,24 +60,10 @@ export default function InvoiceDetails() {
 
   const handleEdit = () => {
     if (invoice?.status === "draft") {
-      toast({
-        title: "Info",
-        description: "Funcionalidade de edição será implementada em breve",
-      });
+      navigate(`/invoices/${id}/edit`);
     } else {
       handleStatusChange("draft");
     }
-  };
-
-  const handleSend = async () => {
-    await handleStatusChange("sent");
-  };
-
-  const handleGeneratePDF = () => {
-    toast({
-      title: "Info",
-      description: "Funcionalidade de geração de PDF será implementada em breve",
-    });
   };
 
   if (!invoice) return null;
@@ -98,10 +84,9 @@ export default function InvoiceDetails() {
             <span>Fatura #{invoice.id.slice(0, 8)}</span>
             <InvoiceActions
               status={invoice.status}
+              invoiceId={invoice.id}
               onEdit={handleEdit}
-              onSend={handleSend}
-              onGeneratePDF={handleGeneratePDF}
-              onCancel={() => handleStatusChange("cancelled")}
+              onStatusChange={handleStatusChange}
             />
           </CardTitle>
         </CardHeader>

@@ -307,8 +307,11 @@ export type Database = {
           created_at: string
           customer_id: string
           due_date: string
+          email_sent_at: string | null
           id: string
           notes: string | null
+          pdf_generated_at: string | null
+          pdf_url: string | null
           status: Database["public"]["Enums"]["invoice_status"] | null
           total: number
         }
@@ -316,8 +319,11 @@ export type Database = {
           created_at?: string
           customer_id: string
           due_date: string
+          email_sent_at?: string | null
           id?: string
           notes?: string | null
+          pdf_generated_at?: string | null
+          pdf_url?: string | null
           status?: Database["public"]["Enums"]["invoice_status"] | null
           total?: number
         }
@@ -325,8 +331,11 @@ export type Database = {
           created_at?: string
           customer_id?: string
           due_date?: string
+          email_sent_at?: string | null
           id?: string
           notes?: string | null
+          pdf_generated_at?: string | null
+          pdf_url?: string | null
           status?: Database["public"]["Enums"]["invoice_status"] | null
           total?: number
         }
