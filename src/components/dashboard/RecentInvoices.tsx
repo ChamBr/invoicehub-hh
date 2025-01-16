@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { invoiceStatusConfig, type InvoiceStatus } from "@/components/invoices/types";
-import * as LucideIcons from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
 
 const invoices = [
   {
@@ -29,9 +29,17 @@ const invoices = [
 ];
 
 export function RecentInvoices() {
-  const renderStatusIcon = (status: InvoiceStatus) => {
-    const iconName = invoiceStatusConfig[status].icon;
-    const Icon = LucideIcons[iconName as keyof typeof LucideIcons];
+  const getStatusIcon = (status: InvoiceStatus) => {
+    const icons = {
+      paid: CheckCircle2,
+      pending: Clock,
+      overdue: AlertCircle,
+      draft: CheckCircle2,
+      created: CheckCircle2,
+      sent: CheckCircle2,
+      cancelled: CheckCircle2,
+    };
+    const Icon = icons[status];
     return <Icon className="h-4 w-4 mr-1" />;
   };
 
@@ -57,7 +65,7 @@ export function RecentInvoices() {
                   invoiceStatusConfig[invoice.status].color
                 )}
               >
-                {renderStatusIcon(invoice.status)}
+                {getStatusIcon(invoice.status)}
                 {invoiceStatusConfig[invoice.status].label}
               </Badge>
             </div>

@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+import { PlusCircle, CheckCircle2, Clock, AlertCircle, Send, FileText, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { NewInvoiceDialog } from "@/components/invoices/NewInvoiceDialog";
 import { Invoice, invoiceStatusConfig, InvoiceStatus } from "@/components/invoices/types";
+import { cn } from "@/lib/utils";
 
 const InvoicesIndex = () => {
   const navigate = useNavigate();
@@ -36,9 +36,17 @@ const InvoicesIndex = () => {
     },
   });
 
-  const renderStatusIcon = (status: InvoiceStatus) => {
-    const iconName = invoiceStatusConfig[status].icon;
-    const Icon = LucideIcons[iconName as keyof typeof LucideIcons];
+  const getStatusIcon = (status: InvoiceStatus) => {
+    const icons = {
+      draft: FileText,
+      created: CheckCircle2,
+      sent: Send,
+      pending: Clock,
+      overdue: AlertCircle,
+      cancelled: XCircle,
+      paid: CheckCircle2,
+    };
+    const Icon = icons[status];
     return <Icon className="h-4 w-4 mr-1" />;
   };
 
@@ -94,7 +102,7 @@ const InvoicesIndex = () => {
                         invoiceStatusConfig[invoice.status].color
                       )}
                     >
-                      {renderStatusIcon(invoice.status)}
+                      {getStatusIcon(invoice.status)}
                       <span>{invoiceStatusConfig[invoice.status].label}</span>
                     </Badge>
                   </TableCell>
