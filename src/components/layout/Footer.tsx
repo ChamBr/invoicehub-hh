@@ -8,8 +8,8 @@ const Footer = () => {
   const { toast } = useToast();
 
   const handleForceRefresh = () => {
-    // Limpa o cache do navegador e recarrega a página
-    window.location.reload(true);
+    // Força uma atualização completa da página
+    window.location.reload();
     toast({
       title: "Atualizando...",
       description: "A página está sendo recarregada sem cache.",
