@@ -12,6 +12,13 @@ const NewCustomerDialog = ({
   onOpenChange,
   onSuccess,
 }: NewCustomerDialogProps) => {
+  const handleSuccess = () => {
+    // Aqui podemos pegar o ID do cliente recém-criado através do contexto ou estado global
+    // Por enquanto, vamos simular um ID
+    const newCustomerId = "temp-id"; // Isso será substituído pelo ID real do cliente
+    onSuccess(newCustomerId);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -19,7 +26,7 @@ const NewCustomerDialog = ({
           <DialogTitle>Novo Cliente</DialogTitle>
         </DialogHeader>
         <CustomerForm
-          onSuccess={onSuccess}
+          onSuccess={handleSuccess}
           onCancel={() => onOpenChange(false)}
         />
       </DialogContent>
