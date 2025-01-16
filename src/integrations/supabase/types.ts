@@ -149,33 +149,6 @@ export type Database = {
         }
         Relationships: []
       }
-      countries: {
-        Row: {
-          code: string
-          created_at: string
-          id: string
-          is_active: boolean | null
-          name_en: string
-          updated_at: string
-        }
-        Insert: {
-          code: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          name_en: string
-          updated_at?: string
-        }
-        Update: {
-          code?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          name_en?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       customers: {
         Row: {
           address: string | null

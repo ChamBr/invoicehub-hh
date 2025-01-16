@@ -38,13 +38,18 @@ export const useCompanyProfile = () => {
       const email = formData.get('email')?.toString();
       if (email) {
         try {
-          const { data: customers } = await supabase
+          const { data: customerData, error: customerError } = await supabase
             .from('customers')
             .select('id')
-            .eq('email', email);
+            .eq('email', email)
+            .maybeSingle();
 
-          if (customers && customers.length > 0) {
-            console.log("Cliente encontrado:", customers[0]);
+          if (customerError) {
+            console.error("Erro ao buscar cliente:", customerError);
+          }
+          
+          if (customerData) {
+            console.log("Cliente encontrado:", customerData);
           }
         } catch (error) {
           console.error("Erro ao buscar cliente:", error);
@@ -79,7 +84,7 @@ export const useCompanyProfile = () => {
           onConflict: 'user_id'
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Erro ao atualizar perfil:", error);
