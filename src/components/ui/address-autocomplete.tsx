@@ -21,20 +21,23 @@ export function AddressAutocomplete({
   onAddressSelect,
   ...props
 }: AddressAutocompleteProps) {
-  const { data: config } = useQuery({
-    queryKey: ["mapbox-token"],
+  const { data: config, isLoading, error } = useQuery({
+    queryKey: ['mapbox-token'],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke('get-mapbox-token');
+      const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+      if (error) throw error;
       return data;
     },
+    staleTime: Infinity, // Token não precisa ser revalidado frequentemente
+    retry: 3,
   });
 
-  const handleRetrieve = (res: any) => {
+  const handleRetrieve = React.useCallback((res: any) => {
     if (onSelect) onSelect(res);
     if (onAddressSelect) onAddressSelect(res);
-  };
+  }, [onSelect, onAddressSelect]);
 
-  if (!config?.token) {
+  if (isLoading) {
     return (
       <Input
         placeholder="Carregando autocompletar de endereço..."
@@ -46,10 +49,28 @@ export function AddressAutocomplete({
     );
   }
 
+  if (error || !config?.token) {
+    console.error("Erro ao carregar token do Mapbox:", error);
+    return (
+      <Input
+        placeholder="Erro ao carregar autocompletar de endereço"
+        disabled
+        value={value}
+        onChange={onChange}
+        {...props}
+      />
+    );
+  }
+
   return (
     <div className="w-full">
-      {/* @ts-ignore */}
-      <AddressAutofill accessToken={config.token} onRetrieve={handleRetrieve}>
+      <AddressAutofill 
+        accessToken={config.token} 
+        onRetrieve={handleRetrieve}
+        options={{
+          language: 'pt',
+        }}
+      >
         <Input
           placeholder="Digite seu endereço"
           value={value}
