@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Building2, Trash2, User } from "lucide-react";
 import { CustomerFormValues } from "./types";
+import { useTranslation } from "react-i18next";
 
 interface CustomerTableProps {
   customers: CustomerFormValues[];
@@ -9,11 +10,13 @@ interface CustomerTableProps {
 }
 
 export function CustomerTable({ customers, onRowClick, onDeleteClick }: CustomerTableProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-white rounded-lg shadow">
       {customers?.length === 0 ? (
         <div className="p-4 text-center text-gray-500">
-          Nenhum cliente cadastrado
+          {t('customers.table.empty')}
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -21,19 +24,19 @@ export function CustomerTable({ customers, onRowClick, onDeleteClick }: Customer
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tipo
+                  {t('customers.table.type')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nome
+                  {t('customers.table.name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nome da Empresa
+                  {t('customers.table.company_name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                  {t('customers.table.status')}
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ações
+                  {t('customers.table.actions')}
                 </th>
               </tr>
             </thead>
@@ -65,7 +68,9 @@ export function CustomerTable({ customers, onRowClick, onDeleteClick }: Customer
                           : "bg-red-100 text-red-800"
                       }`}
                     >
-                      {customer.status === "active" ? "Ativo" : "Inativo"}
+                      {customer.status === "active" 
+                        ? t('customers.details.status.active')
+                        : t('customers.details.status.inactive')}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
