@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CustomerSelect } from "./CustomerSelect";
+import CustomerSelect from "./CustomerSelect";
 import InvoiceItems from "./InvoiceItems";
 import InvoiceSummary from "./InvoiceSummary";
 import { NewCustomerDialog } from "./NewCustomerDialog";
