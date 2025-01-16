@@ -17,6 +17,7 @@ import InvoicesIndex from "./pages/invoices/Index";
 import PlansIndex from "./pages/plans/Index";
 import FeedbackIndex from "./pages/feedback/Index";
 import UserProfile from "./pages/profile/UserProfile";
+import UserPlan from "./pages/profile/UserPlan";
 import CompanyDetails from "./pages/profile/CompanyDetails";
 import InvoiceSettings from "./pages/profile/InvoiceSettings";
 import AdminSubscribers from "./pages/admin/subscribers/Index";
@@ -50,6 +51,7 @@ const AppLayout = () => {
                 {/* Rotas de perfil */}
                 <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
                 <Route path="/profile/company" element={<ProtectedRoute><CompanyDetails /></ProtectedRoute>} />
+                <Route path="/profile/plan" element={<ProtectedRoute><UserPlan /></ProtectedRoute>} />
                 <Route path="/profile/invoice-settings" element={<ProtectedRoute><InvoiceSettings /></ProtectedRoute>} />
                 
                 {/* Rotas administrativas */}

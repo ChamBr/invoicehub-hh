@@ -1,4 +1,4 @@
-import { Users, Package, FileText, MessageSquare, UserCircle, CreditCard, BarChart, Wallet, Sliders, Building, Receipt } from "lucide-react";
+import { Users, Package, FileText, MessageSquare, UserCircle, CreditCard, BarChart, Wallet, Sliders, Building, Receipt, Star } from "lucide-react";
 import { MenuItems } from "./types";
 import { createElement } from "react";
 
@@ -30,6 +30,11 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
       to: "/profile/company",
       icon: createElement(Building, { className: "h-4 w-4" }),
       label: t('navigation.company')
+    },
+    {
+      to: "/profile/plan",
+      icon: createElement(Star, { className: "h-4 w-4" }),
+      label: t('navigation.plan')
     },
     {
       to: "/profile/invoice-settings",
