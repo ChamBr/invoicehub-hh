@@ -3,10 +3,25 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { PlusCircle, CheckCircle2, AlertCircle, XCircle, FileText, Send, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { NewInvoiceDialog } from "@/components/invoices/NewInvoiceDialog";
+import { Invoice, InvoiceStatus, getStatusColor, getStatusLabel } from "@/components/invoices/types";
+
+const InvoiceStatusIcon = ({ status }: { status: InvoiceStatus }) => {
+  const icons = {
+    draft: <FileText className="h-4 w-4" />,
+    created: <CheckCircle2 className="h-4 w-4" />,
+    sent: <Send className="h-4 w-4" />,
+    pending: <Clock className="h-4 w-4" />,
+    overdue: <AlertCircle className="h-4 w-4" />,
+    cancelled: <XCircle className="h-4 w-4" />,
+    paid: <CheckCircle2 className="h-4 w-4" />,
+  };
+  return icons[status];
+};
 
 const InvoicesIndex = () => {
   const navigate = useNavigate();
@@ -29,7 +44,7 @@ const InvoicesIndex = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as Invoice[];
     },
   });
 
@@ -78,21 +93,13 @@ const InvoicesIndex = () => {
                     {new Date(invoice.due_date).toLocaleDateString("pt-BR")}
                   </TableCell>
                   <TableCell>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        invoice.status === "paid"
-                          ? "bg-green-100 text-green-800"
-                          : invoice.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
+                    <Badge
+                      variant="outline"
+                      className={`flex w-fit items-center gap-1 ${getStatusColor(invoice.status)}`}
                     >
-                      {invoice.status === "paid"
-                        ? "Pago"
-                        : invoice.status === "pending"
-                        ? "Pendente"
-                        : "Vencido"}
-                    </span>
+                      <InvoiceStatusIcon status={invoice.status} />
+                      <span>{getStatusLabel(invoice.status)}</span>
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     {new Intl.NumberFormat("pt-BR", {

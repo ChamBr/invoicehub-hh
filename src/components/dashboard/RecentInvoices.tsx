@@ -1,27 +1,28 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { getStatusColor, getStatusLabel, InvoiceStatus } from "@/components/invoices/types";
 
 const invoices = [
   {
     id: "INV001",
     client: "Acme Corp",
     amount: "$1,200.00",
-    status: "paid",
+    status: "paid" as InvoiceStatus,
     date: "2024-02-15",
   },
   {
     id: "INV002",
     client: "Globex Inc",
     amount: "$850.00",
-    status: "pending",
+    status: "pending" as InvoiceStatus,
     date: "2024-02-14",
   },
   {
     id: "INV003",
     client: "Wayne Enterprises",
     amount: "$3,400.00",
-    status: "overdue",
+    status: "overdue" as InvoiceStatus,
     date: "2024-02-10",
   },
 ];
@@ -29,7 +30,7 @@ const invoices = [
 export function RecentInvoices() {
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Recent Invoices</h3>
+      <h3 className="text-lg font-semibold mb-4">Faturas Recentes</h3>
       <div className="space-y-4">
         {invoices.map((invoice) => (
           <div
@@ -46,12 +47,10 @@ export function RecentInvoices() {
                 variant="outline"
                 className={cn(
                   "capitalize",
-                  invoice.status === "paid" && "bg-green-100 text-green-800 border-green-600",
-                  invoice.status === "pending" && "bg-yellow-100 text-yellow-800 border-yellow-600",
-                  invoice.status === "overdue" && "bg-red-100 text-red-800 border-red-600"
+                  getStatusColor(invoice.status)
                 )}
               >
-                {invoice.status}
+                {getStatusLabel(invoice.status)}
               </Badge>
             </div>
           </div>

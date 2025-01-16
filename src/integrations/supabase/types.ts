@@ -309,7 +309,7 @@ export type Database = {
           due_date: string
           id: string
           notes: string | null
-          status: string | null
+          status: Database["public"]["Enums"]["invoice_status"] | null
           total: number
         }
         Insert: {
@@ -318,7 +318,7 @@ export type Database = {
           due_date: string
           id?: string
           notes?: string | null
-          status?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"] | null
           total?: number
         }
         Update: {
@@ -327,7 +327,7 @@ export type Database = {
           due_date?: string
           id?: string
           notes?: string | null
-          status?: string | null
+          status?: Database["public"]["Enums"]["invoice_status"] | null
           total?: number
         }
         Relationships: [
@@ -595,6 +595,14 @@ export type Database = {
     }
     Enums: {
       config_type: "feature" | "test" | "appearance"
+      invoice_status:
+        | "draft"
+        | "created"
+        | "sent"
+        | "pending"
+        | "overdue"
+        | "cancelled"
+        | "paid"
     }
     CompositeTypes: {
       [_ in never]: never
