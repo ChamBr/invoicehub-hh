@@ -5,7 +5,8 @@ import { CompanyAddress } from "@/components/company/CompanyAddress";
 import { CompanyContact } from "@/components/company/CompanyContact";
 import { FormSection } from "@/components/forms/FormSection";
 import { FormActions } from "@/components/forms/FormActions";
-import { uploadAvatar } from "@/integrations/supabase/storage";
+import { uploadCompanyLogo } from "@/integrations/supabase/storage";
+import { useToast } from "@/components/ui/use-toast";
 
 interface CompanyFormProps {
   companyProfile: any;
@@ -24,6 +25,8 @@ export const CompanyForm = ({
   isEditing = true,
   onCancel
 }: CompanyFormProps) => {
+  const { toast } = useToast();
+  
   const handleAddressSelect = useCallback((address: any) => {
     const form = document.querySelector('form');
     if (form) {
@@ -41,17 +44,33 @@ export const CompanyForm = ({
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    // Garantir que todos os campos boolean sejam incluídos
-    formData.set('display_tax_id', formData.get('display_tax_id') === 'true' ? 'true' : 'false');
-    formData.set('display_phone', formData.get('display_phone') === 'true' ? 'true' : 'false');
-    formData.set('display_logo', formData.get('display_logo') === 'true' ? 'true' : 'false');
-    
-    // Definir país padrão se não estiver presente
-    if (!formData.get('country')) {
-      formData.set('country', companyProfile?.country || 'BR');
-    }
+    try {
+      // Upload logo if present
+      const logoFile = formData.get('logo') as File;
+      if (logoFile && logoFile instanceof File && logoFile.size > 0) {
+        const logoUrl = await uploadCompanyLogo(logoFile);
+        formData.set('logo_url', logoUrl);
+      }
+      
+      // Garantir que todos os campos boolean sejam incluídos
+      formData.set('display_tax_id', formData.get('display_tax_id') === 'true' ? 'true' : 'false');
+      formData.set('display_phone', formData.get('display_phone') === 'true' ? 'true' : 'false');
+      formData.set('display_logo', formData.get('display_logo') === 'true' ? 'true' : 'false');
+      
+      // Definir país padrão se não estiver presente
+      if (!formData.get('country')) {
+        formData.set('country', companyProfile?.country || 'BR');
+      }
 
-    onSubmit(formData);
+      onSubmit(formData);
+    } catch (error) {
+      console.error('Erro ao fazer upload do logo:', error);
+      toast({
+        title: "Erro ao fazer upload do logo",
+        description: "Ocorreu um erro ao fazer upload do logo da empresa. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
