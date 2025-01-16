@@ -28,13 +28,10 @@ export function MetricCard({
         <div className="text-primary-dark">{icon}</div>
       </div>
       <div className="flex items-baseline justify-between">
-        <div className="space-y-1">
-          <p className="text-2xl font-semibold">{value}</p>
-          {secondaryValue && (
-            <p className="text-sm text-gray-500">{secondaryValue}</p>
-          )}
-        </div>
-        {trend && (
+        <p className="text-2xl font-semibold">{value}</p>
+        {secondaryValue ? (
+          <p className="text-sm text-gray-500">{secondaryValue}</p>
+        ) : trend && (
           <div className={cn(
             "text-sm flex items-center",
             trend.isPositive ? "text-green-600" : "text-red-600"
