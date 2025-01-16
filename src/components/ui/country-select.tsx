@@ -17,9 +17,10 @@ const countries = [
 interface CountrySelectProps {
   value?: string
   onValueChange: (value: string) => void
+  disabled?: boolean
 }
 
-export function CountrySelect({ value, onValueChange }: CountrySelectProps) {
+export function CountrySelect({ value, onValueChange, disabled }: CountrySelectProps) {
   const { i18n } = useTranslation();
 
   const getCountryName = (code: string) => {
@@ -28,7 +29,7 @@ export function CountrySelect({ value, onValueChange }: CountrySelectProps) {
   };
 
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Select country">
           {value && (
