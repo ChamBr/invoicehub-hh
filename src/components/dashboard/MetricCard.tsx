@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 interface MetricCardProps {
   title: string;
   value: string;
-  icon: React.ReactNode;
   secondaryValue?: string;
+  icon: React.ReactNode;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -13,32 +13,48 @@ interface MetricCardProps {
   className?: string;
 }
 
-export function MetricCard({ 
-  title, 
-  value, 
-  icon, 
+export function MetricCard({
+  title,
+  value,
   secondaryValue,
-  trend, 
-  className 
+  icon,
+  trend,
+  className,
 }: MetricCardProps) {
   return (
-    <Card className={cn("p-6 space-y-2", className)}>
+    <Card className={cn("p-6 -mt-[1px]", className)}>
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-        <div className="text-primary-dark">{icon}</div>
-      </div>
-      <div className="flex items-baseline justify-between">
-        <p className="text-2xl font-semibold">{value}</p>
-        {secondaryValue ? (
-          <p className="text-sm text-gray-500">{secondaryValue}</p>
-        ) : trend && (
-          <div className={cn(
-            "text-sm flex items-center",
-            trend.isPositive ? "text-green-600" : "text-red-600"
-          )}>
-            {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}%
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-gray-500">{title}</p>
+          <div>
+            <p className="text-2xl font-semibold">{value}</p>
+            {secondaryValue && (
+              <p className="text-sm text-gray-500">{secondaryValue}</p>
+            )}
           </div>
-        )}
+          {trend && (
+            <p
+              className={cn(
+                "text-xs font-medium",
+                trend.isPositive ? "text-green-600" : "text-red-600"
+              )}
+            >
+              {trend.isPositive ? "+" : "-"}{trend.value}%
+            </p>
+          )}
+        </div>
+        <div
+          className={cn(
+            "rounded-lg p-2",
+            trend?.isPositive
+              ? "bg-green-50 text-green-600"
+              : trend
+              ? "bg-red-50 text-red-600"
+              : "bg-gray-50 text-gray-600"
+          )}
+        >
+          {icon}
+        </div>
       </div>
     </Card>
   );
