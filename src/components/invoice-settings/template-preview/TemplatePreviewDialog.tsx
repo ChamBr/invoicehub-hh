@@ -49,18 +49,21 @@ export const TemplatePreviewDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="max-w-[210mm] min-h-[297mm] w-full p-0">
+        <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle>
             Visualização do Template: {template.name}
           </DialogTitle>
         </DialogHeader>
         
-        <div className="p-6 border rounded-lg" style={{
+        <div className="p-8" style={{
           fontFamily: template.content.body.fontFamily,
           fontSize: template.content.body.fontSize,
           lineHeight: template.content.body.lineHeight,
           backgroundColor: template.content.header.backgroundColor,
+          width: '210mm',
+          minHeight: '297mm',
+          margin: '0 auto',
         }}>
           <PreviewHeader content={template.content} company={sampleCompany} />
           <PreviewCustomer 

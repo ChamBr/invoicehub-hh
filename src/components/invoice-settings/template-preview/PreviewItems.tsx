@@ -62,7 +62,7 @@ export const PreviewItems = ({ items, tableStyle = 'modern' }: PreviewItemsProps
       </table>
 
       <div className="mt-8 flex justify-between items-start">
-        <div className="space-y-4">
+        <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
           <h3 className="font-medium text-[#1F2937]">Remarks / Instructions</h3>
           <p className="text-sm text-gray-600">Make all checks payable to [Company Name]</p>
           <p className="text-sm text-gray-600">
