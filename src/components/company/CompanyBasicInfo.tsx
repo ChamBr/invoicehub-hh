@@ -2,6 +2,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { CountrySelect } from "@/components/ui/country-select";
+import { addressFormats } from "./types";
 
 interface CompanyBasicInfoProps {
   companyName?: string;
@@ -16,16 +17,18 @@ export const CompanyBasicInfo = ({
   companyName,
   taxId,
   displayTaxId,
-  country,
+  country = 'BR',
   onCountryChange,
   onDisplayTaxIdChange,
 }: CompanyBasicInfoProps) => {
+  const format = addressFormats[country] || addressFormats.BR;
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="country">País</Label>
         <CountrySelect
-          value={country || 'BR'}
+          value={country}
           onValueChange={onCountryChange}
         />
       </div>
@@ -41,12 +44,13 @@ export const CompanyBasicInfo = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="tax_id">CNPJ/CPF</Label>
+          <Label htmlFor="tax_id">{format.taxIdLabel}</Label>
           <div className="space-y-2">
             <Input
               id="tax_id"
               name="tax_id"
               defaultValue={taxId}
+              placeholder={format.taxIdMask}
             />
             <div className="flex items-center gap-2">
               <Switch
@@ -55,7 +59,7 @@ export const CompanyBasicInfo = ({
                 checked={displayTaxId}
                 onCheckedChange={onDisplayTaxIdChange}
               />
-              <Label htmlFor="display_tax_id">Exibir CNPJ/CPF na fatura</Label>
+              <Label htmlFor="display_tax_id">Exibir {format.taxIdLabel} na fatura</Label>
             </div>
           </div>
         </div>

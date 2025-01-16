@@ -1,12 +1,14 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
+import { addressFormats } from "./types";
 
 interface CompanyAddressProps {
   addressLine2?: string;
   city?: string;
   state?: string;
   zipCode?: string;
+  country?: string;
   onAddressSelect: (address: any) => void;
 }
 
@@ -15,11 +17,14 @@ export const CompanyAddress = ({
   city,
   state,
   zipCode,
+  country = 'BR',
   onAddressSelect,
 }: CompanyAddressProps) => {
+  const format = addressFormats[country] || addressFormats.BR;
+
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Endereço</h3>
+      <h3 className="text-lg font-semibold">{format.addressLabel}</h3>
       <AddressAutocomplete onAddressSelect={onAddressSelect} />
       <div className="space-y-2">
         <Label htmlFor="address_line2">Complemento (Opcional)</Label>
@@ -32,7 +37,7 @@ export const CompanyAddress = ({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="city">Cidade</Label>
+          <Label htmlFor="city">{format.cityLabel}</Label>
           <Input
             id="city"
             name="city"
@@ -40,7 +45,7 @@ export const CompanyAddress = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="state">Estado</Label>
+          <Label htmlFor="state">{format.stateLabel}</Label>
           <Input
             id="state"
             name="state"
@@ -48,7 +53,7 @@ export const CompanyAddress = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="zip_code">CEP</Label>
+          <Label htmlFor="zip_code">{format.zipLabel}</Label>
           <Input
             id="zip_code"
             name="zip_code"
