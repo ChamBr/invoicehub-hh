@@ -7,9 +7,14 @@ import { useToast } from "@/hooks/use-toast";
 interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
+  clearSession: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({ session: null, isLoading: true });
+const AuthContext = createContext<AuthContextType>({ 
+  session: null, 
+  isLoading: true,
+  clearSession: () => {} 
+});
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -25,10 +30,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Função para limpar a sessão e storage local
+  const clearSession = () => {
+    setSession(null);
+    localStorage.clear(); // Limpa todo o localStorage
+  };
+
   // Função para limpar a sessão e redirecionar para login
   const handleSessionEnd = (message: string) => {
-    setSession(null);
-    localStorage.removeItem('supabase.auth.token');
+    clearSession();
     navigate("/login");
     toast({
       title: "Sessão encerrada",
@@ -97,7 +107,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       switch (event) {
         case "SIGNED_OUT":
-          handleSessionEnd("Você foi desconectado do sistema");
+          clearSession();
+          navigate("/login");
           break;
           
         case "SIGNED_IN":
@@ -143,7 +154,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [navigate, toast]);
 
   return (
-    <AuthContext.Provider value={{ session, isLoading }}>
+    <AuthContext.Provider value={{ session, isLoading, clearSession }}>
       {children}
     </AuthContext.Provider>
   );

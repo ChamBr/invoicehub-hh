@@ -8,45 +8,40 @@ import { useAuth } from "@/components/auth/AuthProvider";
 const UserMenu = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { session } = useAuth();
+  const { session, clearSession } = useAuth();
 
   const handleLogout = async () => {
     try {
-      // Primeiro, limpar o localStorage para evitar conflitos
-      localStorage.removeItem('supabase.auth.token');
+      // Primeiro limpar a sessão local
+      clearSession();
       
       // Tentar fazer o logout no Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error("Erro ao fazer logout:", error);
+        // Se houver erro, ainda assim vamos garantir que o usuário seja deslogado localmente
         toast({
-          variant: "destructive",
-          title: "Erro ao sair",
-          description: "Ocorreu um erro ao tentar sair. Tente novamente.",
+          title: "Atenção",
+          description: "Houve um problema, mas você foi desconectado por segurança.",
         });
-        return;
+      } else {
+        toast({
+          title: "Logout realizado",
+          description: "Você foi desconectado com sucesso",
+        });
       }
-
-      // Se chegou aqui, o logout foi bem sucedido
-      toast({
-        title: "Logout realizado",
-        description: "Você foi desconectado com sucesso",
-      });
       
+      // Sempre redirecionar para login, independente de erro
       navigate("/login");
     } catch (error) {
       console.error("Erro inesperado ao fazer logout:", error);
-      
-      // Em caso de erro, forçar a limpeza da sessão
-      localStorage.clear(); // Limpa todo o localStorage por segurança
-      
+      // Em caso de erro, garantir que o usuário seja deslogado
+      clearSession();
       toast({
-        variant: "destructive",
-        title: "Erro ao sair",
+        title: "Atenção",
         description: "Houve um problema, mas você foi desconectado por segurança.",
       });
-      
       navigate("/login");
     }
   };
