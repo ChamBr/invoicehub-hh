@@ -47,7 +47,7 @@ export const ActionButtons = ({
             <FileEdit className="h-4 w-4 mr-2" />
             Voltar para Rascunho
           </Button>
-          <Button onClick={onSend} disabled={isLoading}>
+          <Button variant="secondary" onClick={onSend} disabled={isLoading}>
             <Send className="h-4 w-4 mr-2" />
             {isLoading ? "Enviando..." : "Enviar"}
           </Button>
@@ -62,7 +62,7 @@ export const ActionButtons = ({
       return (
         <div className="flex gap-2">
           {!emailSentAt && (
-            <Button onClick={onSend} disabled={isLoading}>
+            <Button variant="secondary" onClick={onSend} disabled={isLoading}>
               <Send className="h-4 w-4 mr-2" />
               {isLoading ? "Enviando..." : "Reenviar"}
             </Button>
@@ -78,7 +78,7 @@ export const ActionButtons = ({
               {isLoading ? "Gerando..." : "Gerar PDF"}
             </Button>
           )}
-          <Button onClick={onMarkAsPaid} disabled={isLoading}>
+          <Button variant="default" onClick={onMarkAsPaid} disabled={isLoading}>
             <CheckCircle2 className="h-4 w-4 mr-2" />
             {isLoading ? "Processando..." : "Marcar como Paga"}
           </Button>
