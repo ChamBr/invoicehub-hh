@@ -1,84 +1,17 @@
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Product {
-  id?: string;
-  name: string;
-  description: string;
-  type: string;
-  price: string | number;
-  sku: string;
-  stock: string | number;
-}
-
-interface ProductFormProps {
-  product?: Product | null;
-  onSuccess: () => void;
-  onCancel: () => void;
-}
+import { useProductForm } from "./useProductForm";
+import type { ProductFormProps } from "./types";
 
 const ProductForm = ({ product, onSuccess, onCancel }: ProductFormProps) => {
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: product?.name || "",
-    description: product?.description || "",
-    type: product?.type || "product",
-    price: product?.price?.toString() || "",
-    sku: product?.sku || "",
-    stock: product?.stock?.toString() || "0",
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { error } = await supabase.from("products").insert([
-        {
-          name: formData.name,
-          description: formData.description,
-          type: formData.type,
-          price: parseFloat(formData.price),
-          sku: formData.sku,
-          stock: formData.type === "product" ? parseInt(formData.stock) : 0,
-          status: "active",
-        },
-      ]);
-
-      if (error) throw error;
-
-      toast({
-        title: "Produto/Serviço criado",
-        description: "O produto/serviço foi criado com sucesso.",
-      });
-      
-      onSuccess();
-      setFormData({
-        name: "",
-        description: "",
-        type: "product",
-        price: "",
-        sku: "",
-        stock: "0",
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao criar produto/serviço",
-        description: "Ocorreu um erro ao criar o produto/serviço.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { formData, setFormData, isLoading, handleSubmit } = useProductForm(
+    product,
+    onSuccess
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
