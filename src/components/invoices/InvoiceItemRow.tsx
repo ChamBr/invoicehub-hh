@@ -11,6 +11,7 @@ interface InvoiceItemRowProps {
   index: number;
   onUpdate: (index: number, item: InvoiceItem) => void;
   onRemove: (index: number) => void;
+  readOnly?: boolean;
 }
 
 export const InvoiceItemRow = ({
@@ -18,6 +19,7 @@ export const InvoiceItemRow = ({
   index,
   onUpdate,
   onRemove,
+  readOnly = false,
 }: InvoiceItemRowProps) => {
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -45,18 +47,22 @@ export const InvoiceItemRow = ({
         </div>
 
         <div className="w-24">
-          <Input
-            type="number"
-            min="0"
-            value={item.quantity}
-            onChange={(e) =>
-              onUpdate(index, {
-                ...item,
-                quantity: parseInt(e.target.value),
-                total: parseInt(e.target.value) * item.price,
-              })
-            }
-          />
+          {readOnly ? (
+            <span className="text-sm">{item.quantity}</span>
+          ) : (
+            <Input
+              type="number"
+              min="0"
+              value={item.quantity}
+              onChange={(e) =>
+                onUpdate(index, {
+                  ...item,
+                  quantity: parseInt(e.target.value),
+                  total: parseInt(e.target.value) * item.price,
+                })
+              }
+            />
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -66,17 +72,20 @@ export const InvoiceItemRow = ({
               onUpdate(index, { ...item, hasTax: checked })
             }
             id={`tax-${index}`}
+            disabled={readOnly}
           />
           <Label htmlFor={`tax-${index}`}>Imposto</Label>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onRemove(index)}
-        >
-          <Trash2 className="h-4 w-4 text-red-500" />
-        </Button>
+        {!readOnly && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onRemove(index)}
+          >
+            <Trash2 className="h-4 w-4 text-red-500" />
+          </Button>
+        )}
       </div>
     </div>
   );

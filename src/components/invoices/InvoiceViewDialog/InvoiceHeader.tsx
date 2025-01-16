@@ -11,12 +11,14 @@ interface InvoiceHeaderProps {
 export const InvoiceHeader = ({ invoice, currentStatus }: InvoiceHeaderProps) => {
   return (
     <DialogHeader>
-      <div className="flex justify-between items-start">
+      <div className="flex items-start justify-between mb-4">
         <DialogTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
           Fatura #{invoice.id.slice(0, 8)}
         </DialogTitle>
-        <StatusBadge status={currentStatus} />
+        <div className="flex-shrink-0 ml-4">
+          <StatusBadge status={currentStatus} />
+        </div>
       </div>
       <div className="mt-2">
         <h3 className="text-lg font-medium">Cliente</h3>

@@ -15,9 +15,10 @@ interface InvoiceItemsProps {
   onAdd: (item: InvoiceItem) => void;
   onRemove: (index: number) => void;
   onUpdate: (index: number, item: InvoiceItem) => void;
+  readOnly?: boolean;
 }
 
-const InvoiceItems = ({ items, onAdd, onRemove, onUpdate }: InvoiceItemsProps) => {
+const InvoiceItems = ({ items, onAdd, onRemove, onUpdate, readOnly = false }: InvoiceItemsProps) => {
   const [isNewProductDialogOpen, setIsNewProductDialogOpen] = useState(false);
   const [isCustomItem, setIsCustomItem] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
@@ -68,6 +69,23 @@ const InvoiceItems = ({ items, onAdd, onRemove, onUpdate }: InvoiceItemsProps) =
       }
     }
   };
+
+  if (readOnly) {
+    return (
+      <div className="space-y-2">
+        {items.map((item, index) => (
+          <InvoiceItemRow
+            key={index}
+            item={item}
+            index={index}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+            readOnly
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
