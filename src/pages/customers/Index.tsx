@@ -8,7 +8,7 @@ import { CustomerDetails } from "@/components/customers/CustomerDetails";
 import { CustomerHeader } from "@/components/customers/CustomerHeader";
 import { CustomerTable } from "@/components/customers/CustomerTable";
 import { DeleteCustomerDialog } from "@/components/customers/DeleteCustomerDialog";
-import { CustomerFormValues } from "@/components/customers/types";
+import { CustomerFormValues, CustomerFromDB } from "@/components/customers/types";
 
 const CustomersIndex = () => {
   const { toast } = useToast();
@@ -18,7 +18,7 @@ const CustomersIndex = () => {
   const [customerToDelete, setCustomerToDelete] = useState<CustomerFormValues | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data: customers, error } = useQuery({
+  const { data: customersData, error } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -27,9 +27,27 @@ const CustomersIndex = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as CustomerFromDB[];
     },
   });
+
+  const customers: CustomerFormValues[] = (customersData || []).map((customer) => ({
+    id: customer.id,
+    type: customer.type as "personal" | "company",
+    name: customer.name,
+    contactName: customer.contact_name,
+    email: customer.email,
+    country: "BR", // Default value since it's required
+    phone: customer.phone,
+    taxExempt: customer.tax_exempt,
+    taxId: customer.tax_id,
+    notes: customer.notes,
+    address: customer.address,
+    city: customer.city,
+    state: customer.state,
+    zipCode: customer.zip_code,
+    status: customer.status as "active" | "inactive",
+  }));
 
   const handleDelete = async (customerId: string) => {
     try {
@@ -89,7 +107,7 @@ const CustomersIndex = () => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <CustomerHeader />
         <CustomerTable
-          customers={customers || []}
+          customers={customers}
           onRowClick={handleRowClick}
           onDeleteClick={handleDeleteClick}
         />

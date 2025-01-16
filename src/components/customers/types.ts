@@ -50,3 +50,21 @@ export const addressFormats: Record<string, AddressFormat> = {
     taxIdMask: "99-9999999",
   },
 };
+
+export type CustomerFromDB = {
+  id: string;
+  type: string;
+  name: string;
+  contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  tax_exempt: boolean;
+  tax_id: string | null;
+  notes: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zip_code: string | null;
+  status: string;
+  created_at: string;
+};
