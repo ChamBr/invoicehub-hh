@@ -7,9 +7,10 @@ import { CustomerTaxInfo } from "./CustomerTaxInfo";
 import { CustomerNotesField } from "./CustomerNotesField";
 import { CountrySelect } from "@/components/ui/country-select";
 import { customerFormSchema, type CustomerFormValues } from "./types";
-import { FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { CustomerFormActions } from "./CustomerFormActions";
 import { useCustomerSubmit } from "./hooks/useCustomerSubmit";
+import { Input } from "@/components/ui/input";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -33,6 +34,19 @@ export function CustomerForm({ onSuccess, onCancel }: CustomerFormProps) {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <CustomerTypeSelect form={form} />
         
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input placeholder="Nome do cliente" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="country"

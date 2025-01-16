@@ -10,23 +10,31 @@ export const useCustomerSubmit = (onSuccess: () => void) => {
   const handleSubmit = async (values: CustomerFormValues) => {
     try {
       setIsSubmitting(true);
+      console.log("Submitting values:", values); // Log para debug
       
-      const { error } = await supabase.from("customers").insert({
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        address: values.address,
-        city: values.city,
-        state: values.state,
-        zip_code: values.zipCode,
-        notes: values.notes,
-        tax_exempt: values.taxExempt,
-        tax_id: values.taxId,
-        type: values.type,
-        contact_name: values.contactName,
-      });
+      const { data, error } = await supabase.from("customers").insert([
+        {
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          address: values.address,
+          city: values.city,
+          state: values.state,
+          zip_code: values.zipCode,
+          notes: values.notes,
+          tax_exempt: values.taxExempt,
+          tax_id: values.taxId,
+          type: values.type,
+          contact_name: values.contactName,
+        },
+      ]).select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error); // Log para debug
+        throw error;
+      }
+
+      console.log("Success response:", data); // Log para debug
 
       toast({
         title: "Cliente cadastrado com sucesso!",
@@ -35,7 +43,7 @@ export const useCustomerSubmit = (onSuccess: () => void) => {
 
       onSuccess();
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error details:", error); // Log para debug
       toast({
         variant: "destructive",
         title: "Erro ao cadastrar cliente",
