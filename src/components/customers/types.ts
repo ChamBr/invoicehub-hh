@@ -14,25 +14,25 @@ export const customerFormSchema = z.object({
       if (!value) return true;
       return true;
     }, "Formato de telefone inválido")
-    .refine((value, ctx) => {
-      if (!value) return true;
+    .superRefine((value, ctx) => {
+      if (!value) return;
 
-      const country = ctx.path[0] === "phone" ? "BR" : "US";
+      const country = ctx.input?.country || "BR";
       
       if (country === "BR" && !phoneRegexBR.test(value)) {
-        return false;
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Formato de telefone brasileiro inválido",
+        });
       }
       
       if (country === "US" && !phoneRegexUS.test(value)) {
-        return false;
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Formato de telefone americano inválido",
+        });
       }
-
-      return true;
-    }, (value, ctx) => ({
-      message: ctx.path[0] === "BR" 
-        ? "Formato de telefone brasileiro inválido" 
-        : "Formato de telefone americano inválido"
-    }))
+    })
     .optional()
     .nullable(),
   taxExempt: z.boolean().default(false),
