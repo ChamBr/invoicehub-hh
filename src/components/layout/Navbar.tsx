@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import LanguageSwitcher from "./LanguageSwitcher";
-import AdminModeSwitch from "./navbar/AdminModeSwitch";
 import UserMenu from "./navbar/UserMenu";
 
 const Navbar = () => {
@@ -33,10 +32,14 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold text-gray-900">
-              {location.pathname === "/" ? "Dashboard" : t(`navigation${location.pathname}`)}
-            </h1>
-            <AdminModeSwitch />
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-gray-900 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+                {location.pathname === "/" ? "Dashboard" : t(`navigation${location.pathname}`)}
+              </h1>
+              <p className="text-sm text-gray-500">
+                {location.pathname === "/" ? t('dashboard.welcome') : t('common.navigation.description')}
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">

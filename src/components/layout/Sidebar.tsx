@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import MenuGroup from "./sidebar/MenuGroup";
 import { createMenuItems } from "./sidebar/menuItems";
+import AdminModeSwitch from "./navbar/AdminModeSwitch";
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -21,7 +22,7 @@ const Sidebar = () => {
     >
       <div className="p-4 flex items-center justify-between border-b border-gray-200">
         {!collapsed && (
-          <Link to="/" className="text-xl font-semibold text-primary">
+          <Link to="/" className="text-3xl font-bold text-primary hover:text-primary/90 transition-colors">
             InvoiceHub
           </Link>
         )}
@@ -40,8 +41,13 @@ const Sidebar = () => {
         <MenuGroup title={t('navigation.user')} items={menuItems.user} collapsed={collapsed} />
       </div>
       
-      <div className="mt-auto border-t border-gray-200 bg-gray-50">
-        <div className="py-6">
+      <div className="mt-auto border-t border-gray-200 bg-gray-50 p-4">
+        {!collapsed && (
+          <div className="mb-4">
+            <AdminModeSwitch />
+          </div>
+        )}
+        <div className="py-2">
           <MenuGroup title="Administração" items={menuItems.admin} collapsed={collapsed} />
         </div>
       </div>
