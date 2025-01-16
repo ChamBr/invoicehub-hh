@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCompanyProfile } from "./components/company/useCompanyProfile";
 import { CompanyForm } from "./components/company/CompanyForm";
 import { FormSection } from "@/components/forms/FormSection";
+import { Card } from "@/components/ui/card";
 
 const CompanyDetails = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -16,19 +17,20 @@ const CompanyDetails = () => {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-8">
-      <FormSection
-        title="Informações da Empresa"
-        description="Preencha as informações da sua empresa para personalizar suas faturas."
-        className="bg-white rounded-lg shadow-sm"
-      >
-        <CompanyForm
-          companyProfile={companyProfile}
-          onLogoChange={setLogoFile}
-          onSubmit={(formData) => updateCompanyProfile.mutate(formData)}
-          isLoading={updateCompanyProfile.isPending}
-        />
-      </FormSection>
+    <div className="container max-w-4xl mx-auto py-8">
+      <Card className="p-6">
+        <FormSection
+          title="Informações da Empresa"
+          description="Preencha as informações da sua empresa para personalizar suas faturas."
+        >
+          <CompanyForm
+            companyProfile={companyProfile}
+            onLogoChange={setLogoFile}
+            onSubmit={(formData) => updateCompanyProfile.mutate(formData)}
+            isLoading={updateCompanyProfile.isPending}
+          />
+        </FormSection>
+      </Card>
     </div>
   );
 };

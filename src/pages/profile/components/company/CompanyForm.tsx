@@ -56,26 +56,21 @@ export const CompanyForm = ({
     }} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-8">
-          <FormSection>
-            <LogoUpload
-              logoUrl={companyProfile?.logo_url}
-              onLogoChange={onLogoChange}
-              displayLogo={companyProfile?.display_logo}
-              onDisplayLogoChange={(checked) => {
-                const form = document.querySelector('form');
-                if (form) {
-                  const formData = new FormData(form);
-                  formData.set('display_logo', checked.toString());
-                  onSubmit(formData);
-                }
-              }}
-            />
-          </FormSection>
+          <LogoUpload
+            logoUrl={companyProfile?.logo_url}
+            onLogoChange={onLogoChange}
+            displayLogo={companyProfile?.display_logo}
+            onDisplayLogoChange={(checked) => {
+              const form = document.querySelector('form');
+              if (form) {
+                const formData = new FormData(form);
+                formData.set('display_logo', checked.toString());
+                onSubmit(formData);
+              }
+            }}
+          />
 
-          <FormSection
-            title="Informações Básicas"
-            description="Dados principais da empresa"
-          >
+          <FormSection>
             <CompanyBasicInfo
               companyName={companyProfile?.company_name}
               taxId={companyProfile?.tax_id}
@@ -95,10 +90,7 @@ export const CompanyForm = ({
         </div>
 
         <div className="space-y-8">
-          <FormSection
-            title="Endereço"
-            description="Localização da empresa"
-          >
+          <FormSection>
             <CompanyAddress
               addressLine2={companyProfile?.address_line2}
               city={companyProfile?.city}
@@ -109,10 +101,7 @@ export const CompanyForm = ({
             />
           </FormSection>
 
-          <FormSection
-            title="Contato"
-            description="Informações de contato"
-          >
+          <FormSection>
             <CompanyContact
               phone={companyProfile?.phone}
               mobile={companyProfile?.mobile}
