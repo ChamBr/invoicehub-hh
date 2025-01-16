@@ -7,6 +7,13 @@ interface FooterSettings {
   left_text: string;
   center_text: string;
   right_text: string;
+  font_size: string;
+  text_color: string;
+  text_alpha: number;
+  container_height: string;
+  show_refresh_button: boolean;
+  refresh_button_size: string;
+  refresh_button_color: string;
 }
 
 export const useFooterSettings = () => {

@@ -287,26 +287,47 @@ export type Database = {
       footer_settings: {
         Row: {
           center_text: string | null
+          container_height: string | null
           created_at: string
+          font_size: string | null
           id: string
           left_text: string | null
+          refresh_button_color: string | null
+          refresh_button_size: string | null
           right_text: string | null
+          show_refresh_button: boolean | null
+          text_alpha: number | null
+          text_color: string | null
           updated_at: string
         }
         Insert: {
           center_text?: string | null
+          container_height?: string | null
           created_at?: string
+          font_size?: string | null
           id?: string
           left_text?: string | null
+          refresh_button_color?: string | null
+          refresh_button_size?: string | null
           right_text?: string | null
+          show_refresh_button?: boolean | null
+          text_alpha?: number | null
+          text_color?: string | null
           updated_at?: string
         }
         Update: {
           center_text?: string | null
+          container_height?: string | null
           created_at?: string
+          font_size?: string | null
           id?: string
           left_text?: string | null
+          refresh_button_color?: string | null
+          refresh_button_size?: string | null
           right_text?: string | null
+          show_refresh_button?: boolean | null
+          text_alpha?: number | null
+          text_color?: string | null
           updated_at?: string
         }
         Relationships: []
