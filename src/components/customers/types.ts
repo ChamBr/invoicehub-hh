@@ -4,6 +4,7 @@ const phoneRegexBR = /^\+55 \(\d{2}\) \d{5}-\d{4}$/;
 const phoneRegexUS = /^\+1 \(\d{3}\) \d{3}-\d{4}$/;
 
 export const customerFormSchema = z.object({
+  id: z.string().optional(),
   type: z.enum(["personal", "company"]),
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   contactName: z.string().optional().nullable(),
