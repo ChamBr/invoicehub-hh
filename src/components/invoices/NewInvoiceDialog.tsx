@@ -67,12 +67,12 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         .from("invoices")
         .insert({
           customer_id: selectedCustomer,
-          status: "pending", // Alterado de 'draft' para 'pending'
+          status: "draft",
           due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           total: calculateTotal(items),
         })
         .select()
-        .maybeSingle();
+        .single();
 
       if (invoiceError) throw invoiceError;
       if (!invoice) throw new Error("Erro ao criar fatura");
@@ -98,7 +98,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
       });
 
       onOpenChange(false);
-      navigate("/invoices");
+      navigate(`/invoices/${invoice.id}`);
     } catch (error) {
       console.error("Error:", error);
       toast({
