@@ -37,6 +37,7 @@ const Index = () => {
           <MetricCard
             title={t('dashboard.metrics.overdueInvoices')}
             value="23"
+            secondaryValue="R$ 12.450,00"
             icon={<AlertCircle className="h-5 w-5" />}
             className="bg-red-50"
           />

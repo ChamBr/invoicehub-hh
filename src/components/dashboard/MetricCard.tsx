@@ -5,6 +5,7 @@ interface MetricCardProps {
   title: string;
   value: string;
   icon: React.ReactNode;
+  secondaryValue?: string;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -12,7 +13,14 @@ interface MetricCardProps {
   className?: string;
 }
 
-export function MetricCard({ title, value, icon, trend, className }: MetricCardProps) {
+export function MetricCard({ 
+  title, 
+  value, 
+  icon, 
+  secondaryValue,
+  trend, 
+  className 
+}: MetricCardProps) {
   return (
     <Card className={cn("p-6 space-y-2", className)}>
       <div className="flex items-center justify-between">
@@ -20,7 +28,12 @@ export function MetricCard({ title, value, icon, trend, className }: MetricCardP
         <div className="text-primary-dark">{icon}</div>
       </div>
       <div className="flex items-baseline justify-between">
-        <p className="text-2xl font-semibold">{value}</p>
+        <div className="space-y-1">
+          <p className="text-2xl font-semibold">{value}</p>
+          {secondaryValue && (
+            <p className="text-sm text-gray-500">{secondaryValue}</p>
+          )}
+        </div>
         {trend && (
           <div className={cn(
             "text-sm flex items-center",
