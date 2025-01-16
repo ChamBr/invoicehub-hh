@@ -6,10 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PlusCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { NewInvoiceDialog } from "@/components/invoices/NewInvoiceDialog";
 
 const InvoicesIndex = () => {
   const navigate = useNavigate();
   const [pageTitle, setPageTitle] = useState("InvoiceHub - Faturas");
+  const [isNewInvoiceOpen, setIsNewInvoiceOpen] = useState(false);
 
   useEffect(() => {
     document.title = pageTitle;
@@ -44,7 +46,7 @@ const InvoicesIndex = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Faturas</h1>
-          <Button onClick={() => navigate("/invoices/new")} className="flex items-center gap-2">
+          <Button onClick={() => setIsNewInvoiceOpen(true)} className="flex items-center gap-2">
             <PlusCircle className="h-5 w-5" />
             Nova Fatura
           </Button>
@@ -104,6 +106,11 @@ const InvoicesIndex = () => {
           </Table>
         </div>
       </div>
+
+      <NewInvoiceDialog 
+        open={isNewInvoiceOpen} 
+        onOpenChange={setIsNewInvoiceOpen} 
+      />
     </div>
   );
 };
