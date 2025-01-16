@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import NewProductDialog from "./NewProductDialog";
+import { NewProductDialog } from "./NewProductDialog";
 import { InvoiceItem } from "../types";
 
 interface InvoiceItemsProps {
