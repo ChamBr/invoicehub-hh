@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import CustomerSelect from "./CustomerSelect";
 import InvoiceItems from "./InvoiceItems";
 import InvoiceSummary from "./InvoiceSummary";
-import NewCustomerDialog from "./NewCustomerDialog";
+import { NewCustomerDialog } from "./NewCustomerDialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
