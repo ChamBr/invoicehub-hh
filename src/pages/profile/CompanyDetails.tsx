@@ -65,20 +65,20 @@ const CompanyDetails = () => {
 
       const companyData = {
         user_id: user.id,
-        company_name: formData.get('company_name')?.toString(),
-        address_line1: formData.get('address_line1')?.toString(),
-        address_line2: formData.get('address_line2')?.toString(),
-        city: formData.get('city')?.toString(),
-        state: formData.get('state')?.toString(),
-        zip_code: formData.get('zip_code')?.toString(),
-        country: formData.get('country')?.toString(),
-        phone: formData.get('phone')?.toString(),
-        mobile: formData.get('mobile')?.toString(),
+        company_name: formData.get('company_name')?.toString() || '',
+        address_line1: formData.get('address_line1')?.toString() || '',
+        address_line2: formData.get('address_line2')?.toString() || '',
+        city: formData.get('city')?.toString() || '',
+        state: formData.get('state')?.toString() || '',
+        zip_code: formData.get('zip_code')?.toString() || '',
+        country: formData.get('country')?.toString() || '',
+        phone: formData.get('phone')?.toString() || '',
+        mobile: formData.get('mobile')?.toString() || '',
         display_phone: formData.get('display_phone') === 'true',
-        tax_id: formData.get('tax_id')?.toString(),
+        tax_id: formData.get('tax_id')?.toString() || '',
         display_tax_id: formData.get('display_tax_id') === 'true',
-        email: formData.get('email')?.toString(),
-        website: formData.get('website')?.toString(),
+        email: formData.get('email')?.toString() || '',
+        website: formData.get('website')?.toString() || '',
         logo_url: logoUrl,
         display_logo: formData.get('display_logo') === 'true',
       };
@@ -113,12 +113,12 @@ const CompanyDetails = () => {
     const form = document.querySelector('form');
     if (form) {
       const formData = new FormData(form);
-      formData.set('address_line1', address.line1);
+      formData.set('address_line1', address.line1 || '');
       formData.set('address_line2', address.line2 || '');
-      formData.set('city', address.city);
-      formData.set('state', address.state);
-      formData.set('zip_code', address.postalCode);
-      formData.set('country', address.country);
+      formData.set('city', address.city || '');
+      formData.set('state', address.state || '');
+      formData.set('zip_code', address.postalCode || '');
+      formData.set('country', address.country || '');
       updateCompanyProfile.mutate(formData);
     }
   };
