@@ -58,7 +58,7 @@ describe("useSessionManagement", () => {
     });
   });
 
-  it("should check session validity and return false for expired session", async () => {
+  it("should check session validity and handle expired session", async () => {
     const mockSession = {
       expires_at: Math.floor(Date.now() / 1000) - 3600, // 1 hour ago
     } as Session;
@@ -67,9 +67,10 @@ describe("useSessionManagement", () => {
       useSessionManagement(mockSession, mockSetSession)
     );
 
-    const isValid = await result.current.checkSessionValidity(mockSession);
+    await act(async () => {
+      await result.current.checkSessionValidity();
+    });
 
-    expect(isValid).toBe(false);
     expect(mockToast).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
@@ -83,9 +84,10 @@ describe("useSessionManagement", () => {
       useSessionManagement(mockSession, mockSetSession)
     );
 
-    const isValid = await result.current.checkSessionValidity(mockSession);
+    await act(async () => {
+      await result.current.checkSessionValidity();
+    });
 
-    expect(isValid).toBe(true);
     expect(mockToast).toHaveBeenCalledWith({
       title: "Atenção",
       description: "Sua sessão irá expirar em breve. Por favor, faça login novamente.",
