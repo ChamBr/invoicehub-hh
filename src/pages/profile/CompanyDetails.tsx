@@ -19,7 +19,7 @@ const CompanyDetails = () => {
     queryKey: ["company-profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Usuário não autenticado");
 
       const { data, error } = await supabase
         .from("company_profiles")
@@ -33,15 +33,25 @@ const CompanyDetails = () => {
   });
 
   const updateCompanyProfile = useMutation({
-    mutationFn: async (formData: any) => {
+    mutationFn: async (formData: FormData) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Usuário não autenticado");
 
       let logoUrl = companyProfile?.logo_url;
 
       if (logoFile) {
         const fileExt = logoFile.name.split('.').pop();
         const filePath = `${user.id}-${Date.now()}.${fileExt}`;
+
+        // Primeiro, remover o logo antigo se existir
+        if (companyProfile?.logo_url) {
+          const oldPath = companyProfile.logo_url.split('/').pop();
+          if (oldPath) {
+            await supabase.storage
+              .from('company-logos')
+              .remove([oldPath]);
+          }
+        }
 
         const { error: uploadError, data } = await supabase.storage
           .from('company-logos')
@@ -78,7 +88,9 @@ const CompanyDetails = () => {
 
       const { error } = await supabase
         .from('company_profiles')
-        .upsert(companyData);
+        .upsert(companyData, {
+          onConflict: 'user_id'
+        });
 
       if (error) throw error;
       return companyData;
@@ -91,12 +103,12 @@ const CompanyDetails = () => {
       });
     },
     onError: (error) => {
+      console.error("Erro ao atualizar perfil:", error);
       toast({
         title: "Erro ao atualizar",
         description: "Ocorreu um erro ao atualizar as informações da empresa.",
         variant: "destructive",
       });
-      console.error("Error updating profile:", error);
     },
   });
 
