@@ -3,7 +3,8 @@ import { LogoUpload } from "@/components/company/LogoUpload";
 import { CompanyBasicInfo } from "@/components/company/CompanyBasicInfo";
 import { CompanyAddress } from "@/components/company/CompanyAddress";
 import { CompanyContact } from "@/components/company/CompanyContact";
-import { Button } from "@/components/ui/button";
+import { FormSection } from "@/components/forms/FormSection";
+import { FormActions } from "@/components/forms/FormActions";
 
 interface CompanyFormProps {
   companyProfile: any;
@@ -37,80 +38,97 @@ export const CompanyForm = ({
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
       onSubmit(formData);
-    }} className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold mb-6">Informações da Empresa</h2>
+    }} className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          <FormSection>
+            <LogoUpload
+              logoUrl={companyProfile?.logo_url}
+              onLogoChange={onLogoChange}
+              displayLogo={companyProfile?.display_logo}
+              onDisplayLogoChange={(checked) => {
+                const form = document.querySelector('form');
+                if (form) {
+                  const formData = new FormData(form);
+                  formData.set('display_logo', checked.toString());
+                  onSubmit(formData);
+                }
+              }}
+            />
+          </FormSection>
 
-        <LogoUpload
-          logoUrl={companyProfile?.logo_url}
-          onLogoChange={onLogoChange}
-          displayLogo={companyProfile?.display_logo}
-          onDisplayLogoChange={(checked) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('display_logo', checked.toString());
-              onSubmit(formData);
-            }
-          }}
-        />
+          <FormSection
+            title="Informações Básicas"
+            description="Dados principais da empresa"
+          >
+            <CompanyBasicInfo
+              companyName={companyProfile?.company_name}
+              taxId={companyProfile?.tax_id}
+              displayTaxId={companyProfile?.display_tax_id}
+              country={companyProfile?.country}
+              onCountryChange={(value) => {
+                const form = document.querySelector('form');
+                if (form) {
+                  const formData = new FormData(form);
+                  formData.set('country', value);
+                  onSubmit(formData);
+                }
+              }}
+              onDisplayTaxIdChange={(checked) => {
+                const form = document.querySelector('form');
+                if (form) {
+                  const formData = new FormData(form);
+                  formData.set('display_tax_id', checked.toString());
+                  onSubmit(formData);
+                }
+              }}
+            />
+          </FormSection>
+        </div>
 
-        <CompanyBasicInfo
-          companyName={companyProfile?.company_name}
-          taxId={companyProfile?.tax_id}
-          displayTaxId={companyProfile?.display_tax_id}
-          country={companyProfile?.country}
-          onCountryChange={(value) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('country', value);
-              onSubmit(formData);
-            }
-          }}
-          onDisplayTaxIdChange={(checked) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('display_tax_id', checked.toString());
-              onSubmit(formData);
-            }
-          }}
-        />
+        <div className="space-y-8">
+          <FormSection
+            title="Endereço"
+            description="Localização da empresa"
+          >
+            <CompanyAddress
+              addressLine2={companyProfile?.address_line2}
+              city={companyProfile?.city}
+              state={companyProfile?.state}
+              zipCode={companyProfile?.zip_code}
+              country={companyProfile?.country}
+              onAddressSelect={handleAddressSelect}
+            />
+          </FormSection>
 
-        <CompanyAddress
-          addressLine2={companyProfile?.address_line2}
-          city={companyProfile?.city}
-          state={companyProfile?.state}
-          zipCode={companyProfile?.zip_code}
-          country={companyProfile?.country}
-          onAddressSelect={handleAddressSelect}
-        />
-
-        <CompanyContact
-          phone={companyProfile?.phone}
-          mobile={companyProfile?.mobile}
-          email={companyProfile?.email}
-          website={companyProfile?.website}
-          displayPhone={companyProfile?.display_phone}
-          onDisplayPhoneChange={(checked) => {
-            const form = document.querySelector('form');
-            if (form) {
-              const formData = new FormData(form);
-              formData.set('display_phone', checked.toString());
-              onSubmit(formData);
-            }
-          }}
-        />
-
-        <Button
-          type="submit"
-          className="w-full md:w-auto"
-          disabled={isLoading}
-        >
-          {isLoading ? "Salvando..." : "Salvar Alterações"}
-        </Button>
+          <FormSection
+            title="Contato"
+            description="Informações de contato"
+          >
+            <CompanyContact
+              phone={companyProfile?.phone}
+              mobile={companyProfile?.mobile}
+              email={companyProfile?.email}
+              website={companyProfile?.website}
+              displayPhone={companyProfile?.display_phone}
+              onDisplayPhoneChange={(checked) => {
+                const form = document.querySelector('form');
+                if (form) {
+                  const formData = new FormData(form);
+                  formData.set('display_phone', checked.toString());
+                  onSubmit(formData);
+                }
+              }}
+            />
+          </FormSection>
+        </div>
       </div>
+
+      <FormActions
+        isSubmitting={isLoading}
+        submitLabel="Salvar Alterações"
+        className="flex justify-end pt-6 border-t"
+      />
     </form>
   );
 };
