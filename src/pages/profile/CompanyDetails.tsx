@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { LogoUpload } from "@/components/company/LogoUpload";
 import { CompanyBasicInfo } from "@/components/company/CompanyBasicInfo";
 import { CompanyAddress } from "@/components/company/CompanyAddress";
@@ -109,7 +109,7 @@ const CompanyDetails = () => {
     },
   });
 
-  const handleAddressSelect = (address: any) => {
+  const handleAddressSelect = useCallback((address: any) => {
     const form = document.querySelector('form');
     if (form) {
       const formData = new FormData(form);
@@ -121,7 +121,7 @@ const CompanyDetails = () => {
       formData.set('country', address.country || '');
       updateCompanyProfile.mutate(formData);
     }
-  };
+  }, [updateCompanyProfile]);
 
   if (isLoading) {
     return <div className="p-8">Loading...</div>;
@@ -179,6 +179,7 @@ const CompanyDetails = () => {
             city={companyProfile?.city}
             state={companyProfile?.state}
             zipCode={companyProfile?.zip_code}
+            country={companyProfile?.country}
             onAddressSelect={handleAddressSelect}
           />
 
