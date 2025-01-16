@@ -20,7 +20,7 @@ const Sidebar = () => {
         collapsed ? "w-16" : "w-64"
       )}
     >
-      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 -mb-[1px]">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
         {!collapsed && (
           <Link to="/" className="text-xl text-primary font-semibold hover:text-primary/90 transition-colors">
             InvoiceHub
