@@ -11,20 +11,35 @@ const UserMenu = () => {
   const { session } = useAuth();
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao sair",
-        description: "Tente novamente em alguns instantes",
-      });
-    } else {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error("Erro ao fazer logout:", error);
+        toast({
+          variant: "destructive",
+          title: "Erro ao sair",
+          description: error.message || "Tente novamente em alguns instantes",
+        });
+        return;
+      }
+
+      // Limpar qualquer estado local se necessário
+      localStorage.removeItem('supabase.auth.token');
+      
       toast({
         title: "Logout realizado",
         description: "Você foi desconectado com sucesso",
       });
+      
       navigate("/login");
+    } catch (error) {
+      console.error("Erro inesperado ao fazer logout:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao sair",
+        description: "Ocorreu um erro inesperado. Tente novamente.",
+      });
     }
   };
 
