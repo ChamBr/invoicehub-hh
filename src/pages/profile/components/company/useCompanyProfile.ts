@@ -18,7 +18,11 @@ export const useCompanyProfile = () => {
         .eq("user_id", user.id)
         .maybeSingle(); // Alterado de .single() para .maybeSingle()
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao buscar perfil da empresa:", error);
+        throw error;
+      }
+
       return data;
     },
   });
@@ -38,7 +42,7 @@ export const useCompanyProfile = () => {
         city: formData.get('city')?.toString() || '',
         state: formData.get('state')?.toString() || '',
         zip_code: formData.get('zip_code')?.toString() || '',
-        country: formData.get('country')?.toString() || '',
+        country: formData.get('country')?.toString() || 'BR',
         phone: formData.get('phone')?.toString() || '',
         mobile: formData.get('mobile')?.toString() || '',
         display_phone: formData.get('display_phone') === 'true',
@@ -50,14 +54,22 @@ export const useCompanyProfile = () => {
         display_logo: formData.get('display_logo') === 'true',
       };
 
-      const { error } = await supabase
+      console.log("Dados a serem salvos:", companyData);
+
+      const { data, error } = await supabase
         .from('company_profiles')
         .upsert(companyData, {
           onConflict: 'user_id'
-        });
+        })
+        .select()
+        .maybeSingle();
 
-      if (error) throw error;
-      return companyData;
+      if (error) {
+        console.error("Erro ao atualizar perfil:", error);
+        throw error;
+      }
+
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-profile"] });
