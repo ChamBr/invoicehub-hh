@@ -386,9 +386,14 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string | null
+          header_background_color: string | null
+          header_text_color: string | null
           id: string
           is_default: boolean | null
           name: string
+          show_hours: boolean | null
+          show_rate: boolean | null
+          table_style: string | null
           type: Database["public"]["Enums"]["invoice_template_type"]
           updated_at: string
         }
@@ -397,9 +402,14 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          header_background_color?: string | null
+          header_text_color?: string | null
           id?: string
           is_default?: boolean | null
           name: string
+          show_hours?: boolean | null
+          show_rate?: boolean | null
+          table_style?: string | null
           type?: Database["public"]["Enums"]["invoice_template_type"]
           updated_at?: string
         }
@@ -408,9 +418,14 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          header_background_color?: string | null
+          header_text_color?: string | null
           id?: string
           is_default?: boolean | null
           name?: string
+          show_hours?: boolean | null
+          show_rate?: boolean | null
+          table_style?: string | null
           type?: Database["public"]["Enums"]["invoice_template_type"]
           updated_at?: string
         }

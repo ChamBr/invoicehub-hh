@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, FileText, Check } from "lucide-react";
 import { InvoiceTemplate } from "./types";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 interface TemplateListProps {
   selectedTemplate?: string;
@@ -49,7 +50,14 @@ export const TemplateList = ({ selectedTemplate, onSelect, onPreview }: Template
                 <div className="flex items-center space-x-4">
                   <FileText className="h-5 w-5 text-gray-500" />
                   <div>
-                    <h3 className="font-medium">{template.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium">{template.name}</h3>
+                      {template.is_default && (
+                        <Badge variant="secondary" className="text-xs">
+                          Padrão
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-500">{template.description}</p>
                   </div>
                 </div>
