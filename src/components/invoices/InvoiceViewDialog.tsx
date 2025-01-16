@@ -29,6 +29,7 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
           customer:customers(name),
           items:invoice_items(
             id,
+            product_id,
             description,
             quantity,
             price,
@@ -40,7 +41,20 @@ export function InvoiceViewDialog({ invoice, open, onOpenChange }: InvoiceViewDi
         .single();
 
       if (error) throw error;
-      return data;
+
+      // Mapear os dados para corresponder à interface InvoiceItem
+      return {
+        ...data,
+        items: data.items.map((item: any) => ({
+          id: item.id,
+          productId: item.product_id,
+          description: item.description,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.total,
+          hasTax: item.has_tax
+        }))
+      } as Invoice;
     },
     enabled: !!invoice,
   });
