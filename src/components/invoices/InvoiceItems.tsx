@@ -43,6 +43,7 @@ const InvoiceItems = ({ items, onAdd, onRemove, onUpdate }: InvoiceItemsProps) =
   const handleAddItem = () => {
     if (isCustomItem) {
       onAdd({
+        id: crypto.randomUUID(),
         productId: null,
         description: customItem.description,
         quantity: 1,
@@ -55,6 +56,7 @@ const InvoiceItems = ({ items, onAdd, onRemove, onUpdate }: InvoiceItemsProps) =
       const product = products.find(p => p.id === selectedProduct);
       if (product) {
         onAdd({
+          id: crypto.randomUUID(),
           productId: product.id,
           description: product.name,
           quantity: 1,
