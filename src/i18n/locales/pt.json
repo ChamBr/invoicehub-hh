@@ -67,6 +67,22 @@
       "description": "Tem certeza que deseja excluir este cliente?",
       "cancel": "Cancelar",
       "confirm": "Confirmar"
+    },
+    "validation": {
+      "required": "Este campo é obrigatório",
+      "email": "Por favor insira um email válido",
+      "phone": "Por favor insira um telefone válido",
+      "min_length": "Deve ter pelo menos {{count}} caracteres",
+      "max_length": "Deve ter no máximo {{count}} caracteres"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo ao seu painel",
+    "metrics": {
+      "revenue": "Receita Total",
+      "growth": "Crescimento Mensal",
+      "clients": "Clientes Ativos",
+      "overdue": "Faturas Vencidas"
     }
   }
 }

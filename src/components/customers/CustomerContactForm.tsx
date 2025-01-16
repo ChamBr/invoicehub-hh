@@ -2,7 +2,7 @@ import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/for
 import { Input } from "@/components/ui/input";
 import { Mail, Phone } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { CustomerFormValues } from "../types";
+import { CustomerFormValues } from "./types";
 import InputMask from "react-input-mask";
 import { useTranslation } from "react-i18next";
 

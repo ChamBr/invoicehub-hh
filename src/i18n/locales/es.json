@@ -21,148 +21,68 @@
       "list": "Lista de Feedback"
     }
   },
-  "products": {
-    "title": "Productos y Servicios",
-    "new": "Nuevo Producto/Servicio",
-    "edit": "Editar Producto/Servicio",
+  "customers": {
     "form": {
-      "type": "Tipo",
-      "product": "Producto",
-      "service": "Servicio",
+      "title": "Nuevo Cliente",
+      "edit_title": "Editar Cliente",
+      "company_name": "Nombre de la Empresa",
+      "company_name_placeholder": "Ingrese el nombre de la empresa",
       "name": "Nombre",
-      "description": "Descripción",
-      "price": "Precio",
-      "sku": "SKU",
-      "stock": "Stock"
+      "name_placeholder": "Ingrese el nombre completo",
+      "country": "País",
+      "email": "Correo electrónico",
+      "email_placeholder": "correo@ejemplo.com",
+      "phone": "Teléfono",
+      "phone_placeholder": "Ingrese el número de teléfono",
+      "tax_exempt": "Exención de Impuestos",
+      "tax_exempt_description": "¿El cliente está exento de impuestos?",
+      "notes": "Notas",
+      "notes_placeholder": "Agregue notas sobre el cliente",
+      "type": {
+        "label": "Tipo",
+        "personal": "Persona",
+        "company": "Empresa"
+      }
+    },
+    "details": {
+      "edit": "Editar Cliente",
+      "contact": "Contacto",
+      "not_informed": "No informado",
+      "status": {
+        "label": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo"
+      }
     },
     "table": {
-      "name": "Nombre",
       "type": "Tipo",
-      "price": "Precio",
-      "stock": "Stock",
+      "name": "Nombre",
+      "company_name": "Nombre de la Empresa",
       "status": "Estado",
-      "actions": "Acciones"
+      "actions": "Acciones",
+      "empty": "No hay clientes registrados"
     },
-    "messages": {
-      "created": "¡Producto creado con éxito!",
-      "updated": "¡Producto actualizado con éxito!",
-      "deleted": "¡Producto eliminado con éxito!",
-      "error": {
-        "create": "Error al crear el producto",
-        "update": "Error al actualizar el producto",
-        "delete": "Error al eliminar el producto"
-      }
-    },
-    "confirmDelete": {
+    "delete": {
       "title": "Confirmar eliminación",
-      "message": "¿Está seguro de que desea eliminar este producto?",
+      "description": "¿Está seguro de que desea eliminar este cliente?",
       "cancel": "Cancelar",
       "confirm": "Confirmar"
+    },
+    "validation": {
+      "required": "Este campo es obligatorio",
+      "email": "Por favor ingrese un correo electrónico válido",
+      "phone": "Por favor ingrese un número de teléfono válido",
+      "min_length": "Debe tener al menos {{count}} caracteres",
+      "max_length": "Debe tener como máximo {{count}} caracteres"
     }
   },
-  "invoice_settings": {
-    "title": "Personalizar Factura",
-    "numbering": {
-      "prefix": "Prefijo de Factura",
-      "next_number": "Próximo Número",
-      "prefix_placeholder": "Ej: FAC"
-    },
-    "currency": {
-      "currency": "Moneda",
-      "due_days": "Plazo de Pago (días)"
-    },
-    "terms": {
-      "terms": "Términos y Condiciones",
-      "footer": "Pie de Factura"
-    },
-    "save": "Guardar Configuración",
-    "saving": "Guardando...",
-    "success": "Configuración actualizada con éxito",
-    "error": "Error al actualizar la configuración"
-  },
-  "profile": {
-    "title": "Perfil de Usuario",
-    "company": {
-      "title": "Información de la Empresa",
-      "logo": {
-        "title": "Logo de la Empresa",
-        "display": "Mostrar logo en la factura"
-      },
-      "basic_info": {
-        "title": "Información Básica",
-        "company_name": "Nombre de la Empresa",
-        "tax_id": "NIF/CIF",
-        "display_tax": "Mostrar NIF/CIF en la factura"
-      },
-      "address": {
-        "title": "Dirección",
-        "line1": "Dirección",
-        "line2": "Complemento (Opcional)",
-        "city": "Ciudad",
-        "state": "Provincia",
-        "zip": "Código Postal",
-        "country": "País"
-      },
-      "contact": {
-        "title": "Contacto",
-        "phone": "Teléfono",
-        "mobile": "Móvil",
-        "display_phone": "Mostrar teléfono/móvil en la factura",
-        "email": "Correo electrónico",
-        "website": "Sitio web"
-      }
-    },
-    "user": {
-      "title": "Información Personal",
-      "full_name": "Nombre Completo",
-      "email": "Correo electrónico",
-      "email_hint": "El correo no se puede cambiar ya que se usa para autenticación",
-      "country": "País",
-      "phone": "Móvil",
-      "birth": {
-        "month": "Mes de Nacimiento",
-        "year": "Año de Nacimiento",
-        "select_month": "Seleccione el mes",
-        "year_placeholder": "AAAA"
-      },
-      "gender": {
-        "label": "Sexo",
-        "select": "Seleccione el sexo",
-        "male": "Masculino",
-        "female": "Femenino"
-      }
-    }
-  },
-  "common": {
-    "admin": {
-      "mode": "Modo Admin",
-      "enabled": "Activado",
-      "disabled": "Desactivado"
-    },
-    "errors": {
-      "auth": "Usuario no autenticado",
-      "update": "No se pudo actualizar",
-      "unexpected": "Ocurrió un error inesperado",
-      "required": "Campo requerido",
-      "invalid_email": "Correo electrónico inválido",
-      "invalid_phone": "Número de teléfono inválido",
-      "invalid_date": "Fecha inválida",
-      "min_length": "Mínimo {{count}} caracteres",
-      "max_length": "Máximo {{count}} caracteres"
-    },
-    "loading": "Cargando...",
-    "actions": {
-      "save": "Guardar",
-      "saving": "Guardando...",
-      "cancel": "Cancelar",
-      "create": "Crear",
-      "creating": "Creando...",
-      "edit": "Editar",
-      "delete": "Eliminar"
-    },
-    "success": {
-      "profile_updated": "Perfil actualizado con éxito",
-      "company_updated": "Información de la empresa actualizada con éxito"
+  "dashboard": {
+    "welcome": "Bienvenido a su panel de control",
+    "metrics": {
+      "revenue": "Ingresos Totales",
+      "growth": "Crecimiento Mensual",
+      "clients": "Clientes Activos",
+      "overdue": "Facturas Vencidas"
     }
   }
 }
