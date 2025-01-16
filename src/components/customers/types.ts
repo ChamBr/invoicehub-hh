@@ -8,6 +8,7 @@ export const customerFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   contactName: z.string().optional().nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
+  country: z.string().min(2, "País é obrigatório"),
   phone: z.string()
     .refine((value) => {
       if (!value) return true;
@@ -16,7 +17,9 @@ export const customerFormSchema = z.object({
     .superRefine((value, ctx) => {
       if (!value) return;
 
-      const country = ctx.path[0] === "phone" ? (ctx.parent as any).country : "BR";
+      // Obtém o país do objeto que está sendo validado
+      const data = ctx.getData();
+      const country = typeof data === 'object' && data ? (data as any).country : "BR";
       
       if (country === "BR" && !phoneRegexBR.test(value)) {
         ctx.addIssue({
@@ -34,7 +37,6 @@ export const customerFormSchema = z.object({
     })
     .optional()
     .nullable(),
-  country: z.string().min(2, "País é obrigatório"),
   taxExempt: z.boolean().default(false),
   taxId: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
