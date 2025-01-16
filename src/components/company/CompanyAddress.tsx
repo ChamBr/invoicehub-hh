@@ -27,26 +27,37 @@ export const CompanyAddress: React.FC<CompanyAddressProps> = ({
   const [localState, setLocalState] = React.useState(state || "");
   const [localZipCode, setLocalZipCode] = React.useState(zipCode || "");
 
+  // Atualiza estados locais quando as props mudam
+  React.useEffect(() => {
+    setLocalCity(city || "");
+    setLocalState(state || "");
+    setLocalZipCode(zipCode || "");
+  }, [city, state, zipCode]);
+
   const handleAddressSelect = React.useCallback((address: any) => {
-    if (address && addressInput.trim().length >= 3) {
-      // Atualiza os campos locais
-      setLocalCity(address.city || "");
-      setLocalState(address.state || "");
-      setLocalZipCode(address.postalCode || "");
-      
-      // Prepara os dados do endereço mantendo o país atual
-      const addressData = {
-        ...address,
-        country: country, // Mantém o país atual
-        city: address.city || "",
-        state: address.state || "",
-        zip_code: address.postalCode || "",
-        address_line1: address.line1 || "",
-      };
-      
-      onAddressSelect(addressData);
-    }
-  }, [onAddressSelect, addressInput, country]);
+    if (!address) return;
+
+    // Atualiza os campos locais
+    const newCity = address.city || "";
+    const newState = address.state || "";
+    const newZipCode = address.postalCode || "";
+    
+    setLocalCity(newCity);
+    setLocalState(newState);
+    setLocalZipCode(newZipCode);
+    
+    // Prepara os dados do endereço mantendo o país atual
+    const addressData = {
+      ...address,
+      country, // Mantém o país atual
+      city: newCity,
+      state: newState,
+      zip_code: newZipCode,
+      address_line1: address.line1 || "",
+    };
+    
+    onAddressSelect(addressData);
+  }, [country, onAddressSelect]);
 
   const handleInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setAddressInput(e.target.value);
