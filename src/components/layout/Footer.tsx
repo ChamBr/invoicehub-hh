@@ -15,7 +15,7 @@ const Footer = () => {
       const { data, error } = await supabase
         .from("footer_settings")
         .select("*")
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
