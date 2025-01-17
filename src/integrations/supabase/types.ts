@@ -110,6 +110,54 @@ export type Database = {
           },
         ]
       }
+      company_settings: {
+        Row: {
+          address_line1: string
+          address_line2: string
+          city: string
+          company_name: string
+          country: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          state: string
+          updated_at: string
+          website: string
+          zip_code: string
+        }
+        Insert: {
+          address_line1?: string
+          address_line2?: string
+          city?: string
+          company_name?: string
+          country?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          state?: string
+          updated_at?: string
+          website?: string
+          zip_code?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string
+          city?: string
+          company_name?: string
+          country?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          state?: string
+          updated_at?: string
+          website?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
       configurations: {
         Row: {
           created_at: string
