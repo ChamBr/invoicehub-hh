@@ -54,7 +54,7 @@ export default function SubscribersList() {
           .from("profiles")
           .select("full_name, id")
           .eq("id", subscriber.owner_id)
-          .single();
+          .maybeSingle();
 
         return {
           ...subscriber,
