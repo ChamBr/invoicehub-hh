@@ -4,11 +4,14 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } fr
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Switch } from "@/components/ui/switch";
 import { z } from "zod";
+import { FormRow } from "@/components/forms/FormRow";
+import { FormSection } from "@/components/forms/FormSection";
+import { FormActions } from "@/components/forms/FormActions";
 
 const planFeaturesSchema = z.object({
   max_users: z.number().min(-1),
@@ -27,7 +30,8 @@ const planFormSchema = z.object({
   price_monthly: z.number().min(0, "Price must be positive"),
   price_annual: z.number().min(0, "Annual price must be positive"),
   discount_annual: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%"),
-  features: planFeaturesSchema
+  features: planFeaturesSchema,
+  status: z.enum(["active", "inactive"])
 });
 
 type PlanFormValues = z.infer<typeof planFormSchema>;
@@ -50,6 +54,7 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
       price_monthly: 0,
       price_annual: 0,
       discount_annual: 0,
+      status: "active",
       features: {
         max_users: 1,
         max_invoices_per_month: 10,
@@ -87,6 +92,7 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
           price_monthly: data.price_monthly || 0,
           price_annual: data.price_annual || 0,
           discount_annual: data.discount_annual || 0,
+          status: data.status as "active" | "inactive",
           features: {
             max_users: features.max_users || 1,
             max_invoices_per_month: features.max_invoices_per_month || 10,
@@ -115,8 +121,8 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
         discount_annual: values.discount_annual,
         features: values.features,
         billing_period: "monthly",
-        price: values.price_monthly, // Base price is monthly
-        status: "active"
+        price: values.price_monthly,
+        status: values.status
       };
 
       if (planId) {
@@ -162,93 +168,120 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <FormSection title="Basic Information">
+          <FormRow>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">Active</FormLabel>
+                    <FormDescription>
+                      Enable or disable this plan
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value === "active"}
+                      onCheckedChange={(checked) => 
+                        field.onChange(checked ? "active" : "inactive")
+                      }
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </FormRow>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
             control={form.control}
-            name="price_monthly"
+            name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Monthly Price (USD)</FormLabel>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
-                    step="0.01" 
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                  />
+                  <Textarea {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
+        </FormSection>
 
-          <FormField
-            control={form.control}
-            name="price_annual"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Annual Price (USD)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    step="0.01" 
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+        <FormSection title="Pricing">
+          <FormRow>
+            <FormField
+              control={form.control}
+              name="price_monthly"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Monthly Price (USD)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      step="0.01" 
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="discount_annual"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Annual Discount (%)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="0" 
-                    max="100" 
-                    {...field}
-                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="price_annual"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Annual Price (USD)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      step="0.01" 
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Features</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="discount_annual"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Annual Discount (%)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      min="0" 
+                      max="100" 
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </FormRow>
+        </FormSection>
+
+        <FormSection title="Features">
+          <FormRow>
             <FormField
               control={form.control}
               name="features.max_users"
@@ -284,7 +317,9 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
                 </FormItem>
               )}
             />
+          </FormRow>
 
+          <FormRow>
             <FormField
               control={form.control}
               name="features.max_products"
@@ -320,7 +355,9 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
                 </FormItem>
               )}
             />
+          </FormRow>
 
+          <FormRow>
             <FormField
               control={form.control}
               name="features.storage_gb"
@@ -338,9 +375,9 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
                 </FormItem>
               )}
             />
-          </div>
+          </FormRow>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormRow>
             <FormField
               control={form.control}
               name="features.logo_replace"
@@ -382,7 +419,9 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
                 </FormItem>
               )}
             />
+          </FormRow>
 
+          <FormRow>
             <FormField
               control={form.control}
               name="features.ai_assistance"
@@ -403,17 +442,14 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
                 </FormItem>
               )}
             />
-          </div>
-        </div>
+          </FormRow>
+        </FormSection>
 
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? "Saving..." : (planId ? "Save Changes" : "Create Plan")}
-          </Button>
-        </div>
+        <FormActions
+          onCancel={onCancel}
+          isSubmitting={mutation.isPending}
+          submitLabel={planId ? "Save Changes" : "Create Plan"}
+        />
       </form>
     </Form>
   );
