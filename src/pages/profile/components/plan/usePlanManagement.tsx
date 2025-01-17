@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
-import { Plan } from "./types";
+import { Plan, PlanFeatures } from "./types";
 import { useQuery } from "@tanstack/react-query";
 
 export function usePlanManagement() {
@@ -23,7 +23,10 @@ export function usePlanManagement() {
 
       if (error) throw error;
       
-      return data as Plan[];
+      return data?.map(plan => ({
+        ...plan,
+        features: plan.features as PlanFeatures
+      })) as Plan[];
     },
   });
 
@@ -43,6 +46,16 @@ export function usePlanManagement() {
         .maybeSingle();
 
       if (error) throw error;
+
+      if (data?.plan) {
+        return {
+          ...data,
+          plan: {
+            ...data.plan,
+            features: data.plan.features as PlanFeatures
+          }
+        };
+      }
       return data;
     },
     enabled: !!session?.user?.id,
