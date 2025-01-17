@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,6 @@ export const NewPlan = () => {
 
   const monthlyPrice = watch("price_monthly");
 
-  // Atualiza automaticamente os preços e descontos quando o preço mensal muda
   useEffect(() => {
     if (monthlyPrice) {
       const semiannualDiscount = 10; // 10% de desconto sugerido
@@ -84,6 +84,7 @@ export const NewPlan = () => {
       const { error } = await supabase.from("plans").insert({
         name: data.name,
         description: data.description,
+        price: data.price_monthly, // Usando o preço mensal como preço base
         price_monthly: data.price_monthly,
         price_semiannual: data.price_semiannual,
         price_annual: data.price_annual,
@@ -91,6 +92,7 @@ export const NewPlan = () => {
         discount_annual: data.discount_annual,
         status: data.status,
         features,
+        billing_period: "monthly", // Definindo o período de cobrança padrão
       });
 
       if (error) throw error;
