@@ -26,8 +26,7 @@ export const UserPlan = () => {
 
       if (error) throw error;
       
-      // Transform the data to match our Plan type
-      return (data as any[]).map(plan => ({
+      return data?.map(plan => ({
         ...plan,
         features: plan.features as PlanFeatures
       })) as Plan[];

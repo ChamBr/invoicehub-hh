@@ -25,33 +25,11 @@ export function PlanSelection({
 
       if (error) throw error;
       
-      // Transform the data to match our Plan type
-      return (data as any[]).map(plan => ({
+      return data?.map(plan => ({
         ...plan,
         features: plan.features as PlanFeatures
       })) as Plan[];
     },
-  });
-
-  const { data: currentSubscription } = useQuery({
-    queryKey: ["current-subscription"],
-    queryFn: async () => {
-      if (!session?.user?.id) return null;
-
-      const { data, error } = await supabase
-        .from("subscriptions")
-        .select(`
-          *,
-          plan:plans(*)
-        `)
-        .eq("user_id", session.user.id)
-        .eq("status", "active")
-        .maybeSingle();
-
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!session?.user?.id,
   });
 
   const handlePlanSelection = async (selectedPlan: Plan) => {
@@ -65,7 +43,6 @@ export function PlanSelection({
         return;
       }
 
-      // Primeiro, vamos criar um customer se necessário
       const { data: customer, error: customerError } = await supabase
         .from("customers")
         .insert({
@@ -96,12 +73,10 @@ export function PlanSelection({
         description: "Seu plano foi atualizado com sucesso",
       });
 
-      // Call the onPlanSelected callback if provided
       if (onPlanSelected) {
         await onPlanSelected(selectedPlan);
       }
 
-      // Call the onClose callback if provided
       if (onClose) {
         onClose();
       }
@@ -129,7 +104,6 @@ export function PlanSelection({
       {plans?.map((plan) => {
         const isCurrentPlan = currentPlan?.id === plan.id;
 
-        // Se showUpgradeOnly é true, só mostra planos que são upgrade
         if (showUpgradeOnly && !isCurrentPlan && plan.price_monthly <= (currentPlan?.price_monthly || 0)) {
           return null;
         }
