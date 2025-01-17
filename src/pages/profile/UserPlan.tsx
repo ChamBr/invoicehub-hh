@@ -46,6 +46,45 @@ export const UserPlan = () => {
     }
   };
 
+  if (!activePlan && !showPlanSelection) {
+    return (
+      <div className="space-y-6">
+        <div className="space-y-0.5">
+          <h2 className="text-2xl font-bold tracking-tight">{t('profile.plan.title')}</h2>
+          <p className="text-muted-foreground">
+            {t('profile.plan.description')}
+          </p>
+        </div>
+
+        <Card className="p-8">
+          <Alert className="mb-6 bg-accent border-primary/20">
+            <AlertTitle className="text-lg font-semibold text-gray-900">
+              {t('profile.plan.no_active_plan_title')}
+            </AlertTitle>
+            <AlertDescription className="text-gray-600">
+              {t('profile.plan.no_active_plan_description')}
+            </AlertDescription>
+          </Alert>
+          <Button
+            onClick={() => setShowPlanSelection(true)}
+            className="w-full md:w-auto"
+          >
+            {t('profile.plan.select_plan')}
+          </Button>
+        </Card>
+
+        {showPlanSelection && (
+          <div className="mt-8">
+            <PlanSelection
+              onClose={() => setShowPlanSelection(false)}
+              onPlanSelected={handlePlanChange}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-0.5">
@@ -55,7 +94,7 @@ export const UserPlan = () => {
         </p>
       </div>
 
-      {activePlan ? (
+      {activePlan && (
         <Card className="p-8 bg-white shadow-sm mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -94,23 +133,6 @@ export const UserPlan = () => {
               <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
           )}
-        </Card>
-      ) : (
-        <Card className="p-8 text-center bg-white shadow-sm mb-8">
-          <Alert className="mb-6 bg-accent border-primary/20">
-            <AlertTitle className="text-lg font-semibold text-gray-900 mb-2">
-              {t('profile.plan.no_active_plan_title')}
-            </AlertTitle>
-            <AlertDescription className="text-gray-600">
-              {t('profile.plan.no_active_plan_description')}
-            </AlertDescription>
-          </Alert>
-          <Button
-            onClick={() => setShowPlanSelection(true)}
-            className="w-full md:w-auto"
-          >
-            {t('profile.plan.select_plan')}
-          </Button>
         </Card>
       )}
 

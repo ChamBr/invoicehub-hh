@@ -38,5 +38,20 @@
     "tax_info": "Informações Fiscais",
     "save": "Salvar Alterações",
     "saving": "Salvando..."
+  },
+  "profile": {
+    "plan": {
+      "title": "Meu Plano",
+      "description": "Gerencie seu plano e assinatura",
+      "no_active_plan_title": "Nenhum plano ativo",
+      "no_active_plan_description": "Selecione um plano para começar a usar todos os recursos do sistema",
+      "select_plan": "Selecionar Plano",
+      "change_plan": "Alterar Plano",
+      "features": "Recursos do Plano",
+      "change_success": "Plano alterado com sucesso",
+      "change_success_description": "Seu plano foi atualizado com sucesso",
+      "change_error": "Erro ao alterar plano",
+      "change_error_description": "Ocorreu um erro ao alterar seu plano. Tente novamente."
+    }
   }
 }
