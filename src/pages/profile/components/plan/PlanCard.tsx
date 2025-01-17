@@ -41,7 +41,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
       <div className="mb-4">
         <h3 className="text-xl font-bold">{plan.name}</h3>
         <p className="text-sm text-muted-foreground">
-          {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`) || plan.description}
+          {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`)}
         </p>
         <div className="mt-2">
           <span className="text-2xl font-bold text-primary">${plan.price_monthly}</span>
@@ -67,7 +67,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
             onClick={() => onSelect(plan)}
             variant={plan.price_monthly > 0 ? "default" : "outline"}
           >
-            {t('profile.plan.upgrade')}
+            {t('common.actions.upgrade')}
           </Button>
         </div>
       )}

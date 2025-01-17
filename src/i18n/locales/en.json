@@ -8,7 +8,8 @@
       "edit": "Edit",
       "save": "Save Changes",
       "saving": "Saving...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "upgrade": "Upgrade"
     }
   },
   "navigation": {
@@ -32,70 +33,6 @@
     "feedback": {
       "submit": "Support & Feedback",
       "list": "Feedback List"
-    }
-  },
-  "company": {
-    "title": "Company Details",
-    "basic_info": "Basic Information",
-    "contact": "Contact Information",
-    "address": "Address",
-    "country": "Country",
-    "name": "Company Name",
-    "name_placeholder": "Enter your company name",
-    "display_tax_id": "Display Tax ID on invoice",
-    "address_line1": "Address",
-    "address_line1_placeholder": "Street, number",
-    "address_line2": "Additional Address (Optional)",
-    "address_line2_placeholder": "Apartment, suite, unit, etc.",
-    "tax_info": "Tax Information"
-  },
-  "customers": {
-    "title": "Customers",
-    "add": "Add Customer",
-    "table": {
-      "empty": "No customers found",
-      "type": "Type",
-      "name": "Name",
-      "company_name": "Company Name",
-      "status": "Status",
-      "actions": "Actions"
-    },
-    "details": {
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive"
-      }
-    }
-  },
-  "products": {
-    "title": "Products & Services",
-    "add": "Add Product/Service",
-    "table": {
-      "empty": "No products found",
-      "name": "Name",
-      "type": "Type",
-      "price": "Price",
-      "stock": "Stock",
-      "status": "Status",
-      "actions": "Actions"
-    },
-    "form": {
-      "price": "Price",
-      "sku": "SKU"
-    }
-  },
-  "invoices": {
-    "title": "Invoices",
-    "new": "New Invoice",
-    "table": {
-      "empty": "No invoices found",
-      "number": "Number",
-      "customer": "Customer",
-      "date": "Date",
-      "due_date": "Due Date",
-      "total": "Total",
-      "status": "Status",
-      "actions": "Actions"
     }
   },
   "profile": {
@@ -139,47 +76,6 @@
       "change_success_description": "Your plan has been updated successfully",
       "change_error": "Error changing plan",
       "change_error_description": "An error occurred while changing your plan. Please try again."
-    }
-  },
-  "feedback": {
-    "title": "Support & Feedback",
-    "type": {
-      "label": "Feedback Type",
-      "placeholder": "Select feedback type",
-      "bug": "Report Bug",
-      "feature": "Feature Request",
-      "support": "Support",
-      "other": "Other"
-    },
-    "form": {
-      "title": {
-        "label": "Title",
-        "placeholder": "Enter a brief title"
-      },
-      "description": {
-        "label": "Description",
-        "placeholder": "Describe your feedback or question in detail"
-      }
-    },
-    "submit": "Submit Feedback",
-    "submitting": "Submitting...",
-    "success": "Feedback submitted",
-    "error": "Error submitting feedback"
-  },
-  "admin": {
-    "subscribers": {
-      "title": "Subscribers",
-      "no_company": "No Company Name",
-      "no_owner": "No Owner",
-      "created_at": "Created on {{date}}",
-      "users_count": "{{count}} users",
-      "manage_users": "Manage Users",
-      "users": {
-        "title": "Users of {{company}}",
-        "no_users": "No users found",
-        "role": "Role",
-        "email": "Email"
-      }
     }
   }
 }
