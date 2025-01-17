@@ -30,7 +30,7 @@ export const CompanySettingsForm = () => {
       const { data, error } = await supabase
         .from("company_settings")
         .select("*")
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Error fetching company settings:", error);
@@ -51,7 +51,7 @@ export const CompanySettingsForm = () => {
     try {
       const { error } = await supabase
         .from("company_settings")
-        .update(data)
+        .upsert(data)
         .eq("id", settings?.id);
 
       if (error) throw error;
