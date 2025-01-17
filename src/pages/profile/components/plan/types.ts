@@ -1,27 +1,25 @@
 export interface PlanFeatures {
-  max_users: number;
-  max_invoices_per_month: number;
-  max_products: number;
-  max_customers: number;
   logo_replace: boolean;
+  max_invoices: number;
+  max_products: number;
+  translations: boolean;
+  max_customers: number;
   invoice_templates: boolean;
-  ai_assistance: boolean;
-  storage_gb: number;
 }
 
 export interface Plan {
   id: string;
   name: string;
   description: string | null;
-  price_monthly: number;
-  price_annual: number | null;
-  price_semiannual: number | null;
-  discount_annual: number | null;
-  discount_semiannual: number | null;
+  price: number;
+  billing_period: string;
   features: PlanFeatures;
   status: string;
-  billing_period: string;
-  price: number;
+  price_monthly: number | null;
+  price_semiannual: number | null;
+  price_annual: number | null;
+  discount_semiannual: number | null;
+  discount_annual: number | null;
   created_at: string;
 }
 
