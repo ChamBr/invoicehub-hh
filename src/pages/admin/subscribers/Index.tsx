@@ -9,7 +9,7 @@ import { EditSubscriberDialog } from "./components/EditSubscriberDialog";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
-interface Subscriber {
+interface SubscriberWithDetails {
   id: string;
   company_name: string | null;
   status: string | null;
@@ -18,13 +18,13 @@ interface Subscriber {
   users_count: number;
   owner: {
     full_name: string | null;
-    email: string | null;
+    id: string;
   } | null;
 }
 
 export default function SubscribersList() {
   const { t } = useTranslation();
-  const [selectedSubscriber, setSelectedSubscriber] = useState<Subscriber | null>(null);
+  const [selectedSubscriber, setSelectedSubscriber] = useState<SubscriberWithDetails | null>(null);
   const [isUsersDialogOpen, setIsUsersDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
@@ -54,7 +54,7 @@ export default function SubscribersList() {
 
         const { data: ownerData } = await supabase
           .from("profiles")
-          .select("full_name, email")
+          .select("full_name, id")
           .eq("id", subscriber.owner_id)
           .single();
 
@@ -65,7 +65,7 @@ export default function SubscribersList() {
         };
       }));
 
-      return subscribersWithOwners as Subscriber[];
+      return subscribersWithOwners as SubscriberWithDetails[];
     },
   });
 
@@ -92,7 +92,7 @@ export default function SubscribersList() {
                       {subscriber.company_name || t("admin.subscribers.no_company")}
                     </h2>
                     <p className="text-sm text-gray-500">
-                      {subscriber.owner?.email || t("admin.subscribers.no_owner")}
+                      {subscriber.owner?.full_name || t("admin.subscribers.no_owner")}
                     </p>
                     <div className="flex items-center gap-2">
                       <Badge variant={subscriber.status === "active" ? "default" : "secondary"}>
