@@ -7,6 +7,7 @@ import { FormSection } from "@/components/forms/FormSection";
 import { FormActions } from "@/components/forms/FormActions";
 import { uploadCompanyLogo } from "@/integrations/supabase/storage";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 interface CompanyFormProps {
   companyProfile: any;
@@ -26,6 +27,9 @@ export const CompanyForm = ({
   onCancel
 }: CompanyFormProps) => {
   const { toast } = useToast();
+  const [displayLogo, setDisplayLogo] = useState(companyProfile?.display_logo || false);
+  const [displayTaxId, setDisplayTaxId] = useState(companyProfile?.display_tax_id || false);
+  const [displayPhone, setDisplayPhone] = useState(companyProfile?.display_phone || false);
   
   const handleAddressSelect = useCallback((address: any) => {
     const form = document.querySelector('form');
@@ -58,9 +62,9 @@ export const CompanyForm = ({
       }
       
       // Garantir que todos os campos boolean sejam incluídos com seus valores corretos
-      formData.set('display_tax_id', formData.get('display_tax_id') === 'on' ? 'true' : 'false');
-      formData.set('display_phone', formData.get('display_phone') === 'on' ? 'true' : 'false');
-      formData.set('display_logo', formData.get('display_logo') === 'on' ? 'true' : 'false');
+      formData.set('display_tax_id', displayTaxId.toString());
+      formData.set('display_phone', displayPhone.toString());
+      formData.set('display_logo', displayLogo.toString());
       
       // Definir país padrão se não estiver presente
       if (!formData.get('country')) {
@@ -86,13 +90,10 @@ export const CompanyForm = ({
           <LogoUpload
             logoUrl={companyProfile?.logo_url}
             onLogoChange={onLogoChange}
-            displayLogo={companyProfile?.display_logo || false}
+            displayLogo={displayLogo}
             onDisplayLogoChange={(checked) => {
-              const form = document.querySelector('form');
-              if (form) {
-                const formData = new FormData(form);
-                formData.set('display_logo', checked.toString());
-              }
+              setDisplayLogo(checked);
+              console.log("Display logo alterado para:", checked);
             }}
             disabled={!isEditing}
           />
@@ -101,7 +102,7 @@ export const CompanyForm = ({
             <CompanyBasicInfo
               companyName={companyProfile?.company_name}
               taxId={companyProfile?.tax_id}
-              displayTaxId={companyProfile?.display_tax_id || false}
+              displayTaxId={displayTaxId}
               country={companyProfile?.country}
               onCountryChange={(value) => {
                 const form = document.querySelector('form');
@@ -111,11 +112,8 @@ export const CompanyForm = ({
                 }
               }}
               onDisplayTaxIdChange={(checked) => {
-                const form = document.querySelector('form');
-                if (form) {
-                  const formData = new FormData(form);
-                  formData.set('display_tax_id', checked.toString());
-                }
+                setDisplayTaxId(checked);
+                console.log("Display tax ID alterado para:", checked);
               }}
               disabled={!isEditing}
             />
@@ -142,13 +140,10 @@ export const CompanyForm = ({
               mobile={companyProfile?.mobile}
               email={companyProfile?.email}
               website={companyProfile?.website}
-              displayPhone={companyProfile?.display_phone || false}
+              displayPhone={displayPhone}
               onDisplayPhoneChange={(checked) => {
-                const form = document.querySelector('form');
-                if (form) {
-                  const formData = new FormData(form);
-                  formData.set('display_phone', checked.toString());
-                }
+                setDisplayPhone(checked);
+                console.log("Display phone alterado para:", checked);
               }}
               disabled={!isEditing}
             />
