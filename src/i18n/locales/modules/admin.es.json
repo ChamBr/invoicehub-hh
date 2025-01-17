@@ -1,0 +1,21 @@
+{
+  "subscribers": {
+    "title": "Suscriptores",
+    "no_company": "Sin Nombre de Empresa",
+    "no_owner": "Sin Propietario",
+    "created_at": "Creado el {{date}}",
+    "users_count": "{{count}} usuarios",
+    "manage_users": "Gestionar Usuarios",
+    "edit": "Editar",
+    "users": {
+      "title": "Usuarios de {{company}}",
+      "no_users": "No se encontraron usuarios",
+      "role": "Rol",
+      "email": "Correo electrónico"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    }
+  }
+}

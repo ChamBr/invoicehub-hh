@@ -1,0 +1,15 @@
+{
+  "status": {
+    "active": "Ativo",
+    "inactive": "Inativo"
+  },
+  "actions": {
+    "edit": "Editar",
+    "save": "Salvar Alterações",
+    "saving": "Salvando...",
+    "cancel": "Cancelar",
+    "create": "Criar",
+    "delete": "Excluir",
+    "confirm": "Confirmar"
+  }
+}
