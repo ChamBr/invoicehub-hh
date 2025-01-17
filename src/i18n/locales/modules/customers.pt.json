@@ -1,0 +1,18 @@
+{
+  "title": "Clientes",
+  "add": "Adicionar Cliente",
+  "table": {
+    "empty": "Nenhum cliente encontrado",
+    "type": "Tipo",
+    "name": "Nome",
+    "company_name": "Nome da Empresa",
+    "status": "Status",
+    "actions": "Ações"
+  },
+  "details": {
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo"
+    }
+  }
+}

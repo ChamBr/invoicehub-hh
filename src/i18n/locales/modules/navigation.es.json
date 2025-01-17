@@ -1,0 +1,23 @@
+{
+  "records": "Registros",
+  "services": "Servicios",
+  "user": "Usuario",
+  "customers": "Clientes",
+  "products": "Productos",
+  "invoices": "Facturas",
+  "profile": "Mi Perfil",
+  "company": "Mi Empresa",
+  "plan": "Mi Plan",
+  "invoice_settings": "Personalizar Factura",
+  "admin": {
+    "subscribers": "Base de Usuarios",
+    "plans": "Planes",
+    "integrations": "Integraciones",
+    "reports": "Informes",
+    "settings": "Configuración"
+  },
+  "feedback": {
+    "submit": "Soporte & Feedback",
+    "list": "Lista de Feedback"
+  }
+}

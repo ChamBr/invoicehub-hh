@@ -1,0 +1,15 @@
+{
+  "title": "Datos de la Empresa",
+  "basic_info": "Información Básica",
+  "contact": "Información de Contacto",
+  "address": "Dirección",
+  "country": "País",
+  "name": "Nombre de la Empresa",
+  "name_placeholder": "Ingrese el nombre de su empresa",
+  "display_tax_id": "Mostrar documento fiscal en la factura",
+  "address_line1": "Dirección",
+  "address_line1_placeholder": "Calle, número",
+  "address_line2": "Complemento",
+  "address_line2_placeholder": "Apartamento, oficina, etc.",
+  "tax_info": "Información Fiscal"
+}
