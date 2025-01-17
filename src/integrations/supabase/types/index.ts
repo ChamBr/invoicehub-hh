@@ -1,20 +1,12 @@
 export * from './database';
 export type { Json } from './common';
-export type { TypedSupabaseClient, Tables, Enums, TablesInsert, TablesUpdate } from './common';
-export * from './tables/company';
-export * from './tables/configurations';
-export * from './tables/countries';
-export * from './tables/email_settings';
-export * from './tables/exchange_rates';
-export * from './tables/feedback';
-export * from './tables/footer_settings';
-export * from './tables/invoice_items';
-export * from './tables/invoice_templates';
-export * from './tables/invoices';
-export * from './tables/payment_integrations';
-export * from './tables/plans';
-export * from './tables/profiles';
-export * from './tables/system_settings';
+export type {
+  TypedSupabaseClient,
+  Tables,
+  Enums,
+  TablesInsert,
+  TablesUpdate,
+} from './common';
 
 // Re-export com nomes específicos para evitar ambiguidade
 export type { Profile as UserProfile } from './tables/user';
