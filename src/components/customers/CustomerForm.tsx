@@ -5,15 +5,13 @@ import { CustomerTypeSelect } from "./CustomerTypeSelect";
 import { CustomerContactForm } from "./form/CustomerContactForm";
 import { CustomerTaxForm } from "./form/CustomerTaxForm";
 import { CustomerNotesField } from "./CustomerNotesField";
-import { CountrySelect } from "@/components/ui/country-select";
 import { customerFormSchema, type CustomerFormValues } from "./types";
-import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useCustomerSubmit } from "./hooks/useCustomerSubmit";
 import { useTranslation } from "react-i18next";
 import { FormSection } from "@/components/forms/FormSection";
 import { FormRow } from "@/components/forms/FormRow";
 import { FormActions } from "@/components/forms/FormActions";
+import { CustomerBasicInfo } from "./form/CustomerBasicInfo";
 
 interface CustomerFormProps {
   onSuccess: (customerId?: string) => void;
@@ -40,50 +38,14 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
   });
 
   const { isSubmitting, handleSubmit } = useCustomerSubmit(onSuccess, initialData?.id);
-  const type = form.watch("type");
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <FormSection title={t('customers.form.basic_info')}>
           <CustomerTypeSelect form={form} />
-          
           <FormRow>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {type === "company" ? t('customers.form.company_name') : t('customers.form.name')}
-                  </FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder={
-                        type === "company" 
-                          ? t('customers.form.company_name_placeholder') 
-                          : t('customers.form.name_placeholder')
-                      } 
-                      {...field} 
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('customers.form.country')}</FormLabel>
-                  <CountrySelect
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  />
-                </FormItem>
-              )}
-            />
+            <CustomerBasicInfo form={form} />
           </FormRow>
         </FormSection>
 
