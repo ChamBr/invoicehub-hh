@@ -22,27 +22,28 @@ export const PlansManagement = () => {
       const { data, error } = await supabase
         .from("plans")
         .select("*")
-        .order("price_monthly", { ascending: true });
+        .order("price_monthly", { ascending: true })
+        .maybeSingle();
 
       if (error) throw error;
-      return data;
+      return data ? [data] : [];
     },
   });
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("pt-BR", {
       style: "currency",
-      currency: "USD",
+      currency: "BRL",
     }).format(value);
   };
 
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Plans Management</h2>
+        <h2 className="text-xl font-semibold">Gerenciamento de Planos</h2>
         <Button onClick={() => navigate("/admin/plans/new")}>
           <Plus className="h-4 w-4 mr-2" />
-          New Plan
+          Novo Plano
         </Button>
       </div>
 
@@ -54,12 +55,12 @@ export const PlansManagement = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Monthly</TableHead>
-              <TableHead>Semi-Annual</TableHead>
-              <TableHead>Annual</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>Mensal</TableHead>
+              <TableHead>Semestral</TableHead>
+              <TableHead>Anual</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -91,7 +92,7 @@ export const PlansManagement = () => {
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
-                    {plan.status}
+                    {plan.status === "active" ? "Ativo" : "Inativo"}
                   </span>
                 </TableCell>
                 <TableCell className="text-right">
@@ -100,7 +101,7 @@ export const PlansManagement = () => {
                     size="sm"
                     onClick={() => navigate(`/admin/plans/edit/${plan.id}`)}
                   >
-                    Edit
+                    Editar
                   </Button>
                 </TableCell>
               </TableRow>
