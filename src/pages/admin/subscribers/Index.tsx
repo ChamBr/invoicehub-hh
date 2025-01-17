@@ -1,40 +1,33 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { EditSubscriberDialog } from "./components/EditSubscriberDialog";
 import { SubscriberUsersDialog } from "./components/SubscriberUsersDialog";
-import { toast } from "@/components/ui/use-toast";
+import { EditSubscriberDialog } from "./components/EditSubscriberDialog";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
 interface Subscriber {
   id: string;
-  company_name: string;
-  status: string;
+  company_name: string | null;
+  status: string | null;
   created_at: string;
-  owner_id: string;
+  owner_id: string | null;
+  owner_email: string;
   users_count: number;
 }
 
-const AdminSubscribers = () => {
+export default function SubscribersList() {
+  const { t } = useTranslation();
   const [selectedSubscriber, setSelectedSubscriber] = useState<Subscriber | null>(null);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showUsersDialog, setShowUsersDialog] = useState(false);
+  const [isUsersDialogOpen, setIsUsersDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const { data: subscribers, isLoading, refetch } = useQuery({
-    queryKey: ["admin-subscribers"],
+  const { data: subscribers, isLoading } = useQuery({
+    queryKey: ["subscribers"],
     queryFn: async () => {
-      // Primeiro, buscamos os subscribers com a contagem de usuários
       const { data: subscribersData, error: subscribersError } = await supabase
         .from("subscribers")
         .select(`
@@ -43,148 +36,106 @@ const AdminSubscribers = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (subscribersError) {
-        toast({
-          variant: "destructive",
-          title: "Erro ao carregar assinantes",
-          description: subscribersError.message,
-        });
-        throw subscribersError;
-      }
+      if (subscribersError) throw subscribersError;
 
-      // Para cada subscriber, buscamos o email do owner
-      const subscribersWithOwnerEmail = await Promise.all(
+      // Buscar emails dos owners
+      const ownerEmails = await Promise.all(
         subscribersData.map(async (subscriber) => {
-          if (subscriber.owner_id) {
-            const { data: ownerData, error: ownerError } = await supabase
-              .from("profiles")
-              .select("email")
-              .eq("id", subscriber.owner_id)
-              .single();
-
-            if (!ownerError && ownerData) {
-              return {
-                ...subscriber,
-                owner_email: ownerData.email,
-              };
-            }
-          }
-          return {
-            ...subscriber,
-            owner_email: "N/A",
-          };
+          if (!subscriber.owner_id) return null;
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", subscriber.owner_id)
+            .single();
+          return profileData?.email;
         })
       );
 
-      return subscribersWithOwnerEmail;
+      return subscribersData.map((subscriber, index) => ({
+        ...subscriber,
+        owner_email: ownerEmails[index],
+        users_count: subscriber.users_count[0]?.count || 0
+      }));
     },
   });
 
-  const handleEditClick = (subscriber: Subscriber) => {
-    setSelectedSubscriber(subscriber);
-    setShowEditDialog(true);
-  };
-
-  const handleUsersClick = (subscriber: Subscriber) => {
-    setSelectedSubscriber(subscriber);
-    setShowUsersDialog(true);
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-48">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Users className="h-6 w-6" />
-        Gerenciamento de Assinantes
-      </h1>
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">{t("admin.subscribers.title")}</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Assinantes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex items-center justify-center p-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Empresa</TableHead>
-                  <TableHead>Email do Proprietário</TableHead>
-                  <TableHead>Usuários</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Data de Cadastro</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {subscribers?.map((subscriber) => (
-                  <TableRow key={subscriber.id}>
-                    <TableCell className="font-medium">
-                      {subscriber.company_name || "N/A"}
-                    </TableCell>
-                    <TableCell>{subscriber.owner_email}</TableCell>
-                    <TableCell>{subscriber.users_count}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={subscriber.status === "active" ? "default" : "secondary"}
-                      >
-                        {subscriber.status === "active" ? "Ativo" : "Inativo"}
+        <div className="grid gap-4">
+          {subscribers?.map((subscriber) => (
+            <Card key={subscriber.id}>
+              <CardContent className="p-6">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-semibold">
+                      {subscriber.company_name || t("admin.subscribers.no_company")}
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      {subscriber.owner_email || t("admin.subscribers.no_owner")}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={subscriber.status === "active" ? "default" : "secondary"}>
+                        {subscriber.status}
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(subscriber.created_at).toLocaleDateString("pt-BR")}
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleUsersClick(subscriber)}
-                      >
-                        Usuários
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditClick(subscriber)}
-                      >
-                        Editar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                      <span className="text-sm text-gray-500">
+                        {t("admin.subscribers.created_at", {
+                          date: format(new Date(subscriber.created_at), "PP"),
+                        })}
+                      </span>
+                      <Badge variant="outline">
+                        {t("admin.subscribers.users_count", { count: subscriber.users_count })}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedSubscriber(subscriber);
+                        setIsUsersDialogOpen(true);
+                      }}
+                    >
+                      {t("admin.subscribers.manage_users")}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedSubscriber(subscriber);
+                        setIsEditDialogOpen(true);
+                      }}
+                    >
+                      {t("admin.subscribers.edit")}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
 
-      {selectedSubscriber && showEditDialog && (
-        <EditSubscriberDialog
-          subscriber={selectedSubscriber}
-          open={showEditDialog}
-          onOpenChange={setShowEditDialog}
-          onSuccess={() => {
-            refetch();
-            setShowEditDialog(false);
-          }}
-        />
-      )}
+      <SubscriberUsersDialog
+        subscriber={selectedSubscriber}
+        open={isUsersDialogOpen}
+        onOpenChange={setIsUsersDialogOpen}
+      />
 
-      {selectedSubscriber && showUsersDialog && (
-        <SubscriberUsersDialog
-          subscriber={selectedSubscriber}
-          open={showUsersDialog}
-          onOpenChange={setShowUsersDialog}
-          onSuccess={() => {
-            refetch();
-            setShowUsersDialog(false);
-          }}
-        />
-      )}
+      <EditSubscriberDialog
+        subscriber={selectedSubscriber}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+      />
     </div>
   );
-};
-
-export default AdminSubscribers;
+}
