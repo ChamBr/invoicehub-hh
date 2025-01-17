@@ -114,6 +114,10 @@
       "current_plan": "Current Plan",
       "available_plans": "Available Plans",
       "upgrade": "Upgrade",
+      "yes": "Yes",
+      "no": "No",
+      "unlimited": "Unlimited",
+      "next_billing": "Next billing date",
       "descriptions": {
         "free": "Perfect for freelancers and small businesses",
         "starter": "Great for growing businesses",
@@ -127,8 +131,14 @@
         "ai_assistance": "AI Assistance",
         "max_customers": "Max Customers",
         "invoice_templates": "Invoice Templates",
-        "max_invoices_per_month": "Max Invoices Per Month"
-      }
+        "max_invoices": "Max Invoices Per Month",
+        "translations": "Multi-language Support"
+      },
+      "no_plan_message": "You currently don't have an active plan. Please select a plan below to start using all features.",
+      "change_success": "Plan changed successfully",
+      "change_success_description": "Your plan has been updated successfully",
+      "change_error": "Error changing plan",
+      "change_error_description": "An error occurred while changing your plan. Please try again."
     }
   },
   "feedback": {
