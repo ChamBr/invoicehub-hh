@@ -25,9 +25,7 @@ interface Subscriber {
   owner: {
     email: string;
   };
-  _count: {
-    users: number;
-  };
+  users_count: number;
 }
 
 const AdminSubscribers = () => {
@@ -43,9 +41,7 @@ const AdminSubscribers = () => {
         .select(`
           *,
           owner:owner_id(email),
-          _count {
-            users:subscriber_users(count)
-          }
+          users_count:subscriber_users(count)
         `)
         .order("created_at", { ascending: false });
 
@@ -106,7 +102,7 @@ const AdminSubscribers = () => {
                       {subscriber.company_name || "N/A"}
                     </TableCell>
                     <TableCell>{subscriber.owner?.email}</TableCell>
-                    <TableCell>{subscriber._count.users}</TableCell>
+                    <TableCell>{subscriber.users_count}</TableCell>
                     <TableCell>
                       <Badge
                         variant={subscriber.status === "active" ? "default" : "secondary"}
