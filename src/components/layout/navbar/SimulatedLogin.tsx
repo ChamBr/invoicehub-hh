@@ -10,25 +10,32 @@ const SimulatedLogin = () => {
   const { data: simulatedLogin } = useQuery({
     queryKey: ['simulatedLogin'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('subscribers')
-        .select('id, company_name, owner_id')
+      // Primeiro, buscar o subscriber
+      const { data: subscriberData, error: subscriberError } = await supabase
+        .from("subscribers")
+        .select("id, company_name, owner_id")
+        .limit(1)
         .single();
 
-      if (error) throw error;
+      if (subscriberError) throw subscriberError;
 
-      if (data?.owner_id) {
+      if (subscriberData?.owner_id) {
+        // Depois, buscar o perfil do owner
         const { data: ownerData, error: ownerError } = await supabase
-          .from('profiles')
-          .select('email')
-          .eq('id', data.owner_id)
+          .from("profiles")
+          .select("id, email")
+          .eq("id", subscriberData.owner_id)
           .single();
 
         if (ownerError) throw ownerError;
-        return { ...data, owner: ownerData };
+
+        return {
+          ...subscriberData,
+          owner: ownerData
+        };
       }
 
-      return data;
+      return subscriberData;
     },
   });
 
@@ -49,7 +56,7 @@ const SimulatedLogin = () => {
     }
   };
 
-  if (!simulatedLogin?.owner?.email) return null;
+  if (!simulatedLogin?.owner?.id) return null;
 
   return (
     <span className="ml-2 text-sm text-gray-500">
