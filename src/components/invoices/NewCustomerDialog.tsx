@@ -4,13 +4,15 @@ import { CustomerForm } from "@/components/customers/CustomerForm";
 interface NewCustomerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+  onSuccess: (customerId: string) => void;
+  subscriberId?: string;
 }
 
 export function NewCustomerDialog({
   open,
   onOpenChange,
   onSuccess,
+  subscriberId,
 }: NewCustomerDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -21,6 +23,7 @@ export function NewCustomerDialog({
         <CustomerForm
           onSuccess={onSuccess}
           onCancel={() => onOpenChange(false)}
+          subscriberId={subscriberId}
         />
       </DialogContent>
     </Dialog>
