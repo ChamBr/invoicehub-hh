@@ -49,7 +49,10 @@ export const CompanyForm = ({
       const logoFile = formData.get('logo') as File;
       if (logoFile && logoFile instanceof File && logoFile.size > 0) {
         const logoUrl = await uploadCompanyLogo(logoFile);
-        formData.set('logo_url', logoUrl);
+        if (logoUrl) {
+          formData.set('logo_url', logoUrl);
+          console.log('Logo URL salvo:', logoUrl);
+        }
       }
       
       // Garantir que todos os campos boolean sejam incluídos

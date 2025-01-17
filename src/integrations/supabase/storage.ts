@@ -31,11 +31,14 @@ export async function uploadCompanyLogo(file: File) {
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${fileName}`;
 
+    console.log('Iniciando upload do logo:', { fileName, filePath });
+
     const { error: uploadError } = await supabase.storage
       .from('company-logos')
       .upload(filePath, file);
 
     if (uploadError) {
+      console.error('Erro no upload:', uploadError);
       throw uploadError;
     }
 
@@ -43,9 +46,10 @@ export async function uploadCompanyLogo(file: File) {
       .from('company-logos')
       .getPublicUrl(filePath);
 
+    console.log('Logo enviado com sucesso:', data.publicUrl);
     return data.publicUrl;
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Erro ao fazer upload do logo:', error);
     throw error;
   }
 }

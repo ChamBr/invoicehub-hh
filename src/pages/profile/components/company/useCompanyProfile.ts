@@ -23,6 +23,7 @@ export const useCompanyProfile = () => {
         throw error;
       }
 
+      console.log("Perfil da empresa carregado:", data);
       return data;
     },
   });
@@ -31,30 +32,6 @@ export const useCompanyProfile = () => {
     mutationFn: async (formData: FormData) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
-
-      let logoUrl = companyProfile?.logo_url;
-
-      // Buscar cliente pelo email (se existir)
-      const email = formData.get('email')?.toString();
-      if (email) {
-        try {
-          const { data: customerData, error: customerError } = await supabase
-            .from('customers')
-            .select('id')
-            .eq('email', email)
-            .maybeSingle();
-
-          if (customerError) {
-            console.error("Erro ao buscar cliente:", customerError);
-          }
-          
-          if (customerData) {
-            console.log("Cliente encontrado:", customerData);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar cliente:", error);
-        }
-      }
 
       const companyData = {
         user_id: user.id,
@@ -70,9 +47,9 @@ export const useCompanyProfile = () => {
         display_phone: formData.get('display_phone') === 'true',
         tax_id: formData.get('tax_id')?.toString() || '',
         display_tax_id: formData.get('display_tax_id') === 'true',
-        email: email || '',
+        email: formData.get('email')?.toString() || '',
         website: formData.get('website')?.toString() || '',
-        logo_url: logoUrl,
+        logo_url: formData.get('logo_url')?.toString() || companyProfile?.logo_url,
         display_logo: formData.get('display_logo') === 'true',
       };
 
