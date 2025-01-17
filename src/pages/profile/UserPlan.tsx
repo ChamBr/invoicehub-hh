@@ -2,20 +2,53 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PlanSelection } from "./components/plan/PlanSelection";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { Plan } from "./components/plan/types";
-import { NoPlanState } from "./components/plan/NoPlanState";
 import { ActivePlan } from "./components/plan/ActivePlan";
+import { PlanCard } from "./components/plan/PlanCard";
+import { useQuery } from "@tanstack/react-query";
 
 export const UserPlan = () => {
   const { t } = useTranslation();
   const { session } = useAuth();
   const { toast } = useToast();
-  const [showPlanSelection, setShowPlanSelection] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activePlan, setActivePlan] = useState<Plan | null>(null);
+
+  const { data: plans } = useQuery({
+    queryKey: ["available-plans"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("plans")
+        .select("*")
+        .eq("status", "active")
+        .order("price_monthly", { ascending: true });
+
+      if (error) throw error;
+      return data as Plan[];
+    },
+  });
+
+  const { data: currentSubscription } = useQuery({
+    queryKey: ["current-subscription"],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+
+      const { data, error } = await supabase
+        .from("subscriptions")
+        .select(`
+          *,
+          plan:plans(*)
+        `)
+        .eq("user_id", session.user.id)
+        .eq("status", "active")
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!session?.user?.id,
+  });
 
   const handlePlanChange = async (newPlan: Plan) => {
     setIsLoading(true);
@@ -28,7 +61,6 @@ export const UserPlan = () => {
 
       if (error) throw error;
 
-      setActivePlan(newPlan);
       toast({
         title: t('profile.plan.change_success'),
         description: t('profile.plan.change_success_description'),
@@ -42,44 +74,32 @@ export const UserPlan = () => {
       });
     } finally {
       setIsLoading(false);
-      setShowPlanSelection(false);
     }
   };
 
-  if (!activePlan) {
-    return (
-      <>
-        <NoPlanState onSelectPlan={() => setShowPlanSelection(true)} />
-        {showPlanSelection && (
-          <div className="mt-8">
-            <PlanSelection
-              onClose={() => setShowPlanSelection(false)}
-              onPlanSelected={handlePlanChange}
-            />
-          </div>
-        )}
-      </>
-    );
-  }
+  const currentPlan = currentSubscription?.plan as Plan | undefined;
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-0.5">
-        <h2 className="text-2xl font-bold tracking-tight">{t('profile.plan.title')}</h2>
-        <p className="text-muted-foreground">
-          {t('profile.plan.description')}
-        </p>
-      </div>
-
-      <ActivePlan plan={activePlan} />
-
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">{t('profile.plan.available_plans')}</h3>
-        <PlanSelection
-          currentPlan={activePlan}
-          onPlanSelected={handlePlanChange}
-          showUpgradeOnly={true}
+    <div className="space-y-8">
+      {currentPlan && (
+        <ActivePlan 
+          plan={currentPlan} 
+          nextBillingDate={currentSubscription?.renewal_date}
         />
+      )}
+
+      <div>
+        <h2 className="text-2xl font-bold mb-6">{t('profile.plan.available_plans')}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {plans?.map((plan) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              isCurrentPlan={currentPlan?.id === plan.id}
+              onSelect={handlePlanChange}
+            />
+          ))}
+        </div>
       </div>
 
       {isLoading && (
