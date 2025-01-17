@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
@@ -8,112 +7,93 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlanSelection } from "./components/plan/PlanSelection";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { supabase } from "@/integrations/supabase/client";
 
-const UserPlan = () => {
+export const UserPlan = () => {
   const { t } = useTranslation();
-  const { toast } = useToast();
   const { session } = useAuth();
+  const { toast } = useToast();
+  const [showPlanSelection, setShowPlanSelection] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activePlan, setActivePlan] = useState(null);
 
-  const { data: subscription, isLoading } = useQuery({
-    queryKey: ["user-subscription"],
-    queryFn: async () => {
-      if (!session?.user?.id) return null;
+  const handlePlanChange = async (newPlan) => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({ plan_id: newPlan.id })
+        .eq('user_id', session?.user?.id)
+        .single();
 
-      const { data, error } = await supabase
-        .from("subscriptions")
-        .select(`
-          *,
-          plan:plans(
-            name,
-            description,
-            price_monthly,
-            billing_period,
-            features
-          )
-        `)
-        .eq("user_id", session.user.id)
-        .eq("status", "active")
-        .maybeSingle();
+      if (error) throw error;
 
-      if (error) {
-        console.error("Error fetching subscription:", error);
-        toast({
-          title: t('errors.load_subscription'),
-          description: t('errors.try_again'),
-          variant: "destructive",
-        });
-        return null;
-      }
-
-      return data;
-    },
-    enabled: !!session?.user?.id,
-  });
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+      setActivePlan(newPlan);
+      setShowPlanSelection(false);
+      toast({
+        title: t('profile.plan.change_success'),
+        description: t('profile.plan.change_success_description'),
+      });
+    } catch (error) {
+      console.error('Error changing plan:', error);
+      toast({
+        variant: "destructive",
+        title: t('profile.plan.change_error'),
+        description: t('profile.plan.change_error_description'),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="container max-w-4xl mx-auto p-4 md:p-8">
-      <h1 className="text-2xl font-bold mb-6">{t('profile.plan.title')}</h1>
+    <div className="space-y-6">
+      <div className="space-y-0.5">
+        <h2 className="text-2xl font-bold tracking-tight">{t('profile.plan.title')}</h2>
+        <p className="text-muted-foreground">
+          {t('profile.plan.description')}
+        </p>
+      </div>
 
-      {subscription ? (
-        <Card className="p-6 bg-white shadow-sm mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+      {activePlan ? (
+        <Card className="p-8 bg-white shadow-sm mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{subscription.plan.name}</h2>
-              <p className="text-gray-600 mt-1">{subscription.plan.description}</p>
-            </div>
-            <div className="mt-4 md:mt-0 text-right">
-              <div className="text-3xl font-bold text-primary">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }).format(subscription.plan.price_monthly)}
-                <span className="text-sm font-normal text-gray-600 ml-1">
-                  /{subscription.plan.billing_period === "monthly" ? t('profile.plan.monthly') : t('profile.plan.yearly')}
-                </span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {t('profile.plan.next_billing')}: {new Date(subscription.renewal_date).toLocaleDateString()}
+              <h3 className="text-lg font-semibold">{activePlan.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {activePlan.description}
               </p>
             </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowPlanSelection(true)}
+              className="shrink-0"
+            >
+              {t('profile.plan.change_plan')}
+            </Button>
           </div>
 
-          <div className="border-t border-gray-100 pt-6">
-            <h3 className="font-semibold text-gray-900 mb-4">{t('profile.plan.features')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {subscription.plan.features &&
-                Object.entries(subscription.plan.features as Record<string, any>).map(
-                  ([feature, value]) => (
-                    <div
-                      key={feature}
-                      className={`flex items-center gap-3 ${
-                        value ? "text-gray-900" : "text-gray-400"
-                      }`}
-                    >
-                      <Check
-                        className={`h-5 w-5 ${
-                          value ? "text-primary" : "text-gray-300"
-                        }`}
-                      />
-                      <span className="text-sm">
-                        {t(`profile.plan.feature_${feature}`)}
-                        {typeof value === 'number' && value !== -1 && `: ${value}`}
-                        {typeof value === 'number' && value === -1 && `: ${t('profile.plan.unlimited')}`}
-                      </span>
-                    </div>
-                  )
-                )}
-            </div>
+          <div className="mt-6 border-t pt-6">
+            <h4 className="font-medium mb-4">{t('profile.plan.features')}</h4>
+            <ul className="grid gap-3">
+              {Object.entries(activePlan.features).map(([key, value]) => (
+                <li key={key} className="flex items-center gap-3">
+                  <Check className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-sm">
+                    {typeof value === 'boolean'
+                      ? t(`profile.plan.features.${key}`)
+                      : t(`profile.plan.features.${key}`, { value })}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
+
+          {isLoading && (
+            <div className="mt-6 border-t pt-6 flex items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            </div>
+          )}
         </Card>
       ) : (
         <Card className="p-8 text-center bg-white shadow-sm mb-8">
@@ -125,13 +105,21 @@ const UserPlan = () => {
               {t('profile.plan.no_active_plan_description')}
             </AlertDescription>
           </Alert>
+          <Button
+            onClick={() => setShowPlanSelection(true)}
+            className="w-full md:w-auto"
+          >
+            {t('profile.plan.select_plan')}
+          </Button>
         </Card>
       )}
 
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-6">{t('profile.plan.available_plans')}</h2>
-        <PlanSelection />
-      </div>
+      {showPlanSelection && (
+        <PlanSelection
+          onClose={() => setShowPlanSelection(false)}
+          onPlanSelected={handlePlanChange}
+        />
+      )}
     </div>
   );
 };
