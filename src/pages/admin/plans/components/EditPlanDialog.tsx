@@ -11,23 +11,25 @@ interface EditPlanDialogProps {
 export function EditPlanDialog({ plan, isOpen, onClose }: EditPlanDialogProps) {
   if (!plan) return null;
 
+  const defaultValues = {
+    name: plan.name,
+    description: plan.description || "",
+    price_monthly: plan.price_monthly || 0,
+    price_annual: plan.price_annual || 0,
+    discount_annual: plan.discount_annual || 0,
+    features: plan.features,
+    status: plan.status as "active" | "inactive"
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Edit Plan</DialogTitle>
+          <DialogTitle>Editar Plano</DialogTitle>
         </DialogHeader>
         <PlanForm 
           planId={plan.id} 
-          defaultValues={{
-            name: plan.name,
-            description: plan.description || "",
-            price_monthly: plan.price_monthly || 0,
-            price_annual: plan.price_annual || 0,
-            discount_annual: plan.discount_annual || 0,
-            features: plan.features,
-            status: plan.status as "active" | "inactive"
-          }}
+          defaultValues={defaultValues}
           onSuccess={onClose}
           onCancel={onClose}
         />

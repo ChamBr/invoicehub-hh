@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PlansHeader } from "./components/PlansHeader";
 import { PlanCard } from "./components/PlanCard";
 import { EditPlanDialog } from "./components/EditPlanDialog";
-import { Plan } from "@/pages/profile/components/plan/types";
+import { Plan, PlanFeatures } from "@/pages/profile/components/plan/types";
 
 export function PlansManagement() {
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
@@ -18,7 +18,11 @@ export function PlansManagement() {
         .order("price_monthly", { ascending: true });
 
       if (error) throw error;
-      return data as Plan[];
+      
+      return data?.map(plan => ({
+        ...plan,
+        features: plan.features as PlanFeatures
+      })) as Plan[];
     },
   });
 
@@ -34,7 +38,11 @@ export function PlansManagement() {
         .single();
 
       if (error) throw error;
-      return data as Plan;
+      
+      return {
+        ...data,
+        features: data.features as PlanFeatures
+      } as Plan;
     },
     enabled: !!selectedPlanId,
   });

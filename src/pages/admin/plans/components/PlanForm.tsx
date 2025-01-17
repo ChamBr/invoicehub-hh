@@ -47,7 +47,7 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
 
   const form = useForm<PlanFormValues>({
     resolver: zodResolver(planFormSchema),
-    defaultValues: defaultValues || {
+    defaultValues: {
       name: "",
       description: "",
       price_monthly: 0,
@@ -63,7 +63,8 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
         invoice_templates: false,
         translations: false,
         storage_gb: 0.25
-      }
+      },
+      ...defaultValues
     }
   });
 
@@ -73,7 +74,7 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
         name: values.name,
         description: values.description,
         price_monthly: values.price_monthly,
-        price: values.price_monthly, // Mantemos o price sincronizado com price_monthly
+        price: values.price_monthly,
         price_annual: values.price_annual,
         discount_annual: values.discount_annual,
         features: values.features,

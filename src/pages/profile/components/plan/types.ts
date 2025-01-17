@@ -27,8 +27,10 @@ export interface Plan {
 
 export interface PlanCardProps {
   plan: Plan;
-  isCurrentPlan: boolean;
-  onSelect: (plan: Plan) => void;
+  isCurrentPlan?: boolean;
+  onSelect?: (plan: Plan) => void;
+  onEdit?: (id: string) => void;
+  formatCurrency?: (value: number) => string;
 }
 
 export interface PlanSelectionProps {
