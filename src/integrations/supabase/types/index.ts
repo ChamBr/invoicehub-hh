@@ -1,12 +1,6 @@
 export * from './database';
-export type { Json } from './common';
-export type {
-  TypedSupabaseClient,
-  Tables,
-  Enums,
-  TablesInsert,
-  TablesUpdate,
-} from './common';
+export type { Json, TypedSupabaseClient, Table, TableInsert, TableUpdate } from './common';
+export type { Tables } from './database/tables';
 
 // Re-export com nomes específicos para evitar ambiguidade
 export type { Profile as UserProfile } from './tables/user';
