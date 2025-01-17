@@ -11,19 +11,18 @@ interface SubscriberCardProps {
   subscriber: SubscriberWithDetails;
   onManageUsers: (subscriber: SubscriberWithDetails) => void;
   onEdit: (subscriber: SubscriberWithDetails) => void;
-  isAdmin?: boolean;
+  isSuperAdmin?: boolean;
 }
 
-export function SubscriberCard({ subscriber, onManageUsers, onEdit, isAdmin }: SubscriberCardProps) {
+export function SubscriberCard({ subscriber, onManageUsers, onEdit, isSuperAdmin }: SubscriberCardProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
 
   const handleSimulateLogin = async () => {
     try {
-      const { data, error } = await supabase
-        .rpc('simulate_subscriber_login', {
-          subscriber_id: subscriber.id
-        });
+      const { data, error } = await supabase.rpc('simulate_subscriber_login', {
+        subscriber_id: subscriber.id
+      });
 
       if (error) throw error;
 
@@ -33,11 +32,11 @@ export function SubscriberCard({ subscriber, onManageUsers, onEdit, isAdmin }: S
       });
 
       console.log('Simulation data:', data);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erro ao simular login",
-        description: "Você não tem permissão para realizar esta ação.",
+        description: error.message || "Você não tem permissão para realizar esta ação.",
       });
     }
   };
@@ -80,7 +79,7 @@ export function SubscriberCard({ subscriber, onManageUsers, onEdit, isAdmin }: S
             >
               {t("admin.subscribers.edit")}
             </Button>
-            {isAdmin && (
+            {isSuperAdmin && (
               <Button
                 variant="secondary"
                 onClick={handleSimulateLogin}

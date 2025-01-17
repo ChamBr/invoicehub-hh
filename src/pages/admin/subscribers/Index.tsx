@@ -32,7 +32,7 @@ export default function SubscribersList() {
     }
   });
 
-  const isAdmin = userProfile?.role === 'superadmin';
+  const isSuperAdmin = userProfile?.role === 'superadmin';
 
   const handleManageUsers = (subscriber: SubscriberWithDetails) => {
     setSelectedSubscriber(subscriber);
@@ -64,7 +64,7 @@ export default function SubscribersList() {
               subscriber={subscriber}
               onManageUsers={handleManageUsers}
               onEdit={handleEdit}
-              isAdmin={isAdmin}
+              isSuperAdmin={isSuperAdmin}
             />
           ))}
         </div>
