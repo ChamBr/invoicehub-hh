@@ -65,6 +65,7 @@ export const CompanyForm = ({
         formData.set('country', companyProfile?.country || 'BR');
       }
 
+      console.log("Dados a serem salvos:", Object.fromEntries(formData));
       onSubmit(formData);
     } catch (error) {
       console.error('Erro ao fazer upload do logo:', error);

@@ -38,6 +38,11 @@ export const LogoUpload = ({
     }
   };
 
+  const handleDisplayLogoChange = (checked: boolean) => {
+    console.log("Alterando exibição do logo para:", checked);
+    onDisplayLogoChange(checked);
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -78,7 +83,7 @@ export const LogoUpload = ({
             id="display_logo"
             name="display_logo"
             checked={displayLogo}
-            onCheckedChange={onDisplayLogoChange}
+            onCheckedChange={handleDisplayLogoChange}
             disabled={disabled}
           />
           <Label htmlFor="display_logo" className="text-sm text-muted-foreground">
