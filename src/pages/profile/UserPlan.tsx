@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PlanSelection } from "./components/plan/PlanSelection";
 
 const UserPlan = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const UserPlan = () => {
           plan:plans(
             name,
             description,
-            price,
+            price_monthly,
             billing_period,
             features
           )
@@ -84,7 +85,7 @@ const UserPlan = () => {
       <h1 className="text-2xl font-bold mb-6">{t('profile.plan.title')}</h1>
 
       {subscription ? (
-        <Card className="p-6 bg-white shadow-sm">
+        <Card className="p-6 bg-white shadow-sm mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">{subscription.plan.name}</h2>
@@ -97,7 +98,7 @@ const UserPlan = () => {
                   currency: "USD",
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                }).format(subscription.plan.price)}
+                }).format(subscription.plan.price_monthly)}
                 <span className="text-sm font-normal text-gray-600 ml-1">
                   /{subscription.plan.billing_period === "monthly" ? t('profile.plan.monthly') : t('profile.plan.yearly')}
                 </span>
@@ -135,50 +136,21 @@ const UserPlan = () => {
                 )}
             </div>
           </div>
-
-          <div className="mt-6 flex justify-end gap-4">
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                toast({
-                  title: t('profile.plan.contact_support'),
-                  description: t('profile.plan.contact_description'),
-                });
-              }}
-            >
-              {t('profile.plan.cancel')}
-            </Button>
-            <Button 
-              variant="default"
-              onClick={() => {
-                toast({
-                  title: t('profile.plan.upgrade_soon'),
-                  description: t('profile.plan.upgrade_description'),
-                });
-              }}
-            >
-              {t('profile.plan.change')}
-            </Button>
-          </div>
         </Card>
       ) : (
-        <Card className="p-8 text-center bg-white shadow-sm">
+        <Card className="p-8 text-center bg-white shadow-sm mb-8">
           <Alert className="mb-6">
             <AlertDescription>
-              Você não possui nenhum plano ativo no momento. Para aproveitar todos os recursos do sistema, assine um de nossos planos.
+              You don't have an active plan. Choose one of our plans to access all features.
             </AlertDescription>
           </Alert>
-          <Button 
-            size="lg"
-            className="bg-emerald-600 hover:bg-emerald-700"
-            onClick={() => {
-              window.location.href = "/plans";
-            }}
-          >
-            Ver Planos Disponíveis
-          </Button>
         </Card>
       )}
+
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-6">Available Plans</h2>
+        <PlanSelection />
+      </div>
     </div>
   );
 };
