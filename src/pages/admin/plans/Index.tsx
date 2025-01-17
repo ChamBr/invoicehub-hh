@@ -26,6 +26,23 @@ export function PlansManagement() {
     },
   });
 
+  const { data: selectedPlan } = useQuery({
+    queryKey: ["plan", selectedPlanId],
+    queryFn: async () => {
+      if (!selectedPlanId) return null;
+      
+      const { data, error } = await supabase
+        .from("plans")
+        .select("*")
+        .eq("id", selectedPlanId)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedPlanId,
+  });
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -118,9 +135,18 @@ export function PlansManagement() {
           <DialogHeader>
             <DialogTitle>Edit Plan</DialogTitle>
           </DialogHeader>
-          {selectedPlanId && (
+          {selectedPlan && (
             <PlanForm 
               planId={selectedPlanId} 
+              defaultValues={{
+                name: selectedPlan.name,
+                description: selectedPlan.description || "",
+                price_monthly: selectedPlan.price_monthly || 0,
+                price_annual: selectedPlan.price_annual || 0,
+                discount_annual: selectedPlan.discount_annual || 0,
+                features: selectedPlan.features,
+                status: selectedPlan.status as "active" | "inactive"
+              }}
               onSuccess={() => setSelectedPlanId(null)}
               onCancel={() => setSelectedPlanId(null)}
             />

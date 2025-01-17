@@ -73,7 +73,7 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
         name: values.name,
         description: values.description,
         price_monthly: values.price_monthly,
-        price: values.price_monthly,
+        price: values.price_monthly, // Mantemos o price sincronizado com price_monthly
         price_annual: values.price_annual,
         discount_annual: values.discount_annual,
         features: values.features,
@@ -119,17 +119,17 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <div className="space-y-3">
-          <FormSection>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-6">
+          <FormSection title="Informações Básicas">
             <PlanBasicFields control={form.control} />
           </FormSection>
 
-          <FormSection>
+          <FormSection title="Preços">
             <PlanPricingFields control={form.control} />
           </FormSection>
 
-          <FormSection>
+          <FormSection title="Recursos">
             <PlanFeaturesFields control={form.control} />
           </FormSection>
         </div>
