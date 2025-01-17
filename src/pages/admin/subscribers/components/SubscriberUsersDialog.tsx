@@ -39,7 +39,7 @@ export function SubscriberUsersDialog({
         .from("subscriber_users")
         .select(`
           *,
-          user:profiles!subscriber_users_user_id_fkey(full_name, email)
+          user:profiles(full_name, email)
         `)
         .eq("subscriber_id", subscriber.id);
 
