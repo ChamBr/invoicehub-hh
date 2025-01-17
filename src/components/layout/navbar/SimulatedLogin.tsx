@@ -45,7 +45,14 @@ const SimulatedLogin = () => {
         .eq("id", subscriberData.owner_id)
         .single();
 
-      if (ownerError) throw ownerError;
+      if (ownerError) {
+        console.error("Error fetching owner:", ownerError);
+        return {
+          id: subscriberData.id,
+          company_name: subscriberData.company_name,
+          owner_id: subscriberData.owner_id
+        };
+      }
 
       // Retornar os dados combinados
       return {
