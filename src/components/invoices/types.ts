@@ -24,4 +24,38 @@ export interface Invoice {
   template_id?: string | null;
   subscriber_id?: string;
   items: InvoiceItem[];
+  customer?: {
+    name: string;
+  };
 }
+
+export const invoiceStatusConfig = {
+  draft: {
+    label: 'Rascunho',
+    color: 'text-gray-500 border-gray-200 bg-gray-50',
+  },
+  created: {
+    label: 'Criada',
+    color: 'text-blue-500 border-blue-200 bg-blue-50',
+  },
+  sent: {
+    label: 'Enviada',
+    color: 'text-purple-500 border-purple-200 bg-purple-50',
+  },
+  pending: {
+    label: 'Pendente',
+    color: 'text-yellow-500 border-yellow-200 bg-yellow-50',
+  },
+  overdue: {
+    label: 'Atrasada',
+    color: 'text-red-500 border-red-200 bg-red-50',
+  },
+  cancelled: {
+    label: 'Cancelada',
+    color: 'text-gray-500 border-gray-200 bg-gray-50',
+  },
+  paid: {
+    label: 'Paga',
+    color: 'text-emerald-500 border-emerald-200 bg-emerald-50',
+  },
+} as const;

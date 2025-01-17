@@ -4,7 +4,7 @@ import { CustomerForm } from "@/components/customers/CustomerForm";
 interface NewCustomerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: (customerId: string) => void;
+  onSuccess?: (customerId: string) => void;
   subscriberId?: string;
 }
 
@@ -21,7 +21,9 @@ export const NewCustomerDialog = ({
           <DialogTitle>Novo Cliente</DialogTitle>
         </DialogHeader>
         <CustomerForm
-          onSuccess={onSuccess}
+          onSuccess={(customerId: string) => {
+            if (onSuccess) onSuccess(customerId);
+          }}
           onCancel={() => onOpenChange(false)}
           subscriberId={subscriberId}
         />

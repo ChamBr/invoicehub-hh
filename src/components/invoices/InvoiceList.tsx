@@ -42,13 +42,18 @@ export function InvoiceList({ invoices }: InvoiceListProps) {
         .from("invoices")
         .select(`
           *,
-          customer:customers(name)
+          customer:customers(name),
+          items:invoice_items(*)
         `)
         .eq("subscriber_id", currentSubscriber.subscriber_id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as Invoice[];
+      
+      return data.map(invoice => ({
+        ...invoice,
+        items: invoice.items || [],
+      })) as Invoice[];
     },
     enabled: !!currentSubscriber?.subscriber_id,
   });
