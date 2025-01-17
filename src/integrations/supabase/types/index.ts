@@ -15,10 +15,9 @@ export * from './tables/plans';
 export * from './tables/products';
 export * from './tables/profiles';
 export * from './tables/system_settings';
-export * from './tables/user_dashboard_metrics';
 
 // Re-export com nomes específicos para evitar ambiguidade
-export { Profile as UserProfile } from './tables/user';
-export { SubscriberUser as SubscriberUserType } from './tables/subscriber';
-export { Subscriber as SubscriberType } from './tables/subscriber';
-export { UserDashboardMetrics as UserDashboardMetricsType } from './tables/user';
+export type { Profile as UserProfile } from './tables/user';
+export type { SubscriberUser as SubscriberUserType } from './tables/subscriber';
+export type { Subscriber as SubscriberType } from './tables/subscriber';
+export type { UserDashboardMetrics as UserDashboardMetricsType } from './tables/user';

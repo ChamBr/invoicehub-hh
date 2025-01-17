@@ -15,10 +15,10 @@ interface Subscriber {
   status: string | null;
   created_at: string;
   owner_id: string | null;
-  owner?: {
+  owner: {
     full_name: string | null;
     email: string | null;
-  };
+  } | null;
   users_count: number;
 }
 
@@ -45,7 +45,7 @@ export default function SubscribersList() {
       return subscribersData.map(subscriber => ({
         ...subscriber,
         users_count: subscriber.users_count[0]?.count || 0
-      }));
+      })) as Subscriber[];
     },
   });
 
@@ -72,7 +72,7 @@ export default function SubscribersList() {
                       {subscriber.company_name || t("admin.subscribers.no_company")}
                     </h2>
                     <p className="text-sm text-gray-500">
-                      {subscriber.owner_email || t("admin.subscribers.no_owner")}
+                      {subscriber.owner?.email || t("admin.subscribers.no_owner")}
                     </p>
                     <div className="flex items-center gap-2">
                       <Badge variant={subscriber.status === "active" ? "default" : "secondary"}>

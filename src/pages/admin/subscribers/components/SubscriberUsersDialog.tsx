@@ -45,7 +45,7 @@ export function SubscriberUsersDialog({
 
       if (error) throw error;
 
-      return data;
+      return data as SubscriberUser[];
     },
     enabled: !!subscriber?.id,
   });
