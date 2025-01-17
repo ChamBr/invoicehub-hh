@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
-import { Plan } from "./components/plan/types";
+import { Plan, PlanFeatures } from "./components/plan/types";
 import { ActivePlan } from "./components/plan/ActivePlan";
 import { PlanCard } from "./components/plan/PlanCard";
 import { useQuery } from "@tanstack/react-query";
