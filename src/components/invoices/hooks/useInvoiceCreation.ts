@@ -1,108 +1,28 @@
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { InvoiceItem } from "../types";
 import { calculateTotal } from "../utils";
-import { useQuery } from "@tanstack/react-query";
-
-interface InvoiceData {
-  customer_id: string;
-  status: 'draft' | 'created';
-  due_date: string;
-  total: number;
-  template_id?: string;
-  subscriber_id: string;
-}
+import { useActiveTemplate } from "./useActiveTemplate";
+import { useInvoiceItems } from "./useInvoiceItems";
+import { useInvoiceValidation } from "./useInvoiceValidation";
 
 export const useInvoiceCreation = (subscriberId?: string) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
-  const [items, setItems] = useState<InvoiceItem[]>([]);
   const [createdInvoice, setCreatedInvoice] = useState<any>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
-  // Buscar o template ativo do perfil da empresa
-  const { data: activeTemplate } = useQuery({
-    queryKey: ["active-template"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Usuário não autenticado");
+  const { data: activeTemplate } = useActiveTemplate();
+  const { items, handleAddItem, handleRemoveItem, handleUpdateItem } = useInvoiceItems();
+  const { validateInvoiceData } = useInvoiceValidation();
 
-      const { data: profile } = await supabase
-        .from("company_profiles")
-        .select(`
-          active_template_id,
-          invoice_templates (
-            id,
-            name,
-            description
-          )
-        `)
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (!profile?.active_template_id) return null;
-
-      return {
-        id: profile.active_template_id,
-        ...profile.invoice_templates
-      };
-    },
-  });
-
-  // Handlers para gerenciamento de items
   const handleCustomerSelect = (customerId: string) => {
     setSelectedCustomer(customerId);
   };
 
-  const handleAddItem = (item: InvoiceItem) => {
-    setItems([...items, item]);
-  };
-
-  const handleRemoveItem = (index: number) => {
-    setItems(items.filter((_, i) => i !== index));
-  };
-
-  const handleUpdateItem = (index: number, updatedItem: InvoiceItem) => {
-    setItems(items.map((item, i) => (i === index ? updatedItem : item)));
-  };
-
-  // Validações
-  const validateInvoiceData = () => {
-    if (!selectedCustomer) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Por favor, selecione um cliente.",
-      });
-      return false;
-    }
-
-    if (items.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Adicione pelo menos um item à fatura.",
-      });
-      return false;
-    }
-
-    if (!subscriberId) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Erro ao identificar o assinante.",
-      });
-      return false;
-    }
-
-    return true;
-  };
-
-  // Criação da fatura
-  const createInvoice = async (invoiceData: InvoiceData) => {
+  const createInvoice = async (invoiceData: any) => {
     const { data: invoice, error: invoiceError } = await supabase
       .from("invoices")
       .insert(invoiceData)
@@ -113,7 +33,6 @@ export const useInvoiceCreation = (subscriberId?: string) => {
     return invoice;
   };
 
-  // Criação dos itens da fatura
   const createInvoiceItems = async (invoiceId: string) => {
     const invoiceItems = items.map((item) => ({
       invoice_id: invoiceId,
@@ -132,12 +51,11 @@ export const useInvoiceCreation = (subscriberId?: string) => {
     if (itemsError) throw itemsError;
   };
 
-  // Handler principal de submissão
   const handleSubmit = async (status: 'draft' | 'created') => {
-    if (!validateInvoiceData() || !subscriberId) return;
+    if (!validateInvoiceData(selectedCustomer, items, subscriberId)) return;
 
     try {
-      const invoiceData: InvoiceData = {
+      const invoiceData = {
         customer_id: selectedCustomer!,
         status,
         due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
