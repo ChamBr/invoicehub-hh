@@ -25,7 +25,7 @@ const Navbar = () => {
         .from('profiles')
         .select('role')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
@@ -45,7 +45,7 @@ const Navbar = () => {
         `)
         .eq('user_id', session.user.id)
         .eq('status', 'active')
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
