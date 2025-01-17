@@ -696,6 +696,7 @@ export type Database = {
           renewal_date: string | null
           start_date: string
           status: string | null
+          user_id: string | null
         }
         Insert: {
           billing_period: string
@@ -707,6 +708,7 @@ export type Database = {
           renewal_date?: string | null
           start_date?: string
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           billing_period?: string
@@ -718,6 +720,7 @@ export type Database = {
           renewal_date?: string | null
           start_date?: string
           status?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {

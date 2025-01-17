@@ -3,9 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Plan } from "./types";
 import { PlanCard } from "./PlanCard";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function PlanSelection() {
   const { toast } = useToast();
+  const { session } = useAuth();
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ["available-plans"],
@@ -17,23 +19,14 @@ export function PlanSelection() {
         .order("price_monthly", { ascending: true });
 
       if (error) throw error;
-      return data as unknown as Plan[];
+      return data as Plan[];
     },
   });
 
   const { data: currentSubscription } = useQuery({
     queryKey: ["current-subscription"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const { data: customer } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("email", user.email)
-        .maybeSingle();
-
-      if (!customer) return null;
+      if (!session?.user?.id) return null;
 
       const { data, error } = await supabase
         .from("subscriptions")
@@ -41,54 +34,31 @@ export function PlanSelection() {
           *,
           plan:plans(*)
         `)
-        .eq("customer_id", customer.id)
+        .eq("user_id", session.user.id)
         .eq("status", "active")
         .maybeSingle();
 
       if (error) throw error;
       return data;
     },
+    enabled: !!session?.user?.id,
   });
 
   const handlePlanSelection = async (selectedPlan: Plan) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      if (!session?.user?.id) {
         toast({
-          title: "Error",
-          description: "You must be logged in to select a plan",
+          title: "Erro",
+          description: "Você precisa estar logado para selecionar um plano",
           variant: "destructive",
         });
         return;
       }
 
-      const { data: existingCustomer } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("email", user.email)
-        .maybeSingle();
-
-      let customerId;
-      if (existingCustomer) {
-        customerId = existingCustomer.id;
-      } else {
-        const { data: newCustomer, error: createError } = await supabase
-          .from("customers")
-          .insert({
-            email: user.email,
-            name: user.user_metadata?.full_name || user.email,
-          })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        customerId = newCustomer.id;
-      }
-
       const { error: subscriptionError } = await supabase
         .from("subscriptions")
         .upsert({
-          customer_id: customerId,
+          user_id: session.user.id,
           plan_id: selectedPlan.id,
           status: "active",
           start_date: new Date().toISOString(),
@@ -99,15 +69,15 @@ export function PlanSelection() {
       if (subscriptionError) throw subscriptionError;
 
       toast({
-        title: "Success",
-        description: "Your plan has been updated successfully",
+        title: "Sucesso",
+        description: "Seu plano foi atualizado com sucesso",
       });
 
     } catch (error) {
       console.error("Error selecting plan:", error);
       toast({
-        title: "Error",
-        description: "Failed to update your plan. Please try again.",
+        title: "Erro",
+        description: "Falha ao atualizar seu plano. Por favor, tente novamente.",
         variant: "destructive",
       });
     }

@@ -17,3 +17,14 @@ export interface Plan {
   features: PlanFeatures;
   status: string;
 }
+
+export interface Subscription {
+  id: string;
+  user_id: string;
+  plan_id: string;
+  status: string;
+  start_date: string;
+  renewal_date: string;
+  billing_period: string;
+  plan?: Plan;
+}

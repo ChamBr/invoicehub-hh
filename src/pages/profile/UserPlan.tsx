@@ -7,39 +7,19 @@ import { Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PlanSelection } from "./components/plan/PlanSelection";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const UserPlan = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { session } = useAuth();
 
   const { data: subscription, isLoading } = useQuery({
     queryKey: ["user-subscription"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!session?.user?.id) return null;
 
-      const { data: customer, error: customerError } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("email", user.email)
-        .maybeSingle();
-
-      if (customerError) {
-        console.error("Error fetching customer:", customerError);
-        toast({
-          title: t('errors.load_customer'),
-          description: t('errors.try_again'),
-          variant: "destructive",
-        });
-        return null;
-      }
-
-      if (!customer) {
-        console.log("No customer found for email:", user.email);
-        return null;
-      }
-
-      const { data: subscription, error: subscriptionError } = await supabase
+      const { data, error } = await supabase
         .from("subscriptions")
         .select(`
           *,
@@ -51,12 +31,12 @@ const UserPlan = () => {
             features
           )
         `)
-        .eq("customer_id", customer.id)
+        .eq("user_id", session.user.id)
         .eq("status", "active")
         .maybeSingle();
 
-      if (subscriptionError) {
-        console.error("Error fetching subscription:", subscriptionError);
+      if (error) {
+        console.error("Error fetching subscription:", error);
         toast({
           title: t('errors.load_subscription'),
           description: t('errors.try_again'),
@@ -65,11 +45,9 @@ const UserPlan = () => {
         return null;
       }
 
-      return subscription;
+      return data;
     },
-    meta: {
-      errorMessage: t('errors.load_subscription')
-    }
+    enabled: !!session?.user?.id,
   });
 
   if (isLoading) {
@@ -141,14 +119,14 @@ const UserPlan = () => {
         <Card className="p-8 text-center bg-white shadow-sm mb-8">
           <Alert className="mb-6">
             <AlertDescription>
-              You don't have an active plan. Choose one of our plans to access all features.
+              {t('profile.plan.no_active_plan')}
             </AlertDescription>
           </Alert>
         </Card>
       )}
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-6">Available Plans</h2>
+        <h2 className="text-xl font-semibold mb-6">{t('profile.plan.available_plans')}</h2>
         <PlanSelection />
       </div>
     </div>
