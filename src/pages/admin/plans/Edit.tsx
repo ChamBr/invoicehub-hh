@@ -4,6 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { PlanForm } from "./components/PlanForm";
 
+interface PlanFeatures {
+  max_users: number;
+  max_invoices_per_month: number;
+  max_products: number;
+  max_customers: number;
+  logo_replace: boolean;
+  invoice_templates: boolean;
+  ai_assistance: boolean;
+  storage_gb: number;
+}
+
 export const EditPlan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -19,10 +30,25 @@ export const EditPlan = () => {
 
       if (error) throw error;
 
-      // Ensure status is correctly typed
+      // Ensure status is correctly typed and features has the correct structure
+      const defaultFeatures: PlanFeatures = {
+        max_users: 1,
+        max_invoices_per_month: 10,
+        max_products: 10,
+        max_customers: 10,
+        logo_replace: false,
+        invoice_templates: false,
+        ai_assistance: false,
+        storage_gb: 1
+      };
+
       return {
         ...data,
-        status: data.status === "active" ? "active" : "inactive"
+        status: data.status === "active" ? "active" : "inactive",
+        features: {
+          ...defaultFeatures,
+          ...(data.features as PlanFeatures)
+        }
       };
     },
   });
@@ -37,16 +63,7 @@ export const EditPlan = () => {
     price_monthly: plan.price_monthly || 0,
     price_annual: plan.price_annual || 0,
     discount_annual: plan.discount_annual || 0,
-    features: plan.features || {
-      max_users: 1,
-      max_invoices_per_month: 10,
-      max_products: 10,
-      max_customers: 10,
-      logo_replace: false,
-      invoice_templates: false,
-      ai_assistance: false,
-      storage_gb: 1
-    },
+    features: plan.features as PlanFeatures,
     status: plan.status as "active" | "inactive"
   } : undefined;
 
