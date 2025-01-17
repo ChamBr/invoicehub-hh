@@ -7,7 +7,7 @@ interface PlanFeaturesListProps {
 
 export function PlanFeaturesList({ features }: PlanFeaturesListProps) {
   const renderFeatureValue = (key: keyof PlanFeatures, value: any) => {
-    if (key === "disk_space") {
+    if (key === "storage_gb") {
       return value === -1 ? "Unlimited" : `${value}GB`;
     }
     if (key.startsWith("max_")) {

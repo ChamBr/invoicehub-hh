@@ -27,7 +27,7 @@ export function PlanSelection({
       
       return data?.map(plan => ({
         ...plan,
-        features: plan.features as PlanFeatures
+        features: plan.features as unknown as PlanFeatures
       })) as Plan[];
     },
   });

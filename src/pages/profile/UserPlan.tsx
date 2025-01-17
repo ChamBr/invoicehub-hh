@@ -28,7 +28,7 @@ export const UserPlan = () => {
       
       return data?.map(plan => ({
         ...plan,
-        features: plan.features as PlanFeatures
+        features: plan.features as unknown as PlanFeatures
       })) as Plan[];
     },
   });
@@ -55,7 +55,7 @@ export const UserPlan = () => {
           ...data,
           plan: {
             ...data.plan,
-            features: data.plan.features as PlanFeatures
+            features: data.plan.features as unknown as PlanFeatures
           }
         };
       }
