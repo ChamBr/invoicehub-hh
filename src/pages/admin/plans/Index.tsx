@@ -32,7 +32,8 @@ export function PlansManagement() {
     }).format(value);
   };
 
-  const formatFeature = (value: number) => {
+  const formatFeature = (value: number | boolean) => {
+    if (typeof value === 'boolean') return value ? "Yes" : "No";
     return value === -1 ? "Unlimited" : value;
   };
 
@@ -51,46 +52,57 @@ export function PlansManagement() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {plans?.map((plan) => (
-          <Card key={plan.id} className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg font-semibold">{plan.name}</h3>
-                <p className="text-sm text-gray-500">{plan.description}</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSelectedPlanId(plan.id)}
-              >
-                Edit
-              </Button>
-            </div>
+        {plans?.map((plan) => {
+          const features = typeof plan.features === 'string' 
+            ? JSON.parse(plan.features) 
+            : plan.features;
 
-            <div className="space-y-4">
-              <div>
-                <p className="text-2xl font-bold">
-                  {formatCurrency(plan.price_monthly)}
-                  <span className="text-sm font-normal text-gray-500">/month</span>
-                </p>
-                {plan.price_annual > 0 && (
-                  <p className="text-sm text-gray-500">
-                    {formatCurrency(plan.price_annual)}/year ({plan.discount_annual}% off)
+          return (
+            <Card key={plan.id} className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold">{plan.name}</h3>
+                  <p className="text-sm text-gray-500">{plan.description}</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setSelectedPlanId(plan.id)}
+                >
+                  Edit
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(plan.price_monthly)}
+                    <span className="text-sm font-normal text-gray-500">/month</span>
                   </p>
-                )}
-              </div>
+                  {plan.price_annual > 0 && (
+                    <p className="text-sm text-gray-500">
+                      {formatCurrency(plan.price_annual)}/year ({plan.discount_annual}% off)
+                    </p>
+                  )}
+                </div>
 
-              <div className="space-y-2">
-                <h4 className="font-medium">Features:</h4>
-                <ul className="space-y-2">
-                  <li>Users: {formatFeature(plan.features.max_users || 0)}</li>
-                  <li>Storage: {formatFeature(plan.features.storage || 0)} GB</li>
-                  <li>Projects: {formatFeature(plan.features.max_projects || 0)}</li>
-                </ul>
+                <div className="space-y-2">
+                  <h4 className="font-medium">Features:</h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>Users: {formatFeature(features.max_users)}</li>
+                    <li>Invoices per month: {formatFeature(features.max_invoices_per_month)}</li>
+                    <li>Products: {formatFeature(features.max_products)}</li>
+                    <li>Customers: {formatFeature(features.max_customers)}</li>
+                    <li>Storage: {formatFeature(features.storage_gb)} GB</li>
+                    <li>Logo Replacement: {formatFeature(features.logo_replace)}</li>
+                    <li>Custom Templates: {formatFeature(features.invoice_templates)}</li>
+                    <li>AI Assistance: {formatFeature(features.ai_assistance)}</li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
 
       <Dialog open={!!selectedPlanId} onOpenChange={() => setSelectedPlanId(null)}>
