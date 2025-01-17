@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as translations from './locales/modules';
+import { flatten } from '@/lib/utils';
 
 const resources = {
   en: {
@@ -29,7 +30,6 @@ i18n.use(initReactI18next).init({
   returnEmptyString: false,
   parseMissingKeyHandler: (key) => {
     console.warn(`Translation missing for key: ${key}`);
-    // Retorna a chave formatada para ser mais legível
     return key.split('.').pop()?.replace(/_/g, ' ') || key;
   },
   missingKeyHandler: (lng, ns, key, fallbackValue) => {
@@ -60,16 +60,3 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default i18n;
-
-// Função auxiliar para achatar objetos
-function flatten(obj: any, prefix = ''): Record<string, string> {
-  return Object.keys(obj).reduce((acc: Record<string, string>, k: string) => {
-    const pre = prefix.length ? prefix + '.' : '';
-    if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {
-      Object.assign(acc, flatten(obj[k], pre + k));
-    } else {
-      acc[pre + k] = obj[k];
-    }
-    return acc;
-  }, {});
-}

@@ -1,12 +1,10 @@
 import { flatten } from '@/lib/utils';
 import { Translations } from '../types/translations';
-import enTranslations from '../locales/modules/profile.json';
-import esTranslations from '../locales/modules/profile.es.json';
-import ptTranslations from '../locales/modules/profile.pt.json';
+import * as translations from '../locales/modules';
 
 describe('Translation files', () => {
-  const validateTranslationKeys = (translations: any, referenceKeys: string[]) => {
-    const flattenedTranslations = flatten(translations);
+  const validateTranslationKeys = (translationObj: any, referenceKeys: string[]) => {
+    const flattenedTranslations = flatten(translationObj);
     const translationKeys = Object.keys(flattenedTranslations);
     
     // Verifica se todas as chaves necessárias existem
@@ -22,30 +20,30 @@ describe('Translation files', () => {
     return { missingKeys, extraKeys };
   };
 
-  const referenceKeys = Object.keys(flatten(enTranslations));
+  const referenceKeys = Object.keys(flatten(translations.en));
 
   test('all required translation keys exist in English', () => {
-    const { missingKeys } = validateTranslationKeys(enTranslations, referenceKeys);
+    const { missingKeys } = validateTranslationKeys(translations.en, referenceKeys);
     expect(missingKeys).toEqual([]);
   });
 
   test('all required translation keys exist in Spanish', () => {
-    const { missingKeys } = validateTranslationKeys(esTranslations, referenceKeys);
+    const { missingKeys } = validateTranslationKeys(translations.es, referenceKeys);
     expect(missingKeys).toEqual([]);
   });
 
   test('all required translation keys exist in Portuguese', () => {
-    const { missingKeys } = validateTranslationKeys(ptTranslations, referenceKeys);
+    const { missingKeys } = validateTranslationKeys(translations.pt, referenceKeys);
     expect(missingKeys).toEqual([]);
   });
 
   test('no extra keys exist in Spanish translations', () => {
-    const { extraKeys } = validateTranslationKeys(esTranslations, referenceKeys);
+    const { extraKeys } = validateTranslationKeys(translations.es, referenceKeys);
     expect(extraKeys).toEqual([]);
   });
 
   test('no extra keys exist in Portuguese translations', () => {
-    const { extraKeys } = validateTranslationKeys(ptTranslations, referenceKeys);
+    const { extraKeys } = validateTranslationKeys(translations.pt, referenceKeys);
     expect(extraKeys).toEqual([]);
   });
 
@@ -66,9 +64,9 @@ describe('Translation files', () => {
       return emptyKeys;
     };
 
-    const emptyEnglishKeys = checkEmptyValues(enTranslations);
-    const emptySpanishKeys = checkEmptyValues(esTranslations);
-    const emptyPortugueseKeys = checkEmptyValues(ptTranslations);
+    const emptyEnglishKeys = checkEmptyValues(translations.en);
+    const emptySpanishKeys = checkEmptyValues(translations.es);
+    const emptyPortugueseKeys = checkEmptyValues(translations.pt);
 
     expect(emptyEnglishKeys).toEqual([]);
     expect(emptySpanishKeys).toEqual([]);
