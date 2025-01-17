@@ -36,14 +36,11 @@ export const UserPlan = () => {
         />
       )}
 
-      <div>
-        <h2 className="text-2xl font-bold mb-6">{t('profile.plan.available_plans')}</h2>
-        <AvailablePlans
-          plans={plans}
-          currentPlan={currentPlan}
-          onPlanChange={handlePlanChange}
-        />
-      </div>
+      <AvailablePlans
+        plans={plans}
+        currentPlan={currentPlan}
+        onPlanChange={handlePlanChange}
+      />
     </div>
   );
 };
