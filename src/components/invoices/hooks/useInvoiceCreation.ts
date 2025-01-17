@@ -2,27 +2,62 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { calculateTotal } from "../utils";
 import { useActiveTemplate } from "./useActiveTemplate";
-import { useInvoiceItems } from "./useInvoiceItems";
-import { useInvoiceValidation } from "./useInvoiceValidation";
+import { useInvoiceStore } from "@/stores/useInvoiceStore";
+import { Invoice, InvoiceItem } from "@/stores/types/invoice";
 
 export const useInvoiceCreation = (subscriberId?: string) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
-  const [createdInvoice, setCreatedInvoice] = useState<any>(null);
+  const [createdInvoice, setCreatedInvoice] = useState<Invoice | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   const { data: activeTemplate } = useActiveTemplate();
-  const { items, handleAddItem, handleRemoveItem, handleUpdateItem } = useInvoiceItems();
-  const { validateInvoiceData } = useInvoiceValidation();
+  const { 
+    items, 
+    addItem: handleAddItem, 
+    removeItem: handleRemoveItem, 
+    updateItem: handleUpdateItem,
+    calculateTotal 
+  } = useInvoiceStore();
 
   const handleCustomerSelect = (customerId: string) => {
     setSelectedCustomer(customerId);
   };
 
-  const createInvoice = async (invoiceData: any) => {
+  const validateInvoiceData = () => {
+    if (!selectedCustomer) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Por favor, selecione um cliente.",
+      });
+      return false;
+    }
+
+    if (items.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Adicione pelo menos um item à fatura.",
+      });
+      return false;
+    }
+
+    if (!subscriberId) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "ID do assinante não encontrado.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const createInvoice = async (invoiceData: Partial<Invoice>) => {
     const { data: invoice, error: invoiceError } = await supabase
       .from("invoices")
       .insert(invoiceData)
@@ -33,7 +68,7 @@ export const useInvoiceCreation = (subscriberId?: string) => {
     return invoice;
   };
 
-  const createInvoiceItems = async (invoiceId: string) => {
+  const createInvoiceItems = async (invoiceId: string, items: InvoiceItem[]) => {
     const invoiceItems = items.map((item) => ({
       invoice_id: invoiceId,
       product_id: item.productId || null,
@@ -52,20 +87,20 @@ export const useInvoiceCreation = (subscriberId?: string) => {
   };
 
   const handleSubmit = async (status: 'draft' | 'created') => {
-    if (!validateInvoiceData(selectedCustomer, items, subscriberId)) return;
+    if (!validateInvoiceData()) return;
 
     try {
       const invoiceData = {
         customer_id: selectedCustomer!,
         status,
         due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        total: calculateTotal(items),
+        total: calculateTotal(),
         template_id: activeTemplate?.id,
         subscriber_id: subscriberId,
       };
 
       const invoice = await createInvoice(invoiceData);
-      await createInvoiceItems(invoice.id);
+      await createInvoiceItems(invoice.id, items);
 
       toast({
         title: "Sucesso",

@@ -1,13 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { InvoiceItem } from "./types";
-
-interface InvoiceSummaryProps {
-  items: InvoiceItem[];
-}
+import { useInvoiceStore } from "@/stores/useInvoiceStore";
 
 const TAX_RATE = 0.10; // 10% de imposto
 
-const InvoiceSummary = ({ items }: InvoiceSummaryProps) => {
+const InvoiceSummary = () => {
+  const items = useInvoiceStore((state) => state.items);
+  
   const subtotal = items.reduce((sum, item) => sum + item.total, 0);
   
   const taxTotal = items.reduce((sum, item) => {

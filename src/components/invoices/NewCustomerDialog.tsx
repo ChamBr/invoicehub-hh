@@ -8,12 +8,12 @@ interface NewCustomerDialogProps {
   subscriberId?: string;
 }
 
-export function NewCustomerDialog({
+export const NewCustomerDialog = ({
   open,
   onOpenChange,
   onSuccess,
   subscriberId,
-}: NewCustomerDialogProps) {
+}: NewCustomerDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -28,4 +28,4 @@ export function NewCustomerDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
