@@ -61,22 +61,21 @@ const Navbar = () => {
         .select(`
           id,
           company_name,
-          owner_id,
-          owner:profiles!subscribers_owner_id_fkey(id)
+          owner_id
         `)
         .single();
 
       if (error) throw error;
 
       if (data?.owner_id) {
-        const { data: userData, error: userError } = await supabase
-          .from('profiles')
-          .select('id, email:auth.users!profiles_id_fkey(email)')
+        const { data: ownerData, error: ownerError } = await supabase
+          .from('auth')
+          .select('users.email')
           .eq('id', data.owner_id)
           .single();
 
-        if (userError) throw userError;
-        return { ...data, owner: userData };
+        if (ownerError) throw ownerError;
+        return { ...data, owner: { email: ownerData.email } };
       }
 
       return data;
