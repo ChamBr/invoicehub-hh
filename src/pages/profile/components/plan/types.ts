@@ -30,3 +30,10 @@ export interface Subscription {
   customer_id: string;
   plan?: Plan;
 }
+
+export interface PlanSelectionProps {
+  onClose?: () => void;
+  onPlanSelected?: (plan: Plan) => Promise<void>;
+  currentPlan?: Plan;
+  showUpgradeOnly?: boolean;
+}

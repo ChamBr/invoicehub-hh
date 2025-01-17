@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Plan, PlanFeatures } from "./types";
+import { Plan, PlanFeatures, PlanSelectionProps } from "./types";
 import { PlanCard } from "./PlanCard";
 import { useAuth } from "@/components/auth/AuthProvider";
 
-interface PlanSelectionProps {
-  onClose?: () => void;
-  onPlanSelected?: (plan: Plan) => Promise<void>;
-}
-
-export function PlanSelection({ onClose, onPlanSelected }: PlanSelectionProps) {
+export function PlanSelection({ 
+  onClose, 
+  onPlanSelected, 
+  currentPlan,
+  showUpgradeOnly 
+}: PlanSelectionProps) {
   const { toast } = useToast();
   const { session } = useAuth();
 
@@ -127,11 +127,16 @@ export function PlanSelection({ onClose, onPlanSelected }: PlanSelectionProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {plans?.map((plan) => {
-        const isCurrentPlan = currentSubscription?.plan_id === plan.id;
-        const isUpgrade = currentSubscription && 
-          plan.price_monthly > (currentSubscription?.plan?.price_monthly || 0);
-        const isDowngrade = currentSubscription && 
-          plan.price_monthly < (currentSubscription?.plan?.price_monthly || 0);
+        const isCurrentPlan = currentPlan?.id === plan.id;
+        const isUpgrade = currentPlan && 
+          plan.price_monthly > (currentPlan?.price_monthly || 0);
+        const isDowngrade = currentPlan && 
+          plan.price_monthly < (currentPlan?.price_monthly || 0);
+
+        // Se showUpgradeOnly é true, só mostra planos que são upgrade
+        if (showUpgradeOnly && !isUpgrade && !isCurrentPlan) {
+          return null;
+        }
 
         return (
           <PlanCard

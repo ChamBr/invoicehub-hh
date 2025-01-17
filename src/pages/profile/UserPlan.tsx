@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2, ArrowUp } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlanSelection } from "./components/plan/PlanSelection";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
+import { Plan } from "./components/plan/types";
 
 export const UserPlan = () => {
   const { t } = useTranslation();
@@ -15,9 +16,9 @@ export const UserPlan = () => {
   const { toast } = useToast();
   const [showPlanSelection, setShowPlanSelection] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activePlan, setActivePlan] = useState(null);
+  const [activePlan, setActivePlan] = useState<Plan | null>(null);
 
-  const handlePlanChange = async (newPlan) => {
+  const handlePlanChange = async (newPlan: Plan) => {
     setIsLoading(true);
     try {
       const { error } = await supabase
