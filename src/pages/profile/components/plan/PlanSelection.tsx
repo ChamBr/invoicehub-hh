@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Plan } from "./types";
+import { Plan, PlanFeatures } from "./types";
 import { PlanCard } from "./PlanCard";
 import { useAuth } from "@/components/auth/AuthProvider";
 
