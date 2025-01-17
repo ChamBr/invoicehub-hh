@@ -5,7 +5,12 @@ import { Plan, PlanFeatures } from "./types";
 import { PlanCard } from "./PlanCard";
 import { useAuth } from "@/components/auth/AuthProvider";
 
-export function PlanSelection() {
+interface PlanSelectionProps {
+  onClose?: () => void;
+  onPlanSelected?: (plan: Plan) => Promise<void>;
+}
+
+export function PlanSelection({ onClose, onPlanSelected }: PlanSelectionProps) {
   const { toast } = useToast();
   const { session } = useAuth();
 
@@ -76,7 +81,7 @@ export function PlanSelection() {
         .from("subscriptions")
         .upsert({
           user_id: session.user.id,
-          customer_id: customer.id, // Usando o ID do customer criado
+          customer_id: customer.id,
           plan_id: selectedPlan.id,
           status: "active",
           start_date: new Date().toISOString(),
@@ -90,6 +95,16 @@ export function PlanSelection() {
         title: "Sucesso",
         description: "Seu plano foi atualizado com sucesso",
       });
+
+      // Call the onPlanSelected callback if provided
+      if (onPlanSelected) {
+        await onPlanSelected(selectedPlan);
+      }
+
+      // Call the onClose callback if provided
+      if (onClose) {
+        onClose();
+      }
 
     } catch (error) {
       console.error("Error selecting plan:", error);
