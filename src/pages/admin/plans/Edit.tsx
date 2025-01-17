@@ -30,7 +30,7 @@ export const EditPlan = () => {
 
       if (error) throw error;
 
-      // Ensure status is correctly typed and features has the correct structure
+      // Default features structure
       const defaultFeatures: PlanFeatures = {
         max_users: 1,
         max_invoices_per_month: 10,
@@ -42,13 +42,22 @@ export const EditPlan = () => {
         storage_gb: 1
       };
 
+      // Safely parse features from the database
+      const parsedFeatures = data.features ? {
+        max_users: Number(data.features.max_users ?? defaultFeatures.max_users),
+        max_invoices_per_month: Number(data.features.max_invoices_per_month ?? defaultFeatures.max_invoices_per_month),
+        max_products: Number(data.features.max_products ?? defaultFeatures.max_products),
+        max_customers: Number(data.features.max_customers ?? defaultFeatures.max_customers),
+        logo_replace: Boolean(data.features.logo_replace ?? defaultFeatures.logo_replace),
+        invoice_templates: Boolean(data.features.invoice_templates ?? defaultFeatures.invoice_templates),
+        ai_assistance: Boolean(data.features.ai_assistance ?? defaultFeatures.ai_assistance),
+        storage_gb: Number(data.features.storage_gb ?? defaultFeatures.storage_gb)
+      } : defaultFeatures;
+
       return {
         ...data,
         status: data.status === "active" ? "active" : "inactive",
-        features: {
-          ...defaultFeatures,
-          ...(data.features as PlanFeatures)
-        }
+        features: parsedFeatures
       };
     },
   });
