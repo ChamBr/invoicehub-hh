@@ -915,6 +915,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      simulate_subscriber_login: {
+        Args: {
+          subscriber_id: string
+        }
+        Returns: Json
+      }
       update_existing_records: {
         Args: Record<PropertyKey, never>
         Returns: undefined

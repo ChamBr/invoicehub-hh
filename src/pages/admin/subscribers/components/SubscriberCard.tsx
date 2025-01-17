@@ -4,15 +4,43 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { SubscriberWithDetails } from "../types";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SubscriberCardProps {
   subscriber: SubscriberWithDetails;
   onManageUsers: (subscriber: SubscriberWithDetails) => void;
   onEdit: (subscriber: SubscriberWithDetails) => void;
+  isAdmin?: boolean;
 }
 
-export function SubscriberCard({ subscriber, onManageUsers, onEdit }: SubscriberCardProps) {
+export function SubscriberCard({ subscriber, onManageUsers, onEdit, isAdmin }: SubscriberCardProps) {
   const { t } = useTranslation();
+  const { toast } = useToast();
+
+  const handleSimulateLogin = async () => {
+    try {
+      const { data, error } = await supabase
+        .rpc('simulate_subscriber_login', {
+          subscriber_id: subscriber.id
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Simulação iniciada",
+        description: `Simulando login como ${subscriber.company_name || 'Assinante sem nome'}`,
+      });
+
+      console.log('Simulation data:', data);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao simular login",
+        description: "Você não tem permissão para realizar esta ação.",
+      });
+    }
+  };
 
   return (
     <Card>
@@ -52,6 +80,14 @@ export function SubscriberCard({ subscriber, onManageUsers, onEdit }: Subscriber
             >
               {t("admin.subscribers.edit")}
             </Button>
+            {isAdmin && (
+              <Button
+                variant="secondary"
+                onClick={handleSimulateLogin}
+              >
+                Simular Login
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

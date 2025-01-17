@@ -5,6 +5,8 @@ import { EditSubscriberDialog } from "./components/EditSubscriberDialog";
 import { SubscriberCard } from "./components/SubscriberCard";
 import { useSubscribers } from "./hooks/useSubscribers";
 import { SubscriberWithDetails } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SubscribersList() {
   const { t } = useTranslation();
@@ -13,6 +15,24 @@ export default function SubscribersList() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const { data: subscribers, isLoading } = useSubscribers();
+  
+  const { data: userProfile } = useQuery({
+    queryKey: ['userProfile'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+        
+      return profile;
+    }
+  });
+
+  const isAdmin = userProfile?.role === 'superadmin';
 
   const handleManageUsers = (subscriber: SubscriberWithDetails) => {
     setSelectedSubscriber(subscriber);
@@ -44,6 +64,7 @@ export default function SubscribersList() {
               subscriber={subscriber}
               onManageUsers={handleManageUsers}
               onEdit={handleEdit}
+              isAdmin={isAdmin}
             />
           ))}
         </div>
