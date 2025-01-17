@@ -868,6 +868,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      clean_test_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       is_debug_mode_valid: {
         Args: Record<PropertyKey, never>
         Returns: boolean

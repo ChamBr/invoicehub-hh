@@ -22,9 +22,7 @@ interface Subscriber {
   company_name: string;
   status: string;
   created_at: string;
-  owner: {
-    email: string;
-  };
+  owner_id: string;
   users_count: number;
 }
 
@@ -36,24 +34,49 @@ const AdminSubscribers = () => {
   const { data: subscribers, isLoading, refetch } = useQuery({
     queryKey: ["admin-subscribers"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Primeiro, buscamos os subscribers com a contagem de usuários
+      const { data: subscribersData, error: subscribersError } = await supabase
         .from("subscribers")
         .select(`
           *,
-          owner:owner_id(email),
           users_count:subscriber_users(count)
         `)
         .order("created_at", { ascending: false });
 
-      if (error) {
+      if (subscribersError) {
         toast({
           variant: "destructive",
           title: "Erro ao carregar assinantes",
-          description: error.message,
+          description: subscribersError.message,
         });
-        throw error;
+        throw subscribersError;
       }
-      return data as Subscriber[];
+
+      // Para cada subscriber, buscamos o email do owner
+      const subscribersWithOwnerEmail = await Promise.all(
+        subscribersData.map(async (subscriber) => {
+          if (subscriber.owner_id) {
+            const { data: ownerData, error: ownerError } = await supabase
+              .from("profiles")
+              .select("email")
+              .eq("id", subscriber.owner_id)
+              .single();
+
+            if (!ownerError && ownerData) {
+              return {
+                ...subscriber,
+                owner_email: ownerData.email,
+              };
+            }
+          }
+          return {
+            ...subscriber,
+            owner_email: "N/A",
+          };
+        })
+      );
+
+      return subscribersWithOwnerEmail;
     },
   });
 
@@ -101,7 +124,7 @@ const AdminSubscribers = () => {
                     <TableCell className="font-medium">
                       {subscriber.company_name || "N/A"}
                     </TableCell>
-                    <TableCell>{subscriber.owner?.email}</TableCell>
+                    <TableCell>{subscriber.owner_email}</TableCell>
                     <TableCell>{subscriber.users_count}</TableCell>
                     <TableCell>
                       <Badge
