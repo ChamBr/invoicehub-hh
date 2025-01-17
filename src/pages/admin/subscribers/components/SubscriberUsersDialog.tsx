@@ -1,26 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-
-interface SubscriberUser {
-  id: string;
-  user_id: string;
-  role: "superadmin" | "admin" | "user" | "dependent";
-  status: string;
-  user: {
-    full_name: string | null;
-    email: string | null;
-  };
-}
-
-interface Subscriber {
-  id: string;
-  company_name: string | null;
-}
+import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface SubscriberUsersDialogProps {
-  subscriber: Subscriber | null;
+  subscriber: {
+    id: string;
+    company_name: string | null;
+  } | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -30,6 +18,8 @@ export function SubscriberUsersDialog({
   open,
   onOpenChange,
 }: SubscriberUsersDialogProps) {
+  const { t } = useTranslation();
+
   const { data: users, isLoading } = useQuery({
     queryKey: ["subscriber-users", subscriber?.id],
     queryFn: async () => {
@@ -44,11 +34,7 @@ export function SubscriberUsersDialog({
         .eq("subscriber_id", subscriber.id);
 
       if (error) throw error;
-
-      return (data || []).map(user => ({
-        ...user,
-        user: user.user || { full_name: null, email: null }
-      })) as SubscriberUser[];
+      return data;
     },
     enabled: !!subscriber?.id,
   });
@@ -58,7 +44,9 @@ export function SubscriberUsersDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            Usuários de {subscriber?.company_name || "Empresa"}
+            {t("admin.subscribers.users.title", {
+              company: subscriber?.company_name || t("admin.subscribers.no_company")
+            })}
           </DialogTitle>
         </DialogHeader>
         <div className="py-4">
@@ -83,7 +71,7 @@ export function SubscriberUsersDialog({
                 </div>
               ))}
               {users?.length === 0 && (
-                <p className="text-center text-gray-500">Nenhum usuário encontrado</p>
+                <p className="text-center text-gray-500">{t("admin.subscribers.users.no_users")}</p>
               )}
             </div>
           )}

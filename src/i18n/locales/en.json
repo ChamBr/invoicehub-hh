@@ -143,5 +143,20 @@
     "submitting": "Submitting...",
     "success": "Feedback submitted",
     "error": "Error submitting feedback"
+  },
+  "admin": {
+    "subscribers": {
+      "title": "Subscribers",
+      "no_company": "No Company Name",
+      "no_owner": "No Owner",
+      "created_at": "Created on {{date}}",
+      "users_count": "{{count}} users",
+      "manage_users": "Manage Users",
+      "edit": "Edit",
+      "users": {
+        "title": "Users of {{company}}",
+        "no_users": "No users found"
+      }
+    }
   }
 }
