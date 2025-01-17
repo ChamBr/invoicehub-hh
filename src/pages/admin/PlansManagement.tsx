@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Plan, PlanFeatures } from "@/pages/profile/components/plan/types";
 
 export const PlansManagement = () => {
   const navigate = useNavigate();
@@ -29,7 +30,11 @@ export const PlansManagement = () => {
         .order("price_monthly", { ascending: true });
 
       if (error) throw error;
-      return data || [];
+      
+      return data?.map(plan => ({
+        ...plan,
+        features: plan.features as PlanFeatures
+      })) as Plan[];
     },
   });
 
@@ -67,7 +72,7 @@ export const PlansManagement = () => {
     }).format(value);
   };
 
-  const renderFeatures = (features: any) => {
+  const renderFeatures = (features: PlanFeatures) => {
     if (!features) return null;
     
     const formatFeatureValue = (key: string, value: any) => {
@@ -81,7 +86,9 @@ export const PlansManagement = () => {
       <div className="space-y-1 text-sm">
         {Object.entries(features).map(([key, value]) => (
           <div key={key} className="flex justify-between">
-            <span className="text-gray-600">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+            <span className="text-gray-600">
+              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </span>
             <span className="font-medium">{formatFeatureValue(key, value)}</span>
           </div>
         ))}

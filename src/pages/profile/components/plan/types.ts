@@ -1,12 +1,12 @@
 export interface PlanFeatures {
   max_users: number;
-  max_invoices: number;
+  max_invoices_per_month: number;
   max_products: number;
   max_customers: number;
   logo_replace: boolean;
   invoice_templates: boolean;
-  ai_translations: boolean;
-  disk_space: number;
+  ai_assistance: boolean;
+  storage_gb: number;
 }
 
 export interface Plan {
@@ -19,7 +19,7 @@ export interface Plan {
   discount_annual: number | null;
   discount_semiannual: number | null;
   features: PlanFeatures;
-  status: string | null;
+  status: string;
   billing_period: string;
   price: number;
   created_at: string;
