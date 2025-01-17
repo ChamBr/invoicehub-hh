@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,8 +16,8 @@ export function usePlanForm() {
         features = JSON.parse(data.features);
       } catch (e) {
         toast({
-          title: "Invalid JSON format in features",
-          description: "Please check the JSON format and try again",
+          title: "Formato JSON inválido",
+          description: "Por favor, verifique o formato JSON e tente novamente",
           variant: "destructive",
         });
         return;
@@ -40,15 +40,15 @@ export function usePlanForm() {
       if (error) throw error;
 
       toast({
-        title: "Plan created successfully",
-        description: "The new plan has been created",
+        title: "Plano criado com sucesso",
+        description: "O novo plano foi criado",
       });
 
       navigate("/admin/plans");
     } catch (error) {
       toast({
-        title: "Error creating plan",
-        description: "There was an error creating the plan. Please try again.",
+        title: "Erro ao criar plano",
+        description: "Houve um erro ao criar o plano. Por favor, tente novamente.",
         variant: "destructive",
       });
     } finally {

@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,12 +17,27 @@ import { usePlanForm } from "../hooks/usePlanForm";
 import { PlanPricingFields } from "./PlanPricingFields";
 import { PlanFeaturesField } from "./PlanFeaturesField";
 
+interface PlanFormData {
+  name: string;
+  description?: string;
+  price_monthly: number;
+  price_semiannual: number;
+  price_annual: number;
+  discount_semiannual: number;
+  discount_annual: number;
+  status: string;
+  features: string;
+  billing_period: string;
+}
+
 export function PlanForm() {
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const navigate = useNavigate();
+  const { register, handleSubmit, setValue, watch } = useForm<PlanFormData>({
     defaultValues: {
       status: "active",
       discount_semiannual: 10,
       discount_annual: 20,
+      billing_period: "monthly",
       features: JSON.stringify(
         {
           users: 1,
@@ -46,8 +62,8 @@ export function PlanForm() {
       setValue("discount_semiannual", semiannualDiscount);
       setValue("discount_annual", annualDiscount);
 
-      const semiannualPrice = monthlyPrice * 6 * (1 - semiannualDiscount / 100);
-      const annualPrice = monthlyPrice * 12 * (1 - annualDiscount / 100);
+      const semiannualPrice = Number(monthlyPrice) * 6 * (1 - semiannualDiscount / 100);
+      const annualPrice = Number(monthlyPrice) * 12 * (1 - annualDiscount / 100);
 
       setValue("price_semiannual", Number(semiannualPrice.toFixed(2)));
       setValue("price_annual", Number(annualPrice.toFixed(2)));
@@ -56,11 +72,11 @@ export function PlanForm() {
 
   return (
     <Card className="p-6">
-      <h2 className="text-xl font-semibold mb-6">Create New Plan</h2>
+      <h2 className="text-xl font-semibold mb-6">Criar Novo Plano</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Plan Name</Label>
+            <Label htmlFor="name">Nome do Plano</Label>
             <Input id="name" {...register("name")} required />
           </div>
 
@@ -71,11 +87,11 @@ export function PlanForm() {
               defaultValue="active"
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder="Selecione o status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="active">Ativo</SelectItem>
+                <SelectItem value="inactive">Inativo</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -85,11 +101,15 @@ export function PlanForm() {
         <PlanFeaturesField register={register} />
 
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={() => navigate("/admin/plans")}>
-            Cancel
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate("/admin/plans")}
+          >
+            Cancelar
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Creating..." : "Create Plan"}
+            {isSubmitting ? "Criando..." : "Criar Plano"}
           </Button>
         </div>
       </form>
