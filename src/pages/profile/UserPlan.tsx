@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const UserPlan = () => {
   const { t } = useTranslation();
@@ -141,18 +142,19 @@ const UserPlan = () => {
         </Card>
       ) : (
         <Card className="p-8 text-center bg-white shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('profile.plan.no_subscription_title')}</h3>
-          <p className="text-gray-600 mb-6">{t('profile.plan.no_subscription')}</p>
+          <Alert className="mb-6">
+            <AlertDescription>
+              Você não possui nenhum plano ativo no momento. Para aproveitar todos os recursos do sistema, assine um de nossos planos.
+            </AlertDescription>
+          </Alert>
           <Button 
             size="lg"
+            className="bg-emerald-600 hover:bg-emerald-700"
             onClick={() => {
-              toast({
-                title: t('profile.plan.subscribe_soon'),
-                description: t('profile.plan.subscribe_description'),
-              });
+              window.location.href = "/plans";
             }}
           >
-            {t('profile.plan.subscribe')}
+            Ver Planos Disponíveis
           </Button>
         </Card>
       )}
