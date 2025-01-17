@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { PlanForm } from "./components/PlanForm";
+import { Badge } from "@/components/ui/badge";
 
 export function PlansManagement() {
   const navigate = useNavigate();
@@ -34,7 +35,9 @@ export function PlansManagement() {
 
   const formatFeature = (value: number | boolean) => {
     if (typeof value === 'boolean') return value ? "Yes" : "No";
-    return value === -1 ? "Unlimited" : value;
+    if (value === -1) return "Unlimited";
+    if (typeof value === 'number' && value < 1) return `${value * 1000}MB`;
+    return value;
   };
 
   if (isLoading) {
@@ -58,10 +61,15 @@ export function PlansManagement() {
             : plan.features;
 
           return (
-            <Card key={plan.id} className="p-6">
+            <Card key={plan.id} className={`p-6 ${plan.status === 'inactive' ? 'opacity-60' : ''}`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold">{plan.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold">{plan.name}</h3>
+                    {plan.status === 'inactive' && (
+                      <Badge variant="secondary">Inactive</Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-500">{plan.description}</p>
                 </div>
                 <Button 
@@ -90,13 +98,13 @@ export function PlansManagement() {
                   <h4 className="font-medium">Features:</h4>
                   <ul className="space-y-2 text-sm">
                     <li>Users: {formatFeature(features.max_users)}</li>
-                    <li>Invoices per month: {formatFeature(features.max_invoices_per_month)}</li>
+                    <li>Invoices per month: {formatFeature(features.max_invoices)}</li>
                     <li>Products: {formatFeature(features.max_products)}</li>
                     <li>Customers: {formatFeature(features.max_customers)}</li>
                     <li>Storage: {formatFeature(features.storage_gb)} GB</li>
                     <li>Logo Replacement: {formatFeature(features.logo_replace)}</li>
                     <li>Custom Templates: {formatFeature(features.invoice_templates)}</li>
-                    <li>AI Assistance: {formatFeature(features.ai_assistance)}</li>
+                    <li>Translations: {formatFeature(features.translations)}</li>
                   </ul>
                 </div>
               </div>

@@ -13,13 +13,13 @@ import { PlanFeaturesFields } from "./form/PlanFeaturesFields";
 
 const planFeaturesSchema = z.object({
   max_users: z.number().min(-1),
-  max_invoices_per_month: z.number().min(-1),
+  max_invoices: z.number().min(-1),
   max_products: z.number().min(-1),
   max_customers: z.number().min(-1),
   logo_replace: z.boolean(),
   invoice_templates: z.boolean(),
-  ai_assistance: z.boolean(),
-  storage_gb: z.number().min(-1)
+  translations: z.boolean(),
+  storage_gb: z.number().min(0.25)
 });
 
 const planFormSchema = z.object({
@@ -56,13 +56,13 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
       status: "active",
       features: {
         max_users: 1,
-        max_invoices_per_month: 10,
+        max_invoices: 10,
         max_products: 10,
         max_customers: 10,
         logo_replace: false,
         invoice_templates: false,
-        ai_assistance: false,
-        storage_gb: 1
+        translations: false,
+        storage_gb: 0.25
       }
     }
   });

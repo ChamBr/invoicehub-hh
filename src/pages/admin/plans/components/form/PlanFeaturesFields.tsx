@@ -35,7 +35,7 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
 
           <FormField
             control={control}
-            name="features.max_invoices_per_month"
+            name="features.max_invoices"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs">Faturas/Mês</FormLabel>
@@ -100,11 +100,13 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
                   <Input
                     type="number"
                     className="h-8 text-sm"
+                    step="0.25"
+                    min="0.25"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
-                <FormDescription className="text-[10px]">-1 = ilimitado</FormDescription>
+                <FormDescription className="text-[10px]">Min: 0.25GB</FormDescription>
               </FormItem>
             )}
           />
@@ -158,13 +160,13 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
 
           <FormField
             control={control}
-            name="features.ai_assistance"
+            name="features.translations"
             render={({ field }) => (
               <FormItem className="flex items-center justify-between space-y-0 rounded-lg border p-2">
                 <div>
-                  <FormLabel className="text-xs">AI</FormLabel>
+                  <FormLabel className="text-xs">Translations</FormLabel>
                   <FormDescription className="text-[10px]">
-                    Assistência AI
+                    Traduções
                   </FormDescription>
                 </div>
                 <FormControl>
