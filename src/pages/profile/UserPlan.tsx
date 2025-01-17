@@ -25,6 +25,11 @@ const UserPlan = () => {
 
       if (customerError) {
         console.error("Error fetching customer:", customerError);
+        toast({
+          title: t('errors.load_customer'),
+          description: t('errors.try_again'),
+          variant: "destructive",
+        });
         return null;
       }
 
@@ -51,19 +56,18 @@ const UserPlan = () => {
 
       if (subscriptionError) {
         console.error("Error fetching subscription:", subscriptionError);
+        toast({
+          title: t('errors.load_subscription'),
+          description: t('errors.try_again'),
+          variant: "destructive",
+        });
         return null;
       }
 
       return subscription;
     },
     meta: {
-      onError: () => {
-        toast({
-          title: t('errors.load_subscription'),
-          description: t('errors.try_again'),
-          variant: "destructive",
-        });
-      }
+      errorMessage: t('errors.load_subscription')
     }
   });
 
