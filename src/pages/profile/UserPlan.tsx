@@ -17,15 +17,23 @@ const UserPlan = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
-      const { data: customer } = await supabase
+      const { data: customer, error: customerError } = await supabase
         .from("customers")
         .select("id")
         .eq("email", user.email)
-        .single();
+        .maybeSingle();
 
-      if (!customer) return null;
+      if (customerError) {
+        console.error("Error fetching customer:", customerError);
+        return null;
+      }
 
-      const { data: subscription } = await supabase
+      if (!customer) {
+        console.log("No customer found for email:", user.email);
+        return null;
+      }
+
+      const { data: subscription, error: subscriptionError } = await supabase
         .from("subscriptions")
         .select(`
           *,
@@ -39,7 +47,12 @@ const UserPlan = () => {
         `)
         .eq("customer_id", customer.id)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
+
+      if (subscriptionError) {
+        console.error("Error fetching subscription:", subscriptionError);
+        return null;
+      }
 
       return subscription;
     },
@@ -75,9 +88,11 @@ const UserPlan = () => {
             </div>
             <div className="mt-4 md:mt-0 text-right">
               <div className="text-3xl font-bold text-primary">
-                {new Intl.NumberFormat("pt-BR", {
+                {new Intl.NumberFormat("en-US", {
                   style: "currency",
-                  currency: "BRL",
+                  currency: "USD",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
                 }).format(subscription.plan.price)}
                 <span className="text-sm font-normal text-gray-600 ml-1">
                   /{subscription.plan.billing_period === "monthly" ? t('profile.plan.monthly') : t('profile.plan.yearly')}
@@ -93,21 +108,23 @@ const UserPlan = () => {
             <h3 className="font-semibold text-gray-900 mb-4">{t('profile.plan.features')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {subscription.plan.features &&
-                Object.entries(subscription.plan.features as Record<string, boolean>).map(
-                  ([feature, included]) => (
+                Object.entries(subscription.plan.features as Record<string, any>).map(
+                  ([feature, value]) => (
                     <div
                       key={feature}
                       className={`flex items-center gap-3 ${
-                        included ? "text-gray-900" : "text-gray-400"
+                        value ? "text-gray-900" : "text-gray-400"
                       }`}
                     >
                       <Check
                         className={`h-5 w-5 ${
-                          included ? "text-primary" : "text-gray-300"
+                          value ? "text-primary" : "text-gray-300"
                         }`}
                       />
                       <span className="text-sm">
                         {t(`profile.plan.feature_${feature}`)}
+                        {typeof value === 'number' && value !== -1 && `: ${value}`}
+                        {typeof value === 'number' && value === -1 && `: ${t('profile.plan.unlimited')}`}
                       </span>
                     </div>
                   )
