@@ -31,8 +31,12 @@ const CustomerSelect = ({ value, onSelect, onNewCustomer, subscriberId }: Custom
         .eq("subscriber_id", subscriberId)
         .order("name");
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Error fetching customers:", error);
+        throw error;
+      }
+
+      return data || [];
     },
     enabled: !!subscriberId,
   });
