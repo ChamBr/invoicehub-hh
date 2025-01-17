@@ -950,11 +950,47 @@ export type Database = {
         }
         Relationships: []
       }
+      user_onboarding: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          has_company_profile: boolean | null
+          has_subscription: boolean | null
+          id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          has_company_profile?: boolean | null
+          has_subscription?: boolean | null
+          id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          has_company_profile?: boolean | null
+          has_subscription?: boolean | null
+          id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_user_onboarding: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: Json
+      }
       clean_test_data: {
         Args: Record<PropertyKey, never>
         Returns: undefined

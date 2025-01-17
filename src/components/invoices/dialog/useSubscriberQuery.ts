@@ -22,7 +22,8 @@ export const useSubscriberQuery = () => {
         const { data: subscriberUsers, error: subscriberError } = await supabase
           .from("subscriber_users")
           .select("subscriber_id")
-          .eq("user_id", user.id);
+          .eq("user_id", user.id)
+          .maybeSingle();
 
         if (subscriberError) {
           console.error("Error fetching subscriber:", subscriberError);
@@ -34,7 +35,7 @@ export const useSubscriberQuery = () => {
           throw subscriberError;
         }
 
-        if (!subscriberUsers || subscriberUsers.length === 0) {
+        if (!subscriberUsers) {
           toast({
             variant: "destructive",
             title: "Erro",
@@ -43,7 +44,7 @@ export const useSubscriberQuery = () => {
           return null;
         }
 
-        return { subscriber_id: subscriberUsers[0].subscriber_id };
+        return { subscriber_id: subscriberUsers.subscriber_id };
       } catch (error) {
         console.error("Error in subscriber query:", error);
         toast({
