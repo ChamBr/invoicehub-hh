@@ -1,4 +1,16 @@
 {
+  "common": {
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "edit": "Edit",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    }
+  },
   "navigation": {
     "records": "Records",
     "services": "Services",
@@ -35,9 +47,7 @@
     "address_line1_placeholder": "Street, number",
     "address_line2": "Additional Address (Optional)",
     "address_line2_placeholder": "Apartment, suite, unit, etc.",
-    "tax_info": "Tax Information",
-    "save": "Save Changes",
-    "saving": "Saving..."
+    "tax_info": "Tax Information"
   },
   "customers": {
     "title": "Customers",
@@ -68,6 +78,10 @@
       "stock": "Stock",
       "status": "Status",
       "actions": "Actions"
+    },
+    "form": {
+      "price": "Price",
+      "sku": "SKU"
     }
   },
   "invoices": {
@@ -89,8 +103,6 @@
     "personal_info": "Personal Information",
     "contact": "Contact Information",
     "preferences": "Preferences",
-    "save": "Save Changes",
-    "saving": "Saving...",
     "plan": {
       "title": "My Plan",
       "monthly": "month",
@@ -152,11 +164,6 @@
       "created_at": "Created on {{date}}",
       "users_count": "{{count}} users",
       "manage_users": "Manage Users",
-      "edit": "Edit",
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive"
-      },
       "users": {
         "title": "Users of {{company}}",
         "no_users": "No users found",
