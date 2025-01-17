@@ -81,56 +81,35 @@
       "features": "Características Incluidas",
       "no_subscription": "Aún no tienes un plan activo",
       "subscribe": "Suscribirse a un Plan",
-      "change": "Cambiar Plan"
-    }
-  },
-  "invoice_settings": {
-    "title": "Configuración de Factura",
-    "tabs": {
-      "general": "General",
-      "templates": "Plantillas"
-    },
-    "currency": {
-      "currency": "Moneda",
-      "due_days": "Días de Vencimiento"
-    },
-    "numbering": {
-      "prefix": "Prefijo",
-      "prefix_placeholder": "Ej: FAC-",
-      "next_number": "Próximo Número"
-    },
-    "terms": {
-      "terms": "Términos y Condiciones",
-      "footer": "Pie de Factura"
-    },
-    "saving": "Guardando...",
-    "save": "Guardar Cambios",
-    "success": "Configuración actualizada con éxito",
-    "error": "Error al actualizar la configuración"
-  },
-  "feedback": {
-    "title": "Soporte & Feedback",
-    "type": {
-      "label": "Tipo de Feedback",
-      "placeholder": "Seleccione el tipo de feedback",
-      "bug": "Reportar Bug",
-      "feature": "Sugerencia de Funcionalidad",
-      "support": "Soporte",
-      "other": "Otro"
-    },
-    "form": {
-      "title": {
-        "label": "Título",
-        "placeholder": "Ingrese un título breve"
+      "change": "Cambiar Plan",
+      "current_plan": "Plan Actual",
+      "available_plans": "Planes Disponibles",
+      "upgrade": "Actualizar",
+      "yes": "Sí",
+      "no": "No",
+      "unlimited": "Ilimitado",
+      "next_billing": "Próxima facturación",
+      "descriptions": {
+        "free": "Perfecto para freelancers y pequeñas empresas",
+        "starter": "Excelente para empresas en crecimiento",
+        "scale": "Para empresas establecidas"
       },
-      "description": {
-        "label": "Descripción",
-        "placeholder": "Describa en detalle su feedback o consulta"
-      }
-    },
-    "submit": "Enviar Feedback",
-    "submitting": "Enviando...",
-    "success": "Feedback enviado",
-    "error": "Error al enviar feedback"
+      "features": {
+        "max_users": "Máximo de Usuarios",
+        "storage_gb": "Almacenamiento GB",
+        "logo_replace": "Reemplazo de Logo",
+        "max_products": "Máximo de Productos",
+        "ai_assistance": "Asistencia IA",
+        "max_customers": "Máximo de Clientes",
+        "invoice_templates": "Plantillas de Factura",
+        "max_invoices": "Máximo de Facturas por Mes",
+        "translations": "Soporte Multi-idioma"
+      },
+      "no_plan_message": "Actualmente no tienes un plan activo. Por favor, selecciona un plan a continuación para comenzar a usar todas las funciones.",
+      "change_success": "Plan cambiado exitosamente",
+      "change_success_description": "Tu plan ha sido actualizado exitosamente",
+      "change_error": "Error al cambiar plan",
+      "change_error_description": "Ocurrió un error al cambiar tu plan. Por favor, intenta nuevamente."
+    }
   }
 }

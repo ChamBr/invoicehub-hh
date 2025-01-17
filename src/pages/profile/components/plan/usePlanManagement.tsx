@@ -54,12 +54,10 @@ export function usePlanManagement() {
         throw error;
       }
 
-      // Se não houver assinatura, retorna null
       if (!data || data.length === 0) {
         return null;
       }
 
-      // Pega a primeira assinatura ativa
       const subscription = data[0];
       
       if (subscription?.plan) {
@@ -89,7 +87,6 @@ export function usePlanManagement() {
 
     setIsLoading(true);
     try {
-      // Verifica se já existe uma assinatura
       const { data: existingSubscription } = await supabase
         .from('subscriptions')
         .select('*')
@@ -97,7 +94,6 @@ export function usePlanManagement() {
         .eq('status', 'active');
 
       if (existingSubscription && existingSubscription.length > 0) {
-        // Atualiza a assinatura existente
         const { error } = await supabase
           .from('subscriptions')
           .update({ 
@@ -108,11 +104,23 @@ export function usePlanManagement() {
 
         if (error) throw error;
       } else {
-        // Cria uma nova assinatura
+        // Criar uma entrada fictícia de customer para satisfazer a restrição de foreign key
+        const { data: customerData, error: customerError } = await supabase
+          .from('customers')
+          .insert({
+            name: session.user.email,
+            subscriber_id: session.user.id
+          })
+          .select()
+          .single();
+
+        if (customerError) throw customerError;
+
         const { error } = await supabase
           .from('subscriptions')
           .insert({
             user_id: session.user.id,
+            customer_id: customerData.id, // Usando o customer_id criado
             plan_id: newPlan.id,
             status: 'active',
             billing_period: 'monthly',
