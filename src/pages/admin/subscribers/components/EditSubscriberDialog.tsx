@@ -16,26 +16,26 @@ import {
 interface EditSubscriberDialogProps {
   subscriber: {
     id: string;
-    company_name: string;
-    status: string;
-  };
+    company_name: string | null;
+    status: string | null;
+  } | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
 }
 
 export function EditSubscriberDialog({
   subscriber,
   open,
   onOpenChange,
-  onSuccess,
 }: EditSubscriberDialogProps) {
-  const [companyName, setCompanyName] = useState(subscriber.company_name || "");
-  const [status, setStatus] = useState(subscriber.status);
+  const [companyName, setCompanyName] = useState(subscriber?.company_name || "");
+  const [status, setStatus] = useState(subscriber?.status || "active");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!subscriber) return;
+    
     setIsSubmitting(true);
 
     try {
@@ -54,7 +54,7 @@ export function EditSubscriberDialog({
         description: "As informações foram atualizadas com sucesso.",
       });
 
-      onSuccess();
+      onOpenChange(false);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -83,7 +83,7 @@ export function EditSubscriberDialog({
           </div>
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={setStatus}>
+            <Select value={status || ""} onValueChange={setStatus}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

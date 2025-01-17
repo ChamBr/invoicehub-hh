@@ -1,28 +1,25 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
-import { useTranslation } from "react-i18next";
 
 interface SubscriberUser {
   id: string;
   user_id: string;
-  subscriber_id: string;
   role: "superadmin" | "admin" | "user" | "dependent";
   status: string;
-  created_at: string;
-  updated_at: string;
   user: {
     email: string;
   };
 }
 
+interface Subscriber {
+  id: string;
+  company_name: string | null;
+}
+
 interface SubscriberUsersDialogProps {
-  subscriber: {
-    id: string;
-    company_name: string | null;
-  } | null;
+  subscriber: Subscriber | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -32,70 +29,65 @@ export function SubscriberUsersDialog({
   open,
   onOpenChange,
 }: SubscriberUsersDialogProps) {
-  const { t } = useTranslation();
-
   const { data: users, isLoading } = useQuery({
     queryKey: ["subscriber-users", subscriber?.id],
     queryFn: async () => {
-      if (!subscriber) return [];
+      if (!subscriber?.id) return [];
 
-      const { data: usersData, error } = await supabase
+      const { data, error } = await supabase
         .from("subscriber_users")
         .select(`
           *,
-          user:profiles(email)
+          profiles:user_id (
+            email
+          )
         `)
         .eq("subscriber_id", subscriber.id);
 
       if (error) throw error;
 
-      return usersData.map(user => ({
+      return data.map(user => ({
         ...user,
         user: {
-          email: user.user.email
+          email: user.profiles?.email
         }
-      })) as SubscriberUser[];
+      }));
     },
-    enabled: !!subscriber,
+    enabled: !!subscriber?.id,
   });
-
-  if (!subscriber) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {t("admin.subscribers.users.title", { company: subscriber.company_name })}
+            Usuários de {subscriber?.company_name || "Empresa"}
           </DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-4">
+        <div className="py-4">
           {isLoading ? (
-            <div className="flex items-center justify-center h-48">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+            <div className="flex items-center justify-center h-20">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900" />
             </div>
           ) : (
             <div className="space-y-4">
               {users?.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between p-2 bg-gray-50 rounded"
                 >
-                  <div className="space-y-1">
+                  <div>
                     <p className="font-medium">{user.user.email}</p>
-                    <div className="flex items-center gap-2">
-                      <Badge>{user.role}</Badge>
-                      <Badge variant="outline">{user.status}</Badge>
-                      <span className="text-sm text-gray-500">
-                        {t("admin.subscribers.users.joined_at", {
-                          date: format(new Date(user.created_at), "PP"),
-                        })}
-                      </span>
-                    </div>
+                    <p className="text-sm text-gray-500">{user.role}</p>
                   </div>
+                  <Badge variant={user.status === "active" ? "default" : "secondary"}>
+                    {user.status}
+                  </Badge>
                 </div>
               ))}
+              {users?.length === 0 && (
+                <p className="text-center text-gray-500">Nenhum usuário encontrado</p>
+              )}
             </div>
           )}
         </div>
