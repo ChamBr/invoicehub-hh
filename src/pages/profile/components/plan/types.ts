@@ -5,6 +5,8 @@ export interface PlanFeatures {
   translations: boolean;
   max_customers: number;
   invoice_templates: boolean;
+  storage_gb: number;
+  max_users: number;
 }
 
 export interface Plan {
