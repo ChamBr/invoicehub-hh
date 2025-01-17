@@ -1,10 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { CompanyTables } from './company';
-import { CustomerTables } from './customer';
-import { InvoiceTables } from './invoice';
-import { ProductTables } from './product';
-import { SettingsTables } from './settings';
-import { UserTables } from './user';
+import { Database } from './database';
 
 export type Json =
   | string
@@ -14,8 +9,9 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
-  public: CompanyTables & CustomerTables & InvoiceTables & ProductTables & SettingsTables & UserTables;
-}
-
 export type TypedSupabaseClient = SupabaseClient<Database>;
+
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+export type TablesInsert<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert'];
+export type TablesUpdate<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];
