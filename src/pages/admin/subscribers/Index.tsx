@@ -31,7 +31,6 @@ export default function SubscribersList() {
   const { data: subscribers, isLoading } = useQuery({
     queryKey: ["subscribers"],
     queryFn: async () => {
-      // Primeiro, buscar os subscribers
       const { data: subscribersData, error: subscribersError } = await supabase
         .from("subscribers")
         .select(`
@@ -42,7 +41,6 @@ export default function SubscribersList() {
 
       if (subscribersError) throw subscribersError;
 
-      // Para cada subscriber, buscar os dados do owner
       const subscribersWithOwners = await Promise.all((subscribersData || []).map(async (subscriber) => {
         if (!subscriber.owner_id) {
           return {

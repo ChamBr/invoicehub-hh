@@ -55,5 +55,16 @@
       "current_plan": "Plano Atual",
       "available_plans": "Planos Disponíveis"
     }
+  },
+  "admin": {
+    "subscribers": {
+      "title": "Base de Usuários",
+      "no_company": "Sem empresa",
+      "no_owner": "Sem proprietário",
+      "manage_users": "Gerenciar Usuários",
+      "edit": "Editar",
+      "created_at": "Criado em {{date}}",
+      "users_count": "{{count}} usuários"
+    }
   }
 }
