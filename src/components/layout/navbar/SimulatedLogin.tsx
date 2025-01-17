@@ -4,10 +4,20 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
+interface SimulatedLoginData {
+  id: string;
+  company_name: string | null;
+  owner_id: string | null;
+  owner?: {
+    id: string;
+    email: string;
+  };
+}
+
 const SimulatedLogin = () => {
   const { toast } = useToast();
 
-  const { data: simulatedLogin } = useQuery({
+  const { data: simulatedLogin } = useQuery<SimulatedLoginData>({
     queryKey: ['simulatedLogin'],
     queryFn: async () => {
       // Primeiro, buscar o subscriber
