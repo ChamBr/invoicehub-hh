@@ -29,7 +29,6 @@ export const UserPlan = () => {
       if (error) throw error;
 
       setActivePlan(newPlan);
-      setShowPlanSelection(false);
       toast({
         title: t('profile.plan.change_success'),
         description: t('profile.plan.change_success_description'),
@@ -43,6 +42,7 @@ export const UserPlan = () => {
       });
     } finally {
       setIsLoading(false);
+      setShowPlanSelection(false);
     }
   };
 
@@ -115,10 +115,12 @@ export const UserPlan = () => {
       )}
 
       {showPlanSelection && (
-        <PlanSelection
-          onClose={() => setShowPlanSelection(false)}
-          onPlanSelected={handlePlanChange}
-        />
+        <div className="mt-8">
+          <PlanSelection
+            onClose={() => setShowPlanSelection(false)}
+            onPlanSelected={handlePlanChange}
+          />
+        </div>
       )}
     </div>
   );
