@@ -9,6 +9,7 @@ import { CustomerTaxForm } from "./form/CustomerTaxForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
+import { useSubscriberQuery } from "@/components/invoices/dialog/useSubscriberQuery";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -19,6 +20,7 @@ interface CustomerFormProps {
 
 export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }: CustomerFormProps) {
   const { toast } = useToast();
+  const { data: subscriberData } = useSubscriberQuery();
   
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
@@ -31,23 +33,15 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
   });
 
   const handleSubmit = async (data: CustomerFormValues) => {
-    if (!subscriberId) {
-      const { data: subscriberData, error: subscriberError } = await supabase
-        .from("subscriber_users")
-        .select("subscriber_id")
-        .eq("user_id", (await supabase.auth.getUser()).data.user?.id)
-        .maybeSingle();
+    const effectiveSubscriberId = subscriberId || subscriberData?.subscriber_id;
 
-      if (subscriberError || !subscriberData) {
-        toast({
-          variant: "destructive",
-          title: "Erro",
-          description: "Não foi possível identificar o assinante",
-        });
-        return;
-      }
-
-      subscriberId = subscriberData.subscriber_id;
+    if (!effectiveSubscriberId) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível identificar o assinante",
+      });
+      return;
     }
 
     try {
@@ -65,7 +59,7 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
         tax_id: data.taxId,
         notes: data.notes,
         status: data.status,
-        subscriber_id: subscriberId,
+        subscriber_id: effectiveSubscriberId,
       };
 
       if (initialData?.id) {
