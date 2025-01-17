@@ -10,7 +10,6 @@ import { FormActions } from "@/components/forms/FormActions";
 import { PlanBasicFields } from "./form/PlanBasicFields";
 import { PlanPricingFields } from "./form/PlanPricingFields";
 import { PlanFeaturesFields } from "./form/PlanFeaturesFields";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const planFeaturesSchema = z.object({
   max_users: z.number().min(-1),
@@ -120,21 +119,19 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="max-h-[700px]">
-          <div className="space-y-4">
-            <FormSection>
-              <PlanBasicFields control={form.control} />
-            </FormSection>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <div className="space-y-3">
+          <FormSection>
+            <PlanBasicFields control={form.control} />
+          </FormSection>
 
-            <FormSection>
-              <PlanPricingFields control={form.control} />
-            </FormSection>
+          <FormSection>
+            <PlanPricingFields control={form.control} />
+          </FormSection>
 
-            <FormSection>
-              <PlanFeaturesFields control={form.control} />
-            </FormSection>
-          </div>
+          <FormSection>
+            <PlanFeaturesFields control={form.control} />
+          </FormSection>
         </div>
 
         <FormActions

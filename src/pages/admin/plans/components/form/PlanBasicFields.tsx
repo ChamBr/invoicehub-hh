@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Control } from "react-hook-form";
-import { FormRow } from "@/components/forms/FormRow";
 import { Card } from "@/components/ui/card";
 
 interface PlanBasicFieldsProps {
@@ -12,17 +11,17 @@ interface PlanBasicFieldsProps {
 
 export function PlanBasicFields({ control }: PlanBasicFieldsProps) {
   return (
-    <Card className="p-4">
-      <div className="grid gap-4">
-        <FormRow>
+    <Card className="p-3">
+      <div className="grid gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <FormField
             control={control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome do Plano</FormLabel>
+                <FormLabel className="text-xs">Nome do Plano</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ex: Plano Básico" {...field} />
+                  <Input className="h-8 text-sm" placeholder="Ex: Plano Básico" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -32,10 +31,10 @@ export function PlanBasicFields({ control }: PlanBasicFieldsProps) {
             control={control}
             name="status"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
                 <div className="space-y-0.5">
-                  <FormLabel>Status</FormLabel>
-                  <FormDescription>
+                  <FormLabel className="text-xs">Status</FormLabel>
+                  <FormDescription className="text-[10px]">
                     {field.value === "active" ? "Plano Ativo" : "Plano Inativo"}
                   </FormDescription>
                 </div>
@@ -50,18 +49,18 @@ export function PlanBasicFields({ control }: PlanBasicFieldsProps) {
               </FormItem>
             )}
           />
-        </FormRow>
+        </div>
 
         <FormField
           control={control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel className="text-xs">Descrição</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Descreva os benefícios do plano..."
-                  className="resize-none h-20"
+                  className="resize-none h-16 text-sm"
                   {...field} 
                 />
               </FormControl>
