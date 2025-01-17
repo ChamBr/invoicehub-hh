@@ -32,12 +32,22 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
 
   const handleSubmit = async (data: CustomerFormValues) => {
     if (!subscriberId) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Não foi possível identificar o assinante",
-      });
-      return;
+      const { data: subscriberData, error: subscriberError } = await supabase
+        .from("subscriber_users")
+        .select("subscriber_id")
+        .eq("user_id", (await supabase.auth.getUser()).data.user?.id)
+        .maybeSingle();
+
+      if (subscriberError || !subscriberData) {
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Não foi possível identificar o assinante",
+        });
+        return;
+      }
+
+      subscriberId = subscriberData.subscriber_id;
     }
 
     try {
