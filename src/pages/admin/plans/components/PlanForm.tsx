@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { FormSection } from "@/components/forms/FormSection";
@@ -38,15 +38,16 @@ interface PlanFormProps {
   planId?: string;
   onSuccess: () => void;
   onCancel: () => void;
+  defaultValues?: Partial<PlanFormValues>;
 }
 
-export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
+export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const form = useForm<PlanFormValues>({
     resolver: zodResolver(planFormSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       name: "",
       description: "",
       price_monthly: 0,
@@ -66,36 +67,6 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
     }
   });
 
-  const { isLoading: isLoadingPlan } = useQuery({
-    queryKey: ["plan", planId],
-    queryFn: async () => {
-      if (!planId) return null;
-      
-      const { data, error } = await supabase
-        .from("plans")
-        .select("*")
-        .eq("id", planId)
-        .maybeSingle();
-
-      if (error) throw error;
-      
-      if (data) {
-        form.reset({
-          name: data.name,
-          description: data.description || "",
-          price_monthly: data.price_monthly || 0,
-          price_annual: data.price_annual || 0,
-          discount_annual: data.discount_annual || 0,
-          status: data.status as "active" | "inactive",
-          features: data.features as any
-        });
-      }
-      
-      return data;
-    },
-    enabled: !!planId
-  });
-
   const mutation = useMutation({
     mutationFn: async (values: PlanFormValues) => {
       const planData = {
@@ -105,8 +76,6 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
         price_annual: values.price_annual,
         discount_annual: values.discount_annual,
         features: values.features,
-        billing_period: "monthly",
-        price: values.price_monthly,
         status: values.status
       };
 
@@ -145,10 +114,6 @@ export function PlanForm({ planId, onSuccess, onCancel }: PlanFormProps) {
   const onSubmit = (values: PlanFormValues) => {
     mutation.mutate(values);
   };
-
-  if (isLoadingPlan) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Form {...form}>

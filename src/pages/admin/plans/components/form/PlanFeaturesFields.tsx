@@ -19,8 +19,8 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
             <FormItem>
               <FormLabel>Max Users</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
+                <Input
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
@@ -37,8 +37,8 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
             <FormItem>
               <FormLabel>Max Invoices per Month</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
+                <Input
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
@@ -57,8 +57,8 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
             <FormItem>
               <FormLabel>Max Products</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
+                <Input
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
@@ -75,8 +75,8 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
             <FormItem>
               <FormLabel>Max Customers</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
+                <Input
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
@@ -95,8 +95,8 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
             <FormItem>
               <FormLabel>Storage (GB)</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
+                <Input
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value))}
                 />
@@ -112,9 +112,9 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
           control={control}
           name="features.logo_replace"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Logo Replacement</FormLabel>
+                <FormLabel>Logo Replacement</FormLabel>
                 <FormDescription>
                   Allow changing invoice logo
                 </FormDescription>
@@ -133,9 +133,9 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
           control={control}
           name="features.invoice_templates"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Invoice Templates</FormLabel>
+                <FormLabel>Invoice Templates</FormLabel>
                 <FormDescription>
                   Access to custom invoice templates
                 </FormDescription>
@@ -156,9 +156,9 @@ export function PlanFeaturesFields({ control }: PlanFeaturesFieldsProps) {
           control={control}
           name="features.ai_assistance"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">AI Assistance</FormLabel>
+                <FormLabel>AI Assistance</FormLabel>
                 <FormDescription>
                   AI-powered text and translation features
                 </FormDescription>
