@@ -33,7 +33,7 @@ export const PlansManagement = () => {
       
       return data?.map(plan => ({
         ...plan,
-        features: plan.features as PlanFeatures
+        features: plan.features as unknown as PlanFeatures
       })) as Plan[];
     },
   });
@@ -75,7 +75,7 @@ export const PlansManagement = () => {
   const renderFeatures = (features: PlanFeatures) => {
     if (!features) return null;
     
-    const formatFeatureValue = (key: string, value: any) => {
+    const formatFeatureValue = (key: keyof PlanFeatures, value: any) => {
       if (key.startsWith('max_')) {
         return value === -1 ? 'Unlimited' : value;
       }
@@ -84,7 +84,7 @@ export const PlansManagement = () => {
 
     return (
       <div className="space-y-1 text-sm">
-        {Object.entries(features).map(([key, value]) => (
+        {(Object.entries(features) as [keyof PlanFeatures, any][]).map(([key, value]) => (
           <div key={key} className="flex justify-between">
             <span className="text-gray-600">
               {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
