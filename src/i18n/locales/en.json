@@ -98,32 +98,26 @@
       "features": "Included Features",
       "no_subscription": "You don't have an active plan yet",
       "subscribe": "Subscribe to a Plan",
-      "change": "Change Plan"
+      "change": "Change Plan",
+      "current_plan": "Current Plan",
+      "available_plans": "Available Plans",
+      "upgrade": "Upgrade",
+      "descriptions": {
+        "free": "Perfect for freelancers and small businesses",
+        "starter": "Great for growing businesses",
+        "scale": "For established businesses"
+      },
+      "features": {
+        "max_users": "Max Users",
+        "storage_gb": "Storage GB",
+        "logo_replace": "Logo Replace",
+        "max_products": "Max Products",
+        "ai_assistance": "AI Assistance",
+        "max_customers": "Max Customers",
+        "invoice_templates": "Invoice Templates",
+        "max_invoices_per_month": "Max Invoices Per Month"
+      }
     }
-  },
-  "invoice_settings": {
-    "title": "Invoice Settings",
-    "tabs": {
-      "general": "General",
-      "templates": "Templates"
-    },
-    "currency": {
-      "currency": "Currency",
-      "due_days": "Due Days"
-    },
-    "numbering": {
-      "prefix": "Prefix",
-      "prefix_placeholder": "Ex: INV-",
-      "next_number": "Next Number"
-    },
-    "terms": {
-      "terms": "Terms & Conditions",
-      "footer": "Invoice Footer"
-    },
-    "saving": "Saving...",
-    "save": "Save Changes",
-    "success": "Settings updated successfully",
-    "error": "Error updating settings"
   },
   "feedback": {
     "title": "Support & Feedback",
