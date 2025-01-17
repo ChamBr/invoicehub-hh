@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useActiveTemplate } from "./useActiveTemplate";
-import { useInvoiceStore } from "@/stores/useInvoiceStore";
-import { Invoice, InvoiceItem } from "@/stores/types/invoice";
+import { Invoice, InvoiceItem } from "../types";
 
 export const useInvoiceCreation = (subscriberId?: string) => {
   const navigate = useNavigate();
@@ -12,28 +11,42 @@ export const useInvoiceCreation = (subscriberId?: string) => {
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
   const [createdInvoice, setCreatedInvoice] = useState<Invoice | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [items, setItems] = useState<InvoiceItem[]>([]);
 
   const { data: activeTemplate } = useActiveTemplate();
-  const { 
-    items, 
-    addItem: handleAddItem, 
-    removeItem: handleRemoveItem, 
-    updateItem: handleUpdateItem,
-    calculateTotal 
-  } = useInvoiceStore();
 
   const handleCustomerSelect = (customerId: string) => {
     setSelectedCustomer(customerId);
   };
 
-  const validateInvoiceData = () => {
+  const handleAddItem = (item: InvoiceItem) => {
+    setItems([...items, item]);
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setItems(items.filter((_, i) => i !== index));
+  };
+
+  const handleUpdateItem = (index: number, updatedItem: InvoiceItem) => {
+    setItems(items.map((item, i) => (i === index ? updatedItem : item)));
+  };
+
+  const calculateTotal = () => {
+    return items.reduce((sum, item) => {
+      const itemTotal = item.total;
+      const taxAmount = item.hasTax ? itemTotal * 0.10 : 0;
+      return sum + itemTotal + taxAmount;
+    }, 0);
+  };
+
+  const handleSubmit = async (status: 'draft' | 'created') => {
     if (!selectedCustomer) {
       toast({
         variant: "destructive",
         title: "Erro",
         description: "Por favor, selecione um cliente.",
       });
-      return false;
+      return;
     }
 
     if (items.length === 0) {
@@ -42,66 +55,49 @@ export const useInvoiceCreation = (subscriberId?: string) => {
         title: "Erro",
         description: "Adicione pelo menos um item à fatura.",
       });
-      return false;
+      return;
     }
-
-    if (!subscriberId) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "ID do assinante não encontrado.",
-      });
-      return false;
-    }
-
-    return true;
-  };
-
-  const createInvoice = async (invoiceData: Invoice) => {
-    const { data: invoice, error: invoiceError } = await supabase
-      .from("invoices")
-      .insert(invoiceData)
-      .select()
-      .single();
-
-    if (invoiceError) throw invoiceError;
-    return invoice;
-  };
-
-  const createInvoiceItems = async (invoiceId: string, items: InvoiceItem[]) => {
-    const invoiceItems = items.map((item) => ({
-      invoice_id: invoiceId,
-      product_id: item.productId || null,
-      description: item.description,
-      quantity: item.quantity,
-      price: item.price,
-      total: item.total,
-      has_tax: item.hasTax,
-    }));
-
-    const { error: itemsError } = await supabase
-      .from("invoice_items")
-      .insert(invoiceItems);
-
-    if (itemsError) throw itemsError;
-  };
-
-  const handleSubmit = async (status: 'draft' | 'created') => {
-    if (!validateInvoiceData()) return;
 
     try {
-      const invoiceData: Invoice = {
-        customer_id: selectedCustomer!,
+      const invoiceData = {
+        customer_id: selectedCustomer,
         status,
         due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         total: calculateTotal(),
         template_id: activeTemplate?.id,
         subscriber_id: subscriberId,
-        items: items
       };
 
-      const invoice = await createInvoice(invoiceData);
-      await createInvoiceItems(invoice.id, items);
+      const { data: invoice, error: invoiceError } = await supabase
+        .from("invoices")
+        .insert(invoiceData)
+        .select()
+        .single();
+
+      if (invoiceError) throw invoiceError;
+
+      const invoiceItems = items.map(item => ({
+        invoice_id: invoice.id,
+        product_id: item.productId,
+        description: item.description,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total,
+        has_tax: item.hasTax
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("invoice_items")
+        .insert(invoiceItems);
+
+      if (itemsError) throw itemsError;
+
+      const fullInvoice: Invoice = {
+        ...invoice,
+        items
+      };
+
+      setCreatedInvoice(fullInvoice);
 
       toast({
         title: "Sucesso",
@@ -111,7 +107,6 @@ export const useInvoiceCreation = (subscriberId?: string) => {
       });
 
       if (status === 'created') {
-        setCreatedInvoice(invoice);
         setIsViewDialogOpen(true);
       } else {
         navigate(`/invoices/${invoice.id}`);
