@@ -94,7 +94,7 @@ export default function SubscribersList() {
                     </p>
                     <div className="flex items-center gap-2">
                       <Badge variant={subscriber.status === "active" ? "default" : "secondary"}>
-                        {subscriber.status}
+                        {t(`admin.subscribers.status.${subscriber.status}`)}
                       </Badge>
                       <span className="text-sm text-gray-500">
                         {t("admin.subscribers.created_at", {

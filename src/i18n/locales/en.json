@@ -153,9 +153,15 @@
       "users_count": "{{count}} users",
       "manage_users": "Manage Users",
       "edit": "Edit",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
       "users": {
         "title": "Users of {{company}}",
-        "no_users": "No users found"
+        "no_users": "No users found",
+        "role": "Role",
+        "email": "Email"
       }
     }
   }

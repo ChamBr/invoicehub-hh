@@ -29,7 +29,7 @@ export function SubscriberUsersDialog({
         .from("subscriber_users")
         .select(`
           *,
-          user:profiles(full_name, email)
+          user:profiles(full_name)
         `)
         .eq("subscriber_id", subscriber.id);
 
@@ -62,11 +62,11 @@ export function SubscriberUsersDialog({
                   className="flex items-center justify-between p-2 bg-gray-50 rounded"
                 >
                   <div>
-                    <p className="font-medium">{user.user.email}</p>
+                    <p className="font-medium">{user.user?.full_name}</p>
                     <p className="text-sm text-gray-500">{user.role}</p>
                   </div>
                   <Badge variant={user.status === "active" ? "default" : "secondary"}>
-                    {user.status}
+                    {t(`admin.subscribers.status.${user.status}`)}
                   </Badge>
                 </div>
               ))}
