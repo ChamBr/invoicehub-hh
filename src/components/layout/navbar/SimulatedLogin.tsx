@@ -31,7 +31,11 @@ const SimulatedLogin = () => {
 
       // Se não houver owner_id, retornar apenas os dados do subscriber
       if (!subscriberData?.owner_id) {
-        return subscriberData as SimulatedLoginData;
+        return {
+          id: subscriberData.id,
+          company_name: subscriberData.company_name,
+          owner_id: null
+        };
       }
 
       // Depois, buscar o perfil do owner
@@ -45,9 +49,14 @@ const SimulatedLogin = () => {
 
       // Retornar os dados combinados
       return {
-        ...subscriberData,
-        owner: ownerData
-      } as SimulatedLoginData;
+        id: subscriberData.id,
+        company_name: subscriberData.company_name,
+        owner_id: subscriberData.owner_id,
+        owner: {
+          id: ownerData.id,
+          email: ownerData.email
+        }
+      };
     },
   });
 
