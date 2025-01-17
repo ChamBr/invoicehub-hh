@@ -56,16 +56,29 @@ const Navbar = () => {
   const { data: simulatedLogin } = useQuery({
     queryKey: ['simulatedLogin'],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('subscribers')
         .select(`
           id,
           company_name,
-          owner:profiles!subscribers_owner_id_fkey(
-            email:auth.users!profiles_id_fkey(email)
-          )
+          owner_id,
+          owner:profiles!subscribers_owner_id_fkey(id)
         `)
         .single();
+
+      if (error) throw error;
+
+      if (data?.owner_id) {
+        const { data: userData, error: userError } = await supabase
+          .from('profiles')
+          .select('id, email:auth.users!profiles_id_fkey(email)')
+          .eq('id', data.owner_id)
+          .single();
+
+        if (userError) throw userError;
+        return { ...data, owner: userData };
+      }
+
       return data;
     },
     enabled: !!session?.user?.id && userProfile?.role === 'superadmin',
@@ -73,13 +86,10 @@ const Navbar = () => {
 
   const exitSimulation = async () => {
     try {
-      // Aqui você pode implementar a lógica para sair da simulação
-      // Por exemplo, limpar um estado global ou fazer uma chamada para o backend
       toast({
         title: "Simulação encerrada",
         description: "Você voltou para sua conta normal",
       });
-      // Recarregar a página para resetar o estado
       window.location.reload();
     } catch (error) {
       console.error("Erro ao sair da simulação:", error);
@@ -154,9 +164,9 @@ const Navbar = () => {
             )}
             <span className={`${isSuperAdmin ? 'text-role-superadmin' : 'text-primary'}`}>
               {session.user.email}
-              {simulatedLogin && (
+              {simulatedLogin && simulatedLogin.owner?.email && (
                 <span className="ml-2 text-sm text-gray-500">
-                  [Login ativo: {simulatedLogin.owner?.email}]
+                  [Login ativo: {simulatedLogin.owner.email}]
                   <Button
                     variant="ghost"
                     size="sm"
