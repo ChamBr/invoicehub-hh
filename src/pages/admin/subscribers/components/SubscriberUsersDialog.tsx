@@ -45,7 +45,10 @@ export function SubscriberUsersDialog({
 
       if (error) throw error;
 
-      return data as SubscriberUser[];
+      return (data || []).map(user => ({
+        ...user,
+        user: user.user || { full_name: null, email: null }
+      })) as SubscriberUser[];
     },
     enabled: !!subscriber?.id,
   });

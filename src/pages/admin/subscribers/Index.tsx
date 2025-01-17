@@ -42,9 +42,10 @@ export default function SubscribersList() {
 
       if (subscribersError) throw subscribersError;
 
-      return subscribersData.map(subscriber => ({
+      return (subscribersData || []).map(subscriber => ({
         ...subscriber,
-        users_count: subscriber.users_count[0]?.count || 0
+        users_count: subscriber.users_count?.[0]?.count || 0,
+        owner: subscriber.owner || null
       })) as Subscriber[];
     },
   });

@@ -12,7 +12,6 @@ export * from './tables/invoice_templates';
 export * from './tables/invoices';
 export * from './tables/payment_integrations';
 export * from './tables/plans';
-export * from './tables/products';
 export * from './tables/profiles';
 export * from './tables/system_settings';
 
