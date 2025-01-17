@@ -25,7 +25,12 @@ export const UserPlan = () => {
         .order("price_monthly", { ascending: true });
 
       if (error) throw error;
-      return data as Plan[];
+      
+      // Transform the data to match our Plan type
+      return (data as any[]).map(plan => ({
+        ...plan,
+        features: plan.features as PlanFeatures
+      })) as Plan[];
     },
   });
 
@@ -45,6 +50,16 @@ export const UserPlan = () => {
         .maybeSingle();
 
       if (error) throw error;
+
+      if (data?.plan) {
+        return {
+          ...data,
+          plan: {
+            ...data.plan,
+            features: data.plan.features as PlanFeatures
+          }
+        };
+      }
       return data;
     },
     enabled: !!session?.user?.id,

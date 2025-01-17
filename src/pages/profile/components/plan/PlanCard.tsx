@@ -1,14 +1,8 @@
 import { ArrowUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plan } from "./types";
+import { Plan, PlanCardProps } from "./types";
 import { useTranslation } from "react-i18next";
-
-interface PlanCardProps {
-  plan: Plan;
-  isCurrentPlan: boolean;
-  onSelect: (plan: Plan) => void;
-}
 
 export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
   const { t } = useTranslation();
@@ -55,7 +49,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
           onClick={() => onSelect(plan)}
           variant={plan.price_monthly > 0 ? "default" : "outline"}
         >
-          {plan.price_monthly > 0 && <ArrowUp className="h-4 w-4" />}
+          {plan.price_monthly > 0 && <ArrowUp className="h-4 w-4 mr-2" />}
           {plan.price_monthly > 0 ? t('profile.plan.upgrade') : t('profile.plan.select')}
         </Button>
       )}

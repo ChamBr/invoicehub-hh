@@ -14,21 +14,21 @@ export interface Plan {
   name: string;
   description: string | null;
   price_monthly: number;
+  price_annual: number | null;
+  price_semiannual: number | null;
+  discount_annual: number | null;
+  discount_semiannual: number | null;
   features: PlanFeatures;
   status: string | null;
   billing_period: string;
+  price: number;
+  created_at: string;
 }
 
-export interface Subscription {
-  id: string;
-  user_id: string;
-  plan_id: string;
-  status: string;
-  start_date: string;
-  renewal_date: string | null;
-  billing_period: string;
-  customer_id: string;
-  plan?: Plan;
+export interface PlanCardProps {
+  plan: Plan;
+  isCurrentPlan: boolean;
+  onSelect: (plan: Plan) => void;
 }
 
 export interface PlanSelectionProps {
