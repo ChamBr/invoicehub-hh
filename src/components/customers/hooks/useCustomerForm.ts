@@ -1,24 +1,16 @@
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { CustomerFormValues } from "../types";
-import { useSubscriberQuery } from "@/components/invoices/dialog/useSubscriberQuery";
 
-export function useCustomerForm(onSuccess: () => void, initialData?: CustomerFormValues | null) {
+export function useCustomerForm(
+  onSuccess: () => void, 
+  initialData?: CustomerFormValues | null,
+  subscriberId?: string
+) {
   const { toast } = useToast();
-  const { data: subscriberData, isLoading: isLoadingSubscriber } = useSubscriberQuery();
+  const isLoadingSubscriber = false;
 
   const handleSubmit = async (data: CustomerFormValues) => {
-    const effectiveSubscriberId = subscriberData?.subscriber_id;
-
-    if (!effectiveSubscriberId) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Não foi possível identificar o assinante. Por favor, tente novamente.",
-      });
-      return;
-    }
-
     try {
       const customerData = {
         name: data.name,
@@ -34,7 +26,7 @@ export function useCustomerForm(onSuccess: () => void, initialData?: CustomerFor
         tax_id: data.taxId,
         notes: data.notes,
         status: data.status,
-        subscriber_id: effectiveSubscriberId,
+        subscriber_id: subscriberId,
       };
 
       if (initialData?.id) {

@@ -9,9 +9,10 @@ interface CustomerFormProps {
   onSuccess: () => void;
   onCancel: () => void;
   initialData?: CustomerFormValues | null;
+  subscriberId?: string;
 }
 
-export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormProps) {
+export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }: CustomerFormProps) {
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
     defaultValues: initialData || {
@@ -22,7 +23,7 @@ export function CustomerForm({ onSuccess, onCancel, initialData }: CustomerFormP
     }
   });
 
-  const { handleSubmit, isLoadingSubscriber } = useCustomerForm(onSuccess, initialData);
+  const { handleSubmit, isLoadingSubscriber } = useCustomerForm(onSuccess, initialData, subscriberId);
 
   if (isLoadingSubscriber) {
     return <LoadingState message="Carregando..." />;
