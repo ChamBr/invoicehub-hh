@@ -10,8 +10,8 @@ interface PlanPricingFieldsProps {
 
 export function PlanPricingFields({ control }: PlanPricingFieldsProps) {
   return (
-    <Card className="p-6 space-y-6">
-      <FormRow>
+    <Card className="p-4">
+      <div className="grid grid-cols-3 gap-4">
         <FormField
           control={control}
           name="price_monthly"
@@ -27,7 +27,6 @@ export function PlanPricingFields({ control }: PlanPricingFieldsProps) {
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>Valor base do plano mensal</FormDescription>
             </FormItem>
           )}
         />
@@ -47,34 +46,30 @@ export function PlanPricingFields({ control }: PlanPricingFieldsProps) {
                   onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>Valor para pagamento anual</FormDescription>
             </FormItem>
           )}
         />
-      </FormRow>
 
-      <FormField
-        control={control}
-        name="discount_annual"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Desconto Anual (%)</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="0"
-                max="100"
-                placeholder="0"
-                {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
-              />
-            </FormControl>
-            <FormDescription>
-              Porcentagem de desconto aplicada no plano anual
-            </FormDescription>
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={control}
+          name="discount_annual"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Desconto Anual (%)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </div>
     </Card>
   );
 }

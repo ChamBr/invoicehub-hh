@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Control } from "react-hook-form";
 import { FormRow } from "@/components/forms/FormRow";
+import { Card } from "@/components/ui/card";
 
 interface PlanBasicFieldsProps {
   control: Control<any>;
@@ -11,61 +12,63 @@ interface PlanBasicFieldsProps {
 
 export function PlanBasicFields({ control }: PlanBasicFieldsProps) {
   return (
-    <div className="space-y-4">
-      <FormRow>
-        <FormField
-          control={control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome do Plano</FormLabel>
-              <FormControl>
-                <Input placeholder="Ex: Plano Básico" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+    <Card className="p-4">
+      <div className="grid gap-4">
+        <FormRow>
+          <FormField
+            control={control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome do Plano</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ex: Plano Básico" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="status"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                <div className="space-y-0.5">
+                  <FormLabel>Status</FormLabel>
+                  <FormDescription>
+                    {field.value === "active" ? "Plano Ativo" : "Plano Inativo"}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value === "active"}
+                    onCheckedChange={(checked) =>
+                      field.onChange(checked ? "active" : "inactive")
+                    }
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </FormRow>
 
         <FormField
           control={control}
-          name="status"
+          name="description"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel>Status</FormLabel>
-                <FormDescription>
-                  {field.value === "active" ? "Plano Ativo" : "Plano Inativo"}
-                </FormDescription>
-              </div>
+            <FormItem>
+              <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Switch
-                  checked={field.value === "active"}
-                  onCheckedChange={(checked) =>
-                    field.onChange(checked ? "active" : "inactive")
-                  }
+                <Textarea 
+                  placeholder="Descreva os benefícios do plano..."
+                  className="resize-none h-20"
+                  {...field} 
                 />
               </FormControl>
             </FormItem>
           )}
         />
-      </FormRow>
-
-      <FormField
-        control={control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Descrição</FormLabel>
-            <FormControl>
-              <Textarea 
-                placeholder="Descreva os benefícios do plano..."
-                className="resize-none"
-                {...field} 
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-    </div>
+      </div>
+    </Card>
   );
 }
