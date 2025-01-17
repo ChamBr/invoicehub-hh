@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CustomerForm } from "@/components/customers/CustomerForm";
+import CustomerForm from "./CustomerForm";
 
 interface NewCustomerDialogProps {
   open: boolean;
@@ -8,15 +8,15 @@ interface NewCustomerDialogProps {
   subscriberId?: string;
 }
 
-export const NewCustomerDialog = ({
+export function NewCustomerDialog({
   open,
   onOpenChange,
   onSuccess,
   subscriberId,
-}: NewCustomerDialogProps) => {
+}: NewCustomerDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Novo Cliente</DialogTitle>
         </DialogHeader>
@@ -30,4 +30,4 @@ export const NewCustomerDialog = ({
       </DialogContent>
     </Dialog>
   );
-};
+}

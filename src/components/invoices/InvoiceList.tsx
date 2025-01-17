@@ -52,7 +52,15 @@ export function InvoiceList({ invoices }: InvoiceListProps) {
       
       return data.map(invoice => ({
         ...invoice,
-        items: invoice.items || [],
+        items: (invoice.items || []).map(item => ({
+          id: item.id,
+          productId: item.product_id,
+          description: item.description,
+          quantity: item.quantity,
+          price: item.price,
+          hasTax: item.has_tax || false,
+          total: item.total
+        }))
       })) as Invoice[];
     },
     enabled: !!currentSubscriber?.subscriber_id,
