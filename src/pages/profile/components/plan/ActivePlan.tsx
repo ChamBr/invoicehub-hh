@@ -10,13 +10,13 @@ interface ActivePlanProps {
 }
 
 export function ActivePlan({ plan, nextBillingDate }: ActivePlanProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('profile');
 
   const formatFeatureValue = (key: string, value: any) => {
     if (typeof value === 'boolean') {
-      return value ? t('profile.plan.yes') : t('profile.plan.no');
+      return value ? t('plan.yes') : t('plan.no');
     }
-    if (value === -1) return t('profile.plan.unlimited');
+    if (value === -1) return t('plan.unlimited');
     return value;
   };
 
@@ -31,7 +31,7 @@ export function ActivePlan({ plan, nextBillingDate }: ActivePlanProps) {
     <Card className="p-6 bg-white shadow-sm border-2 border-primary relative">
       <div className="absolute -top-3 left-6">
         <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
-          {t('profile.plan.current_plan')}
+          {t('plan.current_plan')}
         </span>
       </div>
 
@@ -39,30 +39,30 @@ export function ActivePlan({ plan, nextBillingDate }: ActivePlanProps) {
         <div>
           <h2 className="text-2xl font-bold">{plan.name}</h2>
           <p className="text-muted-foreground">
-            {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`) || plan.description}
+            {t(`plan.descriptions.${plan.name.toLowerCase()}`)}
           </p>
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold text-primary">
             ${plan.price_monthly}
-            <span className="text-sm font-normal text-muted-foreground">/{t('profile.plan.monthly')}</span>
+            <span className="text-sm font-normal text-muted-foreground">/{t('plan.monthly')}</span>
           </div>
           {nextBillingDate && (
             <p className="text-sm text-muted-foreground mt-1">
-              {t('profile.plan.next_billing')}: {format(new Date(nextBillingDate), 'MM/dd/yyyy')}
+              {t('plan.next_billing')}: {format(new Date(nextBillingDate), 'MM/dd/yyyy')}
             </p>
           )}
         </div>
       </div>
 
       <div>
-        <h3 className="font-medium mb-3">{t('profile.plan.features')}</h3>
+        <h3 className="font-medium mb-3">{t('plan.features')}</h3>
         <div className="grid grid-cols-2 gap-2 text-sm">
           {getActiveFeatures().map(([key, value]) => (
             <div key={key} className="flex items-center gap-2">
               <Check className="h-4 w-4 text-primary flex-shrink-0" />
               <span>
-                {t(`profile.plan.features.${key}`)}: {formatFeatureValue(key, value)}
+                {t(`plan.features.${key}`)}: {formatFeatureValue(key, value)}
               </span>
             </div>
           ))}

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const UserPlan = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('profile');
   const {
     plans,
     currentPlan,
@@ -24,7 +24,7 @@ export const UserPlan = () => {
       {!currentPlan && (
         <Alert variant="default" className="bg-muted">
           <AlertDescription>
-            {t('profile.plan.no_plan_message')}
+            {t('plan.no_plan_message')}
           </AlertDescription>
         </Alert>
       )}

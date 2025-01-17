@@ -11,13 +11,13 @@ interface PlanCardProps {
 }
 
 export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('profile');
 
   const formatFeatureValue = (key: string, value: any) => {
     if (typeof value === 'boolean') {
-      return value ? t('profile.plan.yes') : t('profile.plan.no');
+      return value ? t('plan.yes') : t('plan.no');
     }
-    if (value === -1) return t('profile.plan.unlimited');
+    if (value === -1) return t('plan.unlimited');
     return value;
   };
 
@@ -33,7 +33,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
       {isCurrentPlan && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
-            {t('profile.plan.current_plan')}
+            {t('plan.current_plan')}
           </span>
         </div>
       )}
@@ -41,11 +41,11 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
       <div className="mb-4">
         <h3 className="text-xl font-bold">{plan.name}</h3>
         <p className="text-sm text-muted-foreground">
-          {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`)}
+          {t(`plan.descriptions.${plan.name.toLowerCase()}`)}
         </p>
         <div className="mt-2">
           <span className="text-2xl font-bold text-primary">${plan.price_monthly}</span>
-          <span className="text-sm font-normal text-muted-foreground">/{t('profile.plan.monthly')}</span>
+          <span className="text-sm font-normal text-muted-foreground">/{t('plan.monthly')}</span>
         </div>
       </div>
 
@@ -54,7 +54,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
           <div key={key} className="flex items-center gap-2 text-sm">
             <Check className="h-4 w-4 text-primary flex-shrink-0" />
             <span>
-              {t(`profile.plan.features.${key}`)}: {formatFeatureValue(key, value)}
+              {t(`plan.features.${key}`)}: {formatFeatureValue(key, value)}
             </span>
           </div>
         ))}
@@ -67,7 +67,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
             onClick={() => onSelect(plan)}
             variant={plan.price_monthly > 0 ? "default" : "outline"}
           >
-            {t('common.actions.upgrade')}
+            {t('plan.upgrade')}
           </Button>
         </div>
       )}
