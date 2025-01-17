@@ -561,30 +561,45 @@ export type Database = {
           billing_period: string
           created_at: string
           description: string | null
+          discount_annual: number | null
+          discount_semiannual: number | null
           features: Json | null
           id: string
           name: string
           price: number
+          price_annual: number | null
+          price_monthly: number | null
+          price_semiannual: number | null
           status: string | null
         }
         Insert: {
           billing_period: string
           created_at?: string
           description?: string | null
+          discount_annual?: number | null
+          discount_semiannual?: number | null
           features?: Json | null
           id?: string
           name: string
           price: number
+          price_annual?: number | null
+          price_monthly?: number | null
+          price_semiannual?: number | null
           status?: string | null
         }
         Update: {
           billing_period?: string
           created_at?: string
           description?: string | null
+          discount_annual?: number | null
+          discount_semiannual?: number | null
           features?: Json | null
           id?: string
           name?: string
           price?: number
+          price_annual?: number | null
+          price_monthly?: number | null
+          price_semiannual?: number | null
           status?: string | null
         }
         Relationships: []

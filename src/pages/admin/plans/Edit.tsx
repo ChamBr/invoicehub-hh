@@ -1,24 +1,41 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
-const EditPlan = () => {
+type PlanFormData = {
+  name: string;
+  description: string;
+  price_monthly: number;
+  price_semiannual: number;
+  price_annual: number;
+  discount_semiannual: number;
+  discount_annual: number;
+  status: string;
+  features: string;
+};
+
+export const EditPlan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [features, setFeatures] = useState<{ name: string; included: boolean }[]>([]);
+  const { register, handleSubmit, setValue, watch } = useForm<PlanFormData>();
 
-  const { data: plan, isLoading: isPlanLoading } = useQuery({
+  const { data: plan } = useQuery({
     queryKey: ["plan", id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,192 +50,192 @@ const EditPlan = () => {
   });
 
   useEffect(() => {
-    if (plan?.features) {
-      const featuresArray = Object.entries(plan.features as Record<string, boolean>).map(
-        ([name, included]) => ({ name, included })
-      );
-      setFeatures(featuresArray);
+    if (plan) {
+      setValue("name", plan.name);
+      setValue("description", plan.description || "");
+      setValue("price_monthly", plan.price_monthly);
+      setValue("price_semiannual", plan.price_semiannual);
+      setValue("price_annual", plan.price_annual);
+      setValue("discount_semiannual", plan.discount_semiannual);
+      setValue("discount_annual", plan.discount_annual);
+      setValue("status", plan.status || "active");
+      setValue("features", JSON.stringify(plan.features, null, 2));
     }
-  }, [plan]);
+  }, [plan, setValue]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const monthlyPrice = watch("price_monthly");
 
-    const formData = new FormData(e.currentTarget);
-    const featuresObject = features.reduce(
-      (acc, feature) => ({
-        ...acc,
-        [feature.name]: feature.included,
-      }),
-      {}
-    );
+  // Atualiza automaticamente os preços e descontos quando o preço mensal muda
+  useEffect(() => {
+    if (monthlyPrice) {
+      const semiannualDiscount = 10; // 10% de desconto sugerido
+      const annualDiscount = 20; // 20% de desconto sugerido
 
+      setValue("discount_semiannual", semiannualDiscount);
+      setValue("discount_annual", annualDiscount);
+
+      const semiannualPrice = monthlyPrice * 6 * (1 - semiannualDiscount / 100);
+      const annualPrice = monthlyPrice * 12 * (1 - annualDiscount / 100);
+
+      setValue("price_semiannual", Number(semiannualPrice.toFixed(2)));
+      setValue("price_annual", Number(annualPrice.toFixed(2)));
+    }
+  }, [monthlyPrice, setValue]);
+
+  const onSubmit = async (data: PlanFormData) => {
     try {
-      const planData = {
-        name: formData.get("name") as string,
-        description: formData.get("description") as string,
-        price: parseFloat(formData.get("price") as string),
-        billing_period: formData.get("billing_period") as string,
-        features: featuresObject,
-      };
+      let features;
+      try {
+        features = JSON.parse(data.features);
+      } catch (e) {
+        toast({
+          title: "Invalid JSON format in features",
+          description: "Please check the JSON format and try again",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const { error } = await supabase
         .from("plans")
-        .update(planData)
+        .update({
+          name: data.name,
+          description: data.description,
+          price_monthly: data.price_monthly,
+          price_semiannual: data.price_semiannual,
+          price_annual: data.price_annual,
+          discount_semiannual: data.discount_semiannual,
+          discount_annual: data.discount_annual,
+          status: data.status,
+          features,
+        })
         .eq("id", id);
 
       if (error) throw error;
 
       toast({
-        title: "Plano atualizado",
-        description: "O plano foi atualizado com sucesso.",
+        title: "Plan updated successfully",
+        description: "The plan has been updated with the new information",
       });
+
       navigate("/admin/plans");
     } catch (error) {
-      console.error("Error:", error);
       toast({
+        title: "Error updating plan",
+        description: "There was an error updating the plan. Please try again.",
         variant: "destructive",
-        title: "Erro ao atualizar plano",
-        description: "Ocorreu um erro ao atualizar o plano.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  if (isPlanLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-8">
-      <div className="max-w-2xl mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>Editar Plano</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Nome do Plano</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  defaultValue={plan?.name}
-                  required
-                />
-              </div>
+    <Card className="p-6">
+      <h2 className="text-xl font-semibold mb-6">Edit Plan</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Plan Name</Label>
+            <Input id="name" {...register("name")} required />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Descrição</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  defaultValue={plan?.description || ""}
-                />
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="status">Status</Label>
+            <Select
+              onValueChange={(value) => setValue("status", value)}
+              defaultValue={plan?.status || "active"}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="price">Preço</Label>
-                <Input
-                  id="price"
-                  name="price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  defaultValue={plan?.price}
-                  required
-                />
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="price_monthly">Monthly Price (USD)</Label>
+            <Input
+              id="price_monthly"
+              type="number"
+              step="0.01"
+              {...register("price_monthly", { valueAsNumber: true })}
+              required
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label>Período de Cobrança</Label>
-                <RadioGroup
-                  defaultValue={plan?.billing_period}
-                  name="billing_period"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="monthly" id="monthly" />
-                    <Label htmlFor="monthly">Mensal</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="yearly" id="yearly" />
-                    <Label htmlFor="yearly">Anual</Label>
-                  </div>
-                </RadioGroup>
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="price_semiannual">Semi-Annual Price (USD)</Label>
+            <Input
+              id="price_semiannual"
+              type="number"
+              step="0.01"
+              {...register("price_semiannual", { valueAsNumber: true })}
+              required
+            />
+            <p className="text-sm text-gray-500">
+              Suggested discount:{" "}
+              <span className="font-medium">{watch("discount_semiannual")}%</span>
+            </p>
+          </div>
 
-              <div className="space-y-4">
-                <Label>Recursos do Plano</Label>
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <Input
-                      value={feature.name}
-                      onChange={(e) => {
-                        const newFeatures = [...features];
-                        newFeatures[index].name = e.target.value;
-                        setFeatures(newFeatures);
-                      }}
-                      placeholder="Nome do recurso"
-                    />
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        checked={feature.included}
-                        onCheckedChange={(checked) => {
-                          const newFeatures = [...features];
-                          newFeatures[index].included = checked;
-                          setFeatures(newFeatures);
-                        }}
-                      />
-                      <Label>Incluído</Label>
-                    </div>
-                    {features.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => {
-                          setFeatures(features.filter((_, i) => i !== index));
-                        }}
-                      >
-                        Remover
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setFeatures([...features, { name: "", included: true }]);
-                  }}
-                >
-                  Adicionar Recurso
-                </Button>
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="price_annual">Annual Price (USD)</Label>
+            <Input
+              id="price_annual"
+              type="number"
+              step="0.01"
+              {...register("price_annual", { valueAsNumber: true })}
+              required
+            />
+            <p className="text-sm text-gray-500">
+              Suggested discount:{" "}
+              <span className="font-medium">{watch("discount_annual")}%</span>
+            </p>
+          </div>
+        </div>
 
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate("/admin/plans")}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Salvando..." : "Salvar Alterações"}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <div className="space-y-2">
+          <Label htmlFor="description">Description</Label>
+          <Textarea id="description" {...register("description")} />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="features">Features (JSON format)</Label>
+          <Textarea
+            id="features"
+            {...register("features")}
+            className="font-mono"
+            rows={10}
+          />
+          <p className="text-sm text-gray-500">
+            Enter features as a JSON object. Example:
+            {`
+{
+  "users": 5,
+  "storage": "10GB",
+  "support": "24/7",
+  "features": [
+    "Feature 1",
+    "Feature 2"
+  ]
+}
+            `}
+          </p>
+        </div>
+
+        <div className="flex justify-end gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate("/admin/plans")}
+          >
+            Cancel
+          </Button>
+          <Button type="submit">Save Changes</Button>
+        </div>
+      </form>
+    </Card>
   );
 };
-
-export default EditPlan;
