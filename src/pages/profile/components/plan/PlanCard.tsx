@@ -22,7 +22,11 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
   };
 
   const getActiveFeatures = () => {
-    return Object.entries(plan.features).filter(([_, value]) => {
+    const features = typeof plan.features === 'string' 
+      ? JSON.parse(plan.features) 
+      : plan.features;
+
+    return Object.entries(features).filter(([_, value]) => {
       if (typeof value === 'boolean') return value;
       return value > 0;
     });
