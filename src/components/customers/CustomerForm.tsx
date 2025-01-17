@@ -20,7 +20,7 @@ interface CustomerFormProps {
 
 export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }: CustomerFormProps) {
   const { toast } = useToast();
-  const { data: subscriberData } = useSubscriberQuery();
+  const { data: subscriberData, isLoading: isLoadingSubscriber } = useSubscriberQuery();
   
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
@@ -39,7 +39,7 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Não foi possível identificar o assinante",
+        description: "Não foi possível identificar o assinante. Por favor, tente novamente.",
       });
       return;
     }
@@ -90,10 +90,18 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Ocorreu um erro ao salvar o cliente",
+        description: "Ocorreu um erro ao salvar o cliente. Por favor, tente novamente.",
       });
     }
   };
+
+  if (isLoadingSubscriber) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <div className="text-muted-foreground">Carregando...</div>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
