@@ -38,12 +38,9 @@ const SimulatedLogin = () => {
         };
       }
 
-      // Depois, buscar o perfil do owner
-      const { data: ownerData, error: ownerError } = await supabase
-        .from("profiles")
-        .select("id, email")
-        .eq("id", subscriberData.owner_id)
-        .single();
+      // Depois, buscar o perfil do owner na tabela auth.users
+      const { data: ownerData, error: ownerError } = await supabase.auth
+        .admin.getUserById(subscriberData.owner_id);
 
       if (ownerError) {
         console.error("Error fetching owner:", ownerError);
@@ -59,9 +56,9 @@ const SimulatedLogin = () => {
         id: subscriberData.id,
         company_name: subscriberData.company_name,
         owner_id: subscriberData.owner_id,
-        owner: ownerData && {
-          id: ownerData.id,
-          email: ownerData.email
+        owner: ownerData?.user && {
+          id: ownerData.user.id,
+          email: ownerData.user.email || ''
         }
       };
     },
