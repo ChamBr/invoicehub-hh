@@ -1,5 +1,6 @@
-export * from './common';
 export * from './database';
+export type { Json } from './common';
+export type { TypedSupabaseClient, Tables, Enums, TablesInsert, TablesUpdate } from './common';
 export * from './tables/company';
 export * from './tables/configurations';
 export * from './tables/countries';
