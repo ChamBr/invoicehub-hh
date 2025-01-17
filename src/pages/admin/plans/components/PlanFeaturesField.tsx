@@ -1,35 +1,37 @@
-import { UseFormRegister } from "react-hook-form";
-import { Label } from "@/components/ui/label";
+import { Control } from "react-hook-form";
+import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 
 interface PlanFeaturesFieldProps {
-  register: UseFormRegister<any>;
+  control: Control<any>;
 }
 
-export function PlanFeaturesField({ register }: PlanFeaturesFieldProps) {
+export function PlanFeaturesField({ control }: PlanFeaturesFieldProps) {
   return (
-    <div className="space-y-2">
-      <Label htmlFor="features">Features (JSON format)</Label>
-      <Textarea
-        id="features"
-        {...register("features")}
-        className="font-mono"
-        rows={10}
-      />
-      <p className="text-sm text-gray-500">
-        Enter features as a JSON object. Example:
-        {`
-{
-  "users": 5,
-  "storage": "10GB",
-  "support": "24/7",
-  "features": [
-    "Feature 1",
-    "Feature 2"
-  ]
-}
-        `}
-      </p>
-    </div>
+    <FormField
+      control={control}
+      name="features"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Features (JSON format)</FormLabel>
+          <FormControl>
+            <Textarea
+              className="font-mono"
+              rows={10}
+              {...field}
+              onChange={(e) => {
+                try {
+                  const value = JSON.parse(e.target.value);
+                  field.onChange(value);
+                } catch {
+                  field.onChange(e.target.value);
+                }
+              }}
+              value={typeof field.value === 'object' ? JSON.stringify(field.value, null, 2) : field.value}
+            />
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 }

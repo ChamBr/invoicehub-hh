@@ -5,8 +5,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import PlanPricingFields from "./PlanPricingFields";
-import PlanFeaturesField from "./PlanFeaturesField";
+import { PlanPricingFields } from "./PlanPricingFields";
+import { PlanFeaturesField } from "./PlanFeaturesField";
 
 interface PlanFormData {
   name: string;
