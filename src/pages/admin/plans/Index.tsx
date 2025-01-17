@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilePlus, Edit, Trash2 } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
+import { PlanForm } from "./components/PlanForm";
 
-const AdminPlans = () => {
+export function PlansManagement() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ["plans"],
@@ -16,106 +18,97 @@ const AdminPlans = () => {
       const { data, error } = await supabase
         .from("plans")
         .select("*")
-        .order("price");
+        .order("price_monthly", { ascending: true });
 
       if (error) throw error;
       return data;
     },
   });
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(value);
+  };
+
+  const formatFeature = (value: number) => {
+    return value === -1 ? "Unlimited" : value;
+  };
+
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Gerenciamento de Planos</h1>
-          <Button 
-            onClick={() => navigate("/admin/plans/new")}
-            className="flex items-center gap-2"
-          >
-            <FilePlus className="h-5 w-5" />
-            Novo Plano
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans?.map((plan) => (
-            <Card key={plan.id} className="relative">
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  <span>{plan.name}</span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => navigate(`/admin/plans/${plan.id}/edit`)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        toast({
-                          title: "Em breve",
-                          description: "Funcionalidade em desenvolvimento",
-                        });
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-3xl font-bold">
-                    {new Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(plan.price)}
-                    <span className="text-sm font-normal text-gray-600">
-                      /{plan.billing_period === "monthly" ? "mês" : "ano"}
-                    </span>
-                  </div>
-                  <p className="text-gray-600">{plan.description}</p>
-                  {plan.features && (
-                    <div className="space-y-2">
-                      {Object.entries(plan.features as Record<string, boolean>).map(
-                        ([feature, included]) => (
-                          <div
-                            key={feature}
-                            className={`flex items-center ${
-                              included ? "text-green-600" : "text-gray-400"
-                            }`}
-                          >
-                            <span className="mr-2">•</span>
-                            {feature}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  )}
-                  <div className="pt-4">
-                    <p className="text-sm text-gray-500">
-                      Status: {plan.status === "active" ? "Ativo" : "Inativo"}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+    <div className="container mx-auto py-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Plans Management</h1>
+        <Button onClick={() => navigate("/admin/plans/new")}>
+          <PlusIcon className="w-4 h-4 mr-2" />
+          New Plan
+        </Button>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {plans?.map((plan) => (
+          <Card key={plan.id} className="p-6">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-lg font-semibold">{plan.name}</h3>
+                <p className="text-sm text-gray-500">{plan.description}</p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedPlanId(plan.id)}
+              >
+                Edit
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-2xl font-bold">
+                  {formatCurrency(plan.price_monthly)}
+                  <span className="text-sm font-normal text-gray-500">/month</span>
+                </p>
+                {plan.price_annual > 0 && (
+                  <p className="text-sm text-gray-500">
+                    {formatCurrency(plan.price_annual)}/year ({plan.discount_annual}% off)
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="font-medium">Features:</h4>
+                <ul className="space-y-2">
+                  <li>Users: {formatFeature(plan.features.max_users || 0)}</li>
+                  <li>Storage: {formatFeature(plan.features.storage || 0)} GB</li>
+                  <li>Projects: {formatFeature(plan.features.max_projects || 0)}</li>
+                </ul>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={!!selectedPlanId} onOpenChange={() => setSelectedPlanId(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Edit Plan</DialogTitle>
+          </DialogHeader>
+          {selectedPlanId && (
+            <PlanForm 
+              planId={selectedPlanId} 
+              onSuccess={() => setSelectedPlanId(null)}
+              onCancel={() => setSelectedPlanId(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
+}
 
-export default AdminPlans;
+export default PlansManagement;
