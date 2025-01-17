@@ -23,11 +23,11 @@ const planFeaturesSchema = z.object({
 });
 
 const planFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().optional(),
-  price_monthly: z.number().min(0, "Price must be positive"),
-  price_annual: z.number().min(0, "Annual price must be positive"),
-  discount_annual: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%"),
+  price_monthly: z.number().min(0, "Preço deve ser positivo"),
+  price_annual: z.number().min(0, "Preço anual deve ser positivo"),
+  discount_annual: z.number().min(0, "Desconto deve ser positivo").max(100, "Desconto não pode exceder 100%"),
   features: planFeaturesSchema,
   status: z.enum(["active", "inactive"])
 });
@@ -73,12 +73,12 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
         name: values.name,
         description: values.description,
         price_monthly: values.price_monthly,
-        price: values.price_monthly, // Using monthly price as base price
+        price: values.price_monthly,
         price_annual: values.price_annual,
         discount_annual: values.discount_annual,
         features: values.features,
         status: values.status,
-        billing_period: "monthly" // Adding required field
+        billing_period: "monthly"
       };
 
       if (planId) {
@@ -99,15 +99,15 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["plans"] });
       toast({
-        title: planId ? "Plan updated successfully" : "Plan created successfully",
+        title: planId ? "Plano atualizado com sucesso" : "Plano criado com sucesso",
       });
       onSuccess();
     },
     onError: (error) => {
-      console.error("Error saving plan:", error);
+      console.error("Erro ao salvar plano:", error);
       toast({
-        title: "Error saving plan",
-        description: "Please try again",
+        title: "Erro ao salvar plano",
+        description: "Por favor, tente novamente",
         variant: "destructive",
       });
     },
@@ -119,23 +119,25 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormSection title="Basic Information">
-          <PlanBasicFields control={form.control} />
-        </FormSection>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="grid gap-8">
+          <FormSection title="Informações Básicas">
+            <PlanBasicFields control={form.control} />
+          </FormSection>
 
-        <FormSection title="Pricing">
-          <PlanPricingFields control={form.control} />
-        </FormSection>
+          <FormSection title="Preços">
+            <PlanPricingFields control={form.control} />
+          </FormSection>
 
-        <FormSection title="Features">
-          <PlanFeaturesFields control={form.control} />
-        </FormSection>
+          <FormSection title="Recursos">
+            <PlanFeaturesFields control={form.control} />
+          </FormSection>
+        </div>
 
         <FormActions
           onCancel={onCancel}
           isSubmitting={mutation.isPending}
-          submitLabel={planId ? "Save Changes" : "Create Plan"}
+          submitLabel={planId ? "Salvar Alterações" : "Criar Plano"}
         />
       </form>
     </Form>
