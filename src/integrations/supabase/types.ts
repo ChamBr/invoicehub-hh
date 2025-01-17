@@ -189,6 +189,7 @@ export type Database = {
           phone: string | null
           state: string | null
           status: string | null
+          subscriber_id: string | null
           tax_exempt: boolean | null
           tax_id: string | null
           type: string | null
@@ -206,6 +207,7 @@ export type Database = {
           phone?: string | null
           state?: string | null
           status?: string | null
+          subscriber_id?: string | null
           tax_exempt?: boolean | null
           tax_id?: string | null
           type?: string | null
@@ -223,12 +225,21 @@ export type Database = {
           phone?: string | null
           state?: string | null
           status?: string | null
+          subscriber_id?: string | null
           tax_exempt?: boolean | null
           tax_id?: string | null
           type?: string | null
           zip_code?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customers_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       email_settings: {
         Row: {
@@ -480,6 +491,7 @@ export type Database = {
           pdf_generated_at: string | null
           pdf_url: string | null
           status: Database["public"]["Enums"]["invoice_status"] | null
+          subscriber_id: string | null
           template_id: string | null
           total: number
         }
@@ -493,6 +505,7 @@ export type Database = {
           pdf_generated_at?: string | null
           pdf_url?: string | null
           status?: Database["public"]["Enums"]["invoice_status"] | null
+          subscriber_id?: string | null
           template_id?: string | null
           total?: number
         }
@@ -506,6 +519,7 @@ export type Database = {
           pdf_generated_at?: string | null
           pdf_url?: string | null
           status?: Database["public"]["Enums"]["invoice_status"] | null
+          subscriber_id?: string | null
           template_id?: string | null
           total?: number
         }
@@ -515,6 +529,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "subscribers"
             referencedColumns: ["id"]
           },
           {
@@ -614,6 +635,7 @@ export type Database = {
           sku: string | null
           status: string | null
           stock: number | null
+          subscriber_id: string | null
           type: string
         }
         Insert: {
@@ -625,6 +647,7 @@ export type Database = {
           sku?: string | null
           status?: string | null
           stock?: number | null
+          subscriber_id?: string | null
           type: string
         }
         Update: {
@@ -636,9 +659,18 @@ export type Database = {
           sku?: string | null
           status?: string | null
           stock?: number | null
+          subscriber_id?: string | null
           type?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -882,6 +914,10 @@ export type Database = {
       is_debug_mode_valid: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      update_existing_records: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {

@@ -12,9 +12,10 @@ interface InvoiceData {
   due_date: string;
   total: number;
   template_id?: string;
+  subscriber_id: string;
 }
 
-export const useInvoiceCreation = () => {
+export const useInvoiceCreation = (subscriberId?: string) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
@@ -88,6 +89,15 @@ export const useInvoiceCreation = () => {
       return false;
     }
 
+    if (!subscriberId) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Erro ao identificar o assinante.",
+      });
+      return false;
+    }
+
     return true;
   };
 
@@ -124,7 +134,7 @@ export const useInvoiceCreation = () => {
 
   // Handler principal de submissão
   const handleSubmit = async (status: 'draft' | 'created') => {
-    if (!validateInvoiceData()) return;
+    if (!validateInvoiceData() || !subscriberId) return;
 
     try {
       const invoiceData: InvoiceData = {
@@ -133,6 +143,7 @@ export const useInvoiceCreation = () => {
         due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         total: calculateTotal(items),
         template_id: activeTemplate?.id,
+        subscriber_id: subscriberId,
       };
 
       const invoice = await createInvoice(invoiceData);

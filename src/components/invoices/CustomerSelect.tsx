@@ -15,21 +15,26 @@ interface CustomerSelectProps {
   value: string | null;
   onSelect: (customerId: string) => void;
   onNewCustomer: () => void;
+  subscriberId?: string;
 }
 
-const CustomerSelect = ({ value, onSelect, onNewCustomer }: CustomerSelectProps) => {
+const CustomerSelect = ({ value, onSelect, onNewCustomer, subscriberId }: CustomerSelectProps) => {
   const { data: customers, isLoading } = useQuery({
-    queryKey: ["customers"],
+    queryKey: ["customers", subscriberId],
     queryFn: async () => {
+      if (!subscriberId) return [];
+
       const { data, error } = await supabase
         .from("customers")
         .select("*")
         .eq("status", "active")
+        .eq("subscriber_id", subscriberId)
         .order("name");
 
       if (error) throw error;
       return data;
     },
+    enabled: !!subscriberId,
   });
 
   return (

@@ -4,6 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "./StatusBadge";
 import { type Invoice } from "./types";
 import { InvoiceViewDialog } from "./InvoiceViewDialog";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -14,10 +16,55 @@ export function InvoiceList({ invoices }: InvoiceListProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
+  const { data: currentSubscriber } = useQuery({
+    queryKey: ["current-subscriber"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data: subscriberUser, error: subscriberError } = await supabase
+        .from("subscriber_users")
+        .select("subscriber_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (subscriberError) throw subscriberError;
+      return subscriberUser;
+    },
+  });
+
+  const { data: invoicesList, isLoading } = useQuery({
+    queryKey: ["invoices", currentSubscriber?.subscriber_id],
+    queryFn: async () => {
+      if (!currentSubscriber?.subscriber_id) return [];
+
+      const { data, error } = await supabase
+        .from("invoices")
+        .select(`
+          *,
+          customer:customers(name)
+        `)
+        .eq("subscriber_id", currentSubscriber.subscriber_id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data as Invoice[];
+    },
+    enabled: !!currentSubscriber?.subscriber_id,
+  });
+
   const handleRowClick = (invoice: Invoice) => {
     setSelectedInvoice(invoice);
     setIsViewDialogOpen(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -33,7 +80,7 @@ export function InvoiceList({ invoices }: InvoiceListProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
+          {(invoicesList || []).map((invoice) => (
             <TableRow
               key={invoice.id}
               className="cursor-pointer hover:bg-muted/50"

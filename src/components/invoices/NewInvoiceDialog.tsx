@@ -9,6 +9,7 @@ import { InvoiceViewDialog } from "./InvoiceViewDialog";
 import { useInvoiceCreation } from "./hooks/useInvoiceCreation";
 import { supabase } from "@/integrations/supabase/client";
 import { PencilIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 interface NewInvoiceDialogProps {
   open: boolean;
@@ -17,6 +18,24 @@ interface NewInvoiceDialogProps {
 
 export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) {
   const [isNewCustomerDialogOpen, setIsNewCustomerDialogOpen] = useState(false);
+  
+  const { data: currentSubscriber } = useQuery({
+    queryKey: ["current-subscriber"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data: subscriberUser, error: subscriberError } = await supabase
+        .from("subscriber_users")
+        .select("subscriber_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (subscriberError) throw subscriberError;
+      return subscriberUser;
+    },
+  });
+
   const {
     selectedCustomer,
     items,
@@ -29,7 +48,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
     handleRemoveItem,
     handleUpdateItem,
     handleSubmit,
-  } = useInvoiceCreation();
+  } = useInvoiceCreation(currentSubscriber?.subscriber_id);
 
   return (
     <>
@@ -45,6 +64,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
                 value={selectedCustomer}
                 onSelect={handleCustomerSelect}
                 onNewCustomer={() => setIsNewCustomerDialogOpen(true)}
+                subscriberId={currentSubscriber?.subscriber_id}
               />
 
               {selectedCustomer && (
@@ -102,14 +122,18 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
               )}
             </div>
           </div>
-
-          <NewCustomerDialog
-            open={isNewCustomerDialogOpen}
-            onOpenChange={setIsNewCustomerDialogOpen}
-            onSuccess={() => setIsNewCustomerDialogOpen(false)}
-          />
         </DialogContent>
       </Dialog>
+
+      <NewCustomerDialog
+        open={isNewCustomerDialogOpen}
+        onOpenChange={setIsNewCustomerDialogOpen}
+        subscriberId={currentSubscriber?.subscriber_id}
+        onSuccess={(customerId) => {
+          handleCustomerSelect(customerId);
+          setIsNewCustomerDialogOpen(false);
+        }}
+      />
 
       {createdInvoice && (
         <InvoiceViewDialog
