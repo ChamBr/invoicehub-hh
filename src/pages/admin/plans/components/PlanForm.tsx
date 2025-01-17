@@ -73,10 +73,12 @@ export function PlanForm({ planId, onSuccess, onCancel, defaultValues }: PlanFor
         name: values.name,
         description: values.description,
         price_monthly: values.price_monthly,
+        price: values.price_monthly, // Using monthly price as base price
         price_annual: values.price_annual,
         discount_annual: values.discount_annual,
         features: values.features,
-        status: values.status
+        status: values.status,
+        billing_period: "monthly" // Adding required field
       };
 
       if (planId) {
