@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import CustomerForm from "./CustomerForm";
+import { CustomerForm } from "@/components/customers/CustomerForm";
 
 interface NewCustomerDialogProps {
   open: boolean;
