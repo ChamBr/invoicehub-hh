@@ -29,7 +29,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
   };
 
   return (
-    <Card className={`p-6 relative ${isCurrentPlan ? 'border-2 border-primary' : ''}`}>
+    <Card className={`flex flex-col h-full p-6 relative ${isCurrentPlan ? 'border-2 border-primary' : ''}`}>
       {isCurrentPlan && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -41,15 +41,15 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
       <div className="mb-4">
         <h3 className="text-xl font-bold">{plan.name}</h3>
         <p className="text-sm text-muted-foreground">
-          {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`)}
+          {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`) || plan.description}
         </p>
-        <div className="mt-2 text-2xl font-bold text-primary">
-          ${plan.price_monthly}
+        <div className="mt-2">
+          <span className="text-2xl font-bold text-primary">${plan.price_monthly}</span>
           <span className="text-sm font-normal text-muted-foreground">/{t('profile.plan.monthly')}</span>
         </div>
       </div>
 
-      <div className="space-y-2 mb-6">
+      <div className="flex-grow space-y-2 mb-6">
         {getActiveFeatures().map(([key, value]) => (
           <div key={key} className="flex items-center gap-2 text-sm">
             <Check className="h-4 w-4 text-primary flex-shrink-0" />
@@ -61,13 +61,15 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
       </div>
 
       {!isCurrentPlan && (
-        <Button 
-          className="w-full" 
-          onClick={() => onSelect(plan)}
-          variant={plan.price_monthly > 0 ? "default" : "outline"}
-        >
-          {t('profile.plan.upgrade')}
-        </Button>
+        <div className="mt-auto">
+          <Button 
+            className="w-full" 
+            onClick={() => onSelect(plan)}
+            variant={plan.price_monthly > 0 ? "default" : "outline"}
+          >
+            {t('profile.plan.upgrade')}
+          </Button>
+        </div>
       )}
     </Card>
   );

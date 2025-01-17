@@ -28,15 +28,18 @@ export function ActivePlan({ plan, nextBillingDate }: ActivePlanProps) {
   };
 
   return (
-    <Card className="p-6 bg-white shadow-sm">
-      <div className="flex justify-between items-start mb-4">
+    <Card className="p-6 bg-white shadow-sm border-2 border-primary relative">
+      <div className="absolute -top-3 left-6">
+        <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+          {t('profile.plan.current_plan')}
+        </span>
+      </div>
+
+      <div className="flex justify-between items-start mb-4 mt-3">
         <div>
-          <div className="inline-block bg-primary-light text-primary text-sm font-medium px-3 py-1 rounded-full mb-2">
-            {t('profile.plan.current_plan')}
-          </div>
           <h2 className="text-2xl font-bold">{plan.name}</h2>
           <p className="text-muted-foreground">
-            {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`)}
+            {t(`profile.plan.descriptions.${plan.name.toLowerCase()}`) || plan.description}
           </p>
         </div>
         <div className="text-right">
