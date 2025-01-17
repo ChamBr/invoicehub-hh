@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { LogOut, User, Users, Crown } from "lucide-react";
+import { LogOut, User, Users, Crown, ArrowLeftCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,6 +52,44 @@ const Navbar = () => {
     },
     enabled: !!session?.user?.id,
   });
+
+  const { data: simulatedLogin } = useQuery({
+    queryKey: ['simulatedLogin'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('subscribers')
+        .select(`
+          id,
+          company_name,
+          owner:profiles!subscribers_owner_id_fkey(
+            email:auth.users!profiles_id_fkey(email)
+          )
+        `)
+        .single();
+      return data;
+    },
+    enabled: !!session?.user?.id && userProfile?.role === 'superadmin',
+  });
+
+  const exitSimulation = async () => {
+    try {
+      // Aqui você pode implementar a lógica para sair da simulação
+      // Por exemplo, limpar um estado global ou fazer uma chamada para o backend
+      toast({
+        title: "Simulação encerrada",
+        description: "Você voltou para sua conta normal",
+      });
+      // Recarregar a página para resetar o estado
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao sair da simulação:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível sair da simulação",
+      });
+    }
+  };
 
   useEffect(() => {
     const pageTitles: { [key: string]: string } = {
@@ -116,6 +154,20 @@ const Navbar = () => {
             )}
             <span className={`${isSuperAdmin ? 'text-role-superadmin' : 'text-primary'}`}>
               {session.user.email}
+              {simulatedLogin && (
+                <span className="ml-2 text-sm text-gray-500">
+                  [Login ativo: {simulatedLogin.owner?.email}]
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={exitSimulation}
+                    className="ml-2"
+                  >
+                    <ArrowLeftCircle className="h-4 w-4 mr-1" />
+                    Sair
+                  </Button>
+                </span>
+              )}
               {userSubscription?.plan?.name && (
                 <span className="ml-2 text-sm text-gray-500">
                   (PLAN: {userSubscription.plan.name})
