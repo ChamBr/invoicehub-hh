@@ -59,7 +59,7 @@ const SimulatedLogin = () => {
         id: subscriberData.id,
         company_name: subscriberData.company_name,
         owner_id: subscriberData.owner_id,
-        owner: {
+        owner: ownerData && {
           id: ownerData.id,
           email: ownerData.email
         }
