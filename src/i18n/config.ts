@@ -1,66 +1,22 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-
-// English translations
-import commonEn from './locales/modules/common.json';
-import navigationEn from './locales/modules/navigation.json';
-import companyEn from './locales/modules/company.json';
-import customersEn from './locales/modules/customers.json';
-import productsEn from './locales/modules/products.json';
-import adminEn from './locales/modules/admin.json';
-
-// Portuguese translations
-import commonPt from './locales/modules/common.pt.json';
-import navigationPt from './locales/modules/navigation.pt.json';
-import companyPt from './locales/modules/company.pt.json';
-import customersPt from './locales/modules/customers.pt.json';
-import productsPt from './locales/modules/products.pt.json';
-import adminPt from './locales/modules/admin.pt.json';
-
-// Spanish translations
-import commonEs from './locales/modules/common.es.json';
-import navigationEs from './locales/modules/navigation.es.json';
-import companyEs from './locales/modules/company.es.json';
-import customersEs from './locales/modules/customers.es.json';
-import productsEs from './locales/modules/products.es.json';
-import adminEs from './locales/modules/admin.es.json';
+import * as translations from './locales/modules';
 
 const resources = {
   en: {
-    translation: {
-      common: commonEn,
-      navigation: navigationEn,
-      company: companyEn,
-      customers: customersEn,
-      products: productsEn,
-      admin: adminEn,
-    },
+    translation: translations.en,
   },
   pt: {
-    translation: {
-      common: commonPt,
-      navigation: navigationPt,
-      company: companyPt,
-      customers: customersPt,
-      products: productsPt,
-      admin: adminPt,
-    },
+    translation: translations.pt,
   },
   es: {
-    translation: {
-      common: commonEs,
-      navigation: navigationEs,
-      company: companyEs,
-      customers: customersEs,
-      products: productsEs,
-      admin: adminEs,
-    },
+    translation: translations.es,
   },
 };
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'en', // default language
+  lng: 'en',
   fallbackLng: {
     'pt-BR': ['pt', 'en'],
     'es-ES': ['es', 'en'],
@@ -69,12 +25,51 @@ i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
-  returnNull: false, // retorna a chave em vez de null quando a tradução não existe
-  returnEmptyString: false, // retorna a chave em vez de string vazia
+  returnNull: false,
+  returnEmptyString: false,
   parseMissingKeyHandler: (key) => {
     console.warn(`Translation missing for key: ${key}`);
-    return key;
+    // Retorna a chave formatada para ser mais legível
+    return key.split('.').pop()?.replace(/_/g, ' ') || key;
+  },
+  missingKeyHandler: (lng, ns, key, fallbackValue) => {
+    console.warn(`Missing translation - Language: ${lng}, Namespace: ${ns}, Key: ${key}`);
   },
 });
 
+// Adiciona validação em desenvolvimento
+if (process.env.NODE_ENV === 'development') {
+  const validateTranslations = () => {
+    const enKeys = Object.keys(flatten(resources.en.translation));
+    const ptKeys = Object.keys(flatten(resources.pt.translation));
+    const esKeys = Object.keys(flatten(resources.es.translation));
+
+    const missingPt = enKeys.filter(key => !ptKeys.includes(key));
+    const missingEs = enKeys.filter(key => !esKeys.includes(key));
+
+    if (missingPt.length > 0) {
+      console.warn('Missing Portuguese translations:', missingPt);
+    }
+
+    if (missingEs.length > 0) {
+      console.warn('Missing Spanish translations:', missingEs);
+    }
+  };
+
+  validateTranslations();
+}
+
 export default i18n;
+
+// Função auxiliar para achatar objetos
+function flatten(obj: any, prefix = ''): Record<string, string> {
+  return Object.keys(obj).reduce((acc: Record<string, string>, k: string) => {
+    const pre = prefix.length ? prefix + '.' : '';
+    if (typeof obj[k] === 'object' && obj[k] !== null && !Array.isArray(obj[k])) {
+      Object.assign(acc, flatten(obj[k], pre + k));
+    } else {
+      acc[pre + k] = obj[k];
+    }
+    return acc;
+  }, {});
+}

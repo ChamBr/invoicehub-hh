@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Plan } from "./types";
+import { PlanFeatures } from "@/i18n/types/translations";
 
 interface PlanCardProps {
   plan: Plan;
@@ -13,7 +14,7 @@ interface PlanCardProps {
 export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
   const { t } = useTranslation('profile');
 
-  const formatFeatureValue = (key: string, value: any) => {
+  const formatFeatureValue = (key: keyof PlanFeatures, value: boolean | number) => {
     if (typeof value === 'boolean') {
       return value ? t('plan.yes') : t('plan.no');
     }
@@ -23,12 +24,13 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
 
   const getActiveFeatures = () => {
     const features = typeof plan.features === 'string' 
-      ? JSON.parse(plan.features) 
-      : plan.features;
+      ? JSON.parse(plan.features) as PlanFeatures
+      : plan.features as PlanFeatures;
 
     return Object.entries(features).filter(([_, value]) => {
       if (typeof value === 'boolean') return value;
-      return value > 0;
+      if (typeof value === 'number') return value > 0;
+      return false;
     });
   };
 
@@ -58,7 +60,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect }: PlanCardProps) {
           <div key={key} className="flex items-center gap-2 text-sm">
             <Check className="h-4 w-4 text-primary flex-shrink-0" />
             <span>
-              {t(`plan.features.${key}`)}: {formatFeatureValue(key, value)}
+              {t(`plan.features.${key}`)}: {formatFeatureValue(key as keyof PlanFeatures, value as boolean | number)}
             </span>
           </div>
         ))}
