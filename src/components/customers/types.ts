@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const customerFormSchema = z.object({
+  id: z.string().optional(),
   type: z.enum(["personal", "company"]),
   name: z.string().min(1, "Nome é obrigatório"),
   email: z.string().email("Email inválido").optional().nullable(),
@@ -24,6 +25,25 @@ export interface CustomerFormProps {
   onCancel: () => void;
   initialData?: CustomerFormValues | null;
   subscriberId?: string;
+}
+
+export interface CustomerFromDB {
+  id: string;
+  created_at: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zip_code: string | null;
+  notes: string | null;
+  status: string;
+  type: string;
+  tax_exempt: boolean;
+  tax_id: string | null;
+  contact_name: string | null;
+  subscriber_id: string | null;
 }
 
 export const addressFormats = {

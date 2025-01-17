@@ -54,7 +54,7 @@ const CustomersIndex = () => {
     enabled: !!currentSubscriber?.subscriber_id,
   });
 
-  const customers: CustomerFormValues[] = (customersData || []).map((customer) => ({
+  const customers: CustomerFormValues[] = (customersData || []).map((customer: CustomerFromDB) => ({
     id: customer.id,
     type: customer.type as "personal" | "company",
     name: customer.name,
