@@ -1,0 +1,39 @@
+{
+  "plan": {
+    "title": "Meu Plano",
+    "monthly": "mês",
+    "yearly": "ano",
+    "features": "Recursos Incluídos",
+    "no_subscription": "Você ainda não tem um plano ativo",
+    "subscribe": "Assinar um Plano",
+    "change": "Alterar Plano",
+    "current_plan": "Plano Atual",
+    "available_plans": "Planos Disponíveis",
+    "upgrade": "Atualizar",
+    "yes": "Sim",
+    "no": "Não",
+    "unlimited": "Ilimitado",
+    "next_billing": "Próxima cobrança",
+    "descriptions": {
+      "free": "Perfeito para freelancers e pequenas empresas",
+      "starter": "Ótimo para empresas em crescimento",
+      "scale": "Para empresas estabelecidas"
+    },
+    "features": {
+      "max_users": "Máximo de Usuários",
+      "storage_gb": "Armazenamento GB",
+      "logo_replace": "Substituição de Logo",
+      "max_products": "Máximo de Produtos",
+      "ai_assistance": "Assistência IA",
+      "max_customers": "Máximo de Clientes",
+      "invoice_templates": "Templates de Fatura",
+      "max_invoices": "Máximo de Faturas por Mês",
+      "translations": "Suporte Multi-idiomas"
+    },
+    "no_plan_message": "Você não possui um plano ativo no momento. Por favor, selecione um plano abaixo para começar a usar todos os recursos.",
+    "change_success": "Plano alterado com sucesso",
+    "change_success_description": "Seu plano foi atualizado com sucesso",
+    "change_error": "Erro ao alterar plano",
+    "change_error_description": "Ocorreu um erro ao alterar seu plano. Por favor, tente novamente."
+  }
+}
