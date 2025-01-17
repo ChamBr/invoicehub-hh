@@ -9,7 +9,8 @@ interface SubscriberUser {
   role: "superadmin" | "admin" | "user" | "dependent";
   status: string;
   user: {
-    email: string;
+    full_name: string | null;
+    email: string | null;
   };
 }
 
@@ -38,20 +39,13 @@ export function SubscriberUsersDialog({
         .from("subscriber_users")
         .select(`
           *,
-          profiles:user_id (
-            email
-          )
+          user:profiles!subscriber_users_user_id_fkey(full_name, email)
         `)
         .eq("subscriber_id", subscriber.id);
 
       if (error) throw error;
 
-      return data.map(user => ({
-        ...user,
-        user: {
-          email: user.profiles?.email
-        }
-      }));
+      return data;
     },
     enabled: !!subscriber?.id,
   });

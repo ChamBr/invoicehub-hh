@@ -15,7 +15,10 @@ interface Subscriber {
   status: string | null;
   created_at: string;
   owner_id: string | null;
-  owner_email?: string;
+  owner?: {
+    full_name: string | null;
+    email: string | null;
+  };
   users_count: number;
 }
 
@@ -28,43 +31,21 @@ export default function SubscribersList() {
   const { data: subscribers, isLoading } = useQuery({
     queryKey: ["subscribers"],
     queryFn: async () => {
-      // Primeiro, buscar os subscribers
       const { data: subscribersData, error: subscribersError } = await supabase
         .from("subscribers")
         .select(`
           *,
-          subscriber_users (count)
+          owner:profiles!subscribers_owner_id_fkey(full_name, email),
+          users_count:subscriber_users(count)
         `)
         .order("created_at", { ascending: false });
 
       if (subscribersError) throw subscribersError;
 
-      // Buscar emails dos owners
-      const subscribersWithEmails = await Promise.all(
-        subscribersData.map(async (subscriber) => {
-          if (!subscriber.owner_id) {
-            return {
-              ...subscriber,
-              owner_email: null,
-              users_count: subscriber.subscriber_users[0]?.count || 0
-            };
-          }
-
-          const { data: profileData } = await supabase
-            .from("profiles")
-            .select("id, email")
-            .eq("id", subscriber.owner_id)
-            .single();
-
-          return {
-            ...subscriber,
-            owner_email: profileData?.email,
-            users_count: subscriber.subscriber_users[0]?.count || 0
-          };
-        })
-      );
-
-      return subscribersWithEmails;
+      return subscribersData.map(subscriber => ({
+        ...subscriber,
+        users_count: subscriber.users_count[0]?.count || 0
+      }));
     },
   });
 
