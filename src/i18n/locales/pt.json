@@ -51,7 +51,9 @@
       "change_success": "Plano alterado com sucesso",
       "change_success_description": "Seu plano foi atualizado com sucesso",
       "change_error": "Erro ao alterar plano",
-      "change_error_description": "Ocorreu um erro ao alterar seu plano. Tente novamente."
+      "change_error_description": "Ocorreu um erro ao alterar seu plano. Tente novamente.",
+      "current_plan": "Plano Atual",
+      "available_plans": "Planos Disponíveis"
     }
   }
 }
