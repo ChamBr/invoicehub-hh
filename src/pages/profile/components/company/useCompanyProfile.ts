@@ -23,6 +23,13 @@ export const useCompanyProfile = () => {
         throw error;
       }
 
+      // Garantir que os valores booleanos sejam convertidos corretamente
+      if (data) {
+        data.display_logo = Boolean(data.display_logo);
+        data.display_tax_id = Boolean(data.display_tax_id);
+        data.display_phone = Boolean(data.display_phone);
+      }
+
       console.log("Perfil da empresa carregado:", data);
       return data;
     },

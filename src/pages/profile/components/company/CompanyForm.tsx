@@ -53,9 +53,11 @@ export const CompanyForm = ({
           formData.set('logo_url', logoUrl);
           console.log('Logo URL salvo:', logoUrl);
         }
+      } else if (companyProfile?.logo_url) {
+        formData.set('logo_url', companyProfile.logo_url);
       }
       
-      // Garantir que todos os campos boolean sejam incluídos
+      // Garantir que todos os campos boolean sejam incluídos com seus valores corretos
       formData.set('display_tax_id', formData.get('display_tax_id') === 'on' ? 'true' : 'false');
       formData.set('display_phone', formData.get('display_phone') === 'on' ? 'true' : 'false');
       formData.set('display_logo', formData.get('display_logo') === 'on' ? 'true' : 'false');
@@ -84,7 +86,7 @@ export const CompanyForm = ({
           <LogoUpload
             logoUrl={companyProfile?.logo_url}
             onLogoChange={onLogoChange}
-            displayLogo={companyProfile?.display_logo}
+            displayLogo={companyProfile?.display_logo || false}
             onDisplayLogoChange={(checked) => {
               const form = document.querySelector('form');
               if (form) {
@@ -99,7 +101,7 @@ export const CompanyForm = ({
             <CompanyBasicInfo
               companyName={companyProfile?.company_name}
               taxId={companyProfile?.tax_id}
-              displayTaxId={companyProfile?.display_tax_id}
+              displayTaxId={companyProfile?.display_tax_id || false}
               country={companyProfile?.country}
               onCountryChange={(value) => {
                 const form = document.querySelector('form');
@@ -140,7 +142,7 @@ export const CompanyForm = ({
               mobile={companyProfile?.mobile}
               email={companyProfile?.email}
               website={companyProfile?.website}
-              displayPhone={companyProfile?.display_phone}
+              displayPhone={companyProfile?.display_phone || false}
               onDisplayPhoneChange={(checked) => {
                 const form = document.querySelector('form');
                 if (form) {
