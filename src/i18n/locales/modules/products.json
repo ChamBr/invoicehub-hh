@@ -1,0 +1,17 @@
+{
+  "title": "Products & Services",
+  "add": "Add Product/Service",
+  "table": {
+    "empty": "No products found",
+    "name": "Name",
+    "type": "Type",
+    "price": "Price",
+    "stock": "Stock",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "form": {
+    "price": "Price",
+    "sku": "SKU"
+  }
+}

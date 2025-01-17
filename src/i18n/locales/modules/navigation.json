@@ -1,0 +1,23 @@
+{
+  "records": "Records",
+  "services": "Services",
+  "user": "User",
+  "customers": "Customers",
+  "products": "Products",
+  "invoices": "Invoices",
+  "profile": "My Profile",
+  "company": "My Company",
+  "plan": "My Plan",
+  "invoice_settings": "Customize Invoice",
+  "admin": {
+    "subscribers": "Subscribers",
+    "plans": "Plans",
+    "integrations": "Integrations",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "feedback": {
+    "submit": "Support & Feedback",
+    "list": "Feedback List"
+  }
+}
