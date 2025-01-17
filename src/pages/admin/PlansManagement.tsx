@@ -1,9 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Plus, Edit2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -15,6 +17,8 @@ import {
 
 export const PlansManagement = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ["plans"],
@@ -26,6 +30,31 @@ export const PlansManagement = () => {
 
       if (error) throw error;
       return data || [];
+    },
+  });
+
+  const updatePlanStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from("plans")
+        .update({ status })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["plans"] });
+      toast({
+        title: "Status do plano atualizado",
+        description: "O status do plano foi atualizado com sucesso",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao atualizar status",
+        description: "Houve um erro ao atualizar o status do plano",
+        variant: "destructive",
+      });
     },
   });
 
@@ -110,15 +139,15 @@ export const PlansManagement = () => {
                 </TableCell>
                 <TableCell>{renderFeatures(plan.features)}</TableCell>
                 <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      plan.status === "active"
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {plan.status === "active" ? "Active" : "Inactive"}
-                  </span>
+                  <Switch
+                    checked={plan.status === "active"}
+                    onCheckedChange={(checked) => {
+                      updatePlanStatus.mutate({
+                        id: plan.id,
+                        status: checked ? "active" : "inactive"
+                      });
+                    }}
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
