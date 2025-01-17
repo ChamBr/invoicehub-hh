@@ -21,11 +21,11 @@ export function NewCustomerDialog({
           <DialogTitle>Novo Cliente</DialogTitle>
         </DialogHeader>
         <CustomerForm
-          onSuccess={(customerId: string) => {
-            if (onSuccess) onSuccess(customerId);
+          onSuccess={(customerId?: string) => {
+            if (onSuccess && customerId) onSuccess(customerId);
+            onOpenChange(false);
           }}
           onCancel={() => onOpenChange(false)}
-          subscriberId={subscriberId}
         />
       </DialogContent>
     </Dialog>

@@ -16,7 +16,7 @@ import { FormRow } from "@/components/forms/FormRow";
 import { FormActions } from "@/components/forms/FormActions";
 
 interface CustomerFormProps {
-  onSuccess: () => void;
+  onSuccess: (customerId?: string) => void;
   onCancel: () => void;
   initialData?: CustomerFormValues | null;
 }
