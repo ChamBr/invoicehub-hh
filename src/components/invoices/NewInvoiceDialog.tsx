@@ -10,6 +10,7 @@ import { useInvoiceCreation } from "./hooks/useInvoiceCreation";
 import { supabase } from "@/integrations/supabase/client";
 import { PencilIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 interface NewInvoiceDialogProps {
   open: boolean;
@@ -18,6 +19,7 @@ interface NewInvoiceDialogProps {
 
 export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) {
   const [isNewCustomerDialogOpen, setIsNewCustomerDialogOpen] = useState(false);
+  const { toast } = useToast();
   
   const { data: currentSubscriber } = useQuery({
     queryKey: ["current-subscriber"],
@@ -31,7 +33,25 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (subscriberError) throw subscriberError;
+      if (subscriberError) {
+        console.error("Error fetching subscriber:", subscriberError);
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Não foi possível carregar os dados do assinante.",
+        });
+        throw subscriberError;
+      }
+
+      if (!subscriberUser) {
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Usuário não está associado a nenhum assinante.",
+        });
+        return null;
+      }
+
       return subscriberUser;
     },
   });
