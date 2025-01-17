@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { LogOut, User, Users } from "lucide-react";
+import { LogOut, User, Users, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -100,17 +100,21 @@ const Navbar = () => {
     return null;
   }
 
+  const isSuperAdmin = userProfile?.role === 'superadmin';
+
   return (
     <nav className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mb-[1px]">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center gap-2">
-            {userProfile?.role === 'admin' ? (
+            {isSuperAdmin ? (
+              <Crown className="h-5 w-5 text-role-superadmin" />
+            ) : userProfile?.role === 'admin' ? (
               <Users className="h-5 w-5 text-primary" />
             ) : (
               <User className="h-5 w-5 text-primary" />
             )}
-            <span className="text-primary">
+            <span className={`${isSuperAdmin ? 'text-role-superadmin' : 'text-primary'}`}>
               {session.user.email}
               {userSubscription?.plan?.name && (
                 <span className="ml-2 text-sm text-gray-500">

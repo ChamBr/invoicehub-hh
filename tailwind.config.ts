@@ -51,9 +51,15 @@ export default {
           foreground: "#1F2937", // Dark slate
         },
         invoice: {
-          blue: "#0066CC", // Mantendo apenas para os templates de invoice
-          lightBlue: "#E6F0FF", // Mantendo apenas para os templates de invoice
-          tableHeader: "#004C99", // Mantendo apenas para os templates de invoice
+          blue: "#0066CC",
+          lightBlue: "#E6F0FF",
+          tableHeader: "#004C99",
+        },
+        role: {
+          superadmin: {
+            DEFAULT: "#8B5CF6", // Vivid Purple
+            light: "#E5DEFF", // Soft Purple
+          }
         }
       },
       borderRadius: {
