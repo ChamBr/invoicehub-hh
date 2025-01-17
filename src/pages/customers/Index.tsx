@@ -18,17 +18,40 @@ const CustomersIndex = () => {
   const [customerToDelete, setCustomerToDelete] = useState<CustomerFormValues | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data: customersData, error } = useQuery({
-    queryKey: ["customers"],
+  // Primeiro, buscar o subscriber_id do usuário atual
+  const { data: currentSubscriber } = useQuery({
+    queryKey: ["current-subscriber"],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data: subscriberUser, error: subscriberError } = await supabase
+        .from("subscriber_users")
+        .select("subscriber_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (subscriberError) throw subscriberError;
+      return subscriberUser;
+    },
+  });
+
+  // Agora, buscar apenas os clientes do assinante atual
+  const { data: customersData, error } = useQuery({
+    queryKey: ["customers", currentSubscriber?.subscriber_id],
+    queryFn: async () => {
+      if (!currentSubscriber?.subscriber_id) return [];
+
       const { data, error } = await supabase
         .from("customers")
         .select("*")
+        .eq("subscriber_id", currentSubscriber.subscriber_id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data as CustomerFromDB[];
     },
+    enabled: !!currentSubscriber?.subscriber_id,
   });
 
   const customers: CustomerFormValues[] = (customersData || []).map((customer) => ({
@@ -137,6 +160,7 @@ const CustomersIndex = () => {
                 setIsEditing(false);
               }}
               initialData={selectedCustomer}
+              subscriberId={currentSubscriber?.subscriber_id}
             />
           )}
         </DialogContent>
