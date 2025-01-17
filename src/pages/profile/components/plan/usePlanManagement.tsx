@@ -23,10 +23,7 @@ export function usePlanManagement() {
 
       if (error) throw error;
       
-      return data?.map(plan => ({
-        ...plan,
-        features: plan.features as unknown as PlanFeatures
-      })) as Plan[];
+      return data as Plan[];
     },
   });
 
@@ -46,16 +43,6 @@ export function usePlanManagement() {
         .maybeSingle();
 
       if (error) throw error;
-
-      if (data?.plan) {
-        return {
-          ...data,
-          plan: {
-            ...data.plan,
-            features: data.plan.features as unknown as PlanFeatures
-          }
-        };
-      }
       return data;
     },
     enabled: !!session?.user?.id,
