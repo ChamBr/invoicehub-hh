@@ -12,10 +12,11 @@ export interface PlanFeatures {
 export interface Plan {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   price_monthly: number;
   features: PlanFeatures;
-  status: string;
+  status: string | null;
+  billing_period: string;
 }
 
 export interface Subscription {
@@ -24,7 +25,8 @@ export interface Subscription {
   plan_id: string;
   status: string;
   start_date: string;
-  renewal_date: string;
+  renewal_date: string | null;
   billing_period: string;
+  customer_id: string;
   plan?: Plan;
 }

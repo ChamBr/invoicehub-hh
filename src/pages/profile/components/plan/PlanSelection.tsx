@@ -19,7 +19,12 @@ export function PlanSelection() {
         .order("price_monthly", { ascending: true });
 
       if (error) throw error;
-      return data as Plan[];
+      
+      // Transform the data to match our Plan type
+      return (data as any[]).map(plan => ({
+        ...plan,
+        features: plan.features as PlanFeatures
+      })) as Plan[];
     },
   });
 
@@ -55,10 +60,23 @@ export function PlanSelection() {
         return;
       }
 
+      // Primeiro, vamos criar um customer se necessário
+      const { data: customer, error: customerError } = await supabase
+        .from("customers")
+        .insert({
+          name: session.user.email,
+          email: session.user.email,
+        })
+        .select()
+        .single();
+
+      if (customerError) throw customerError;
+
       const { error: subscriptionError } = await supabase
         .from("subscriptions")
         .upsert({
           user_id: session.user.id,
+          customer_id: customer.id, // Usando o ID do customer criado
           plan_id: selectedPlan.id,
           status: "active",
           start_date: new Date().toISOString(),
