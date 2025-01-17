@@ -29,23 +29,25 @@ const SimulatedLogin = () => {
 
       if (subscriberError) throw subscriberError;
 
-      if (subscriberData?.owner_id) {
-        // Depois, buscar o perfil do owner
-        const { data: ownerData, error: ownerError } = await supabase
-          .from("profiles")
-          .select("id, email")
-          .eq("id", subscriberData.owner_id)
-          .single();
-
-        if (ownerError) throw ownerError;
-
-        return {
-          ...subscriberData,
-          owner: ownerData
-        };
+      // Se não houver owner_id, retornar apenas os dados do subscriber
+      if (!subscriberData?.owner_id) {
+        return subscriberData as SimulatedLoginData;
       }
 
-      return subscriberData;
+      // Depois, buscar o perfil do owner
+      const { data: ownerData, error: ownerError } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .eq("id", subscriberData.owner_id)
+        .single();
+
+      if (ownerError) throw ownerError;
+
+      // Retornar os dados combinados
+      return {
+        ...subscriberData,
+        owner: ownerData
+      } as SimulatedLoginData;
     },
   });
 
