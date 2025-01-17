@@ -29,7 +29,7 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
         .from("subscriber_users")
         .select("subscriber_id")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (subscriberError) throw subscriberError;
       return subscriberUser;
@@ -69,7 +69,6 @@ export function NewInvoiceDialog({ open, onOpenChange }: NewInvoiceDialogProps) 
 
               {selectedCustomer && (
                 <>
-                  {/* Template Info */}
                   <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
                     <div className="flex justify-between items-center">
                       <div>

@@ -11,14 +11,18 @@ export interface InvoiceItem {
 }
 
 export interface Invoice {
-  id: string;
-  customerId: string;
-  status: InvoiceStatus;
-  dueDate: string;
+  id?: string;
+  created_at?: string;
+  customer_id: string;
+  status?: InvoiceStatus;
+  due_date: string;
   total: number;
   notes?: string;
-  templateId?: string;
-  subscriberId?: string;
+  pdf_generated_at?: string;
+  email_sent_at?: string;
+  pdf_url?: string;
+  template_id?: string;
+  subscriber_id?: string;
   items: InvoiceItem[];
 }
 

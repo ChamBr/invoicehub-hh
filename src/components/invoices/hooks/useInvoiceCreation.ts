@@ -57,7 +57,7 @@ export const useInvoiceCreation = (subscriberId?: string) => {
     return true;
   };
 
-  const createInvoice = async (invoiceData: Partial<Invoice>) => {
+  const createInvoice = async (invoiceData: Invoice) => {
     const { data: invoice, error: invoiceError } = await supabase
       .from("invoices")
       .insert(invoiceData)
@@ -90,13 +90,14 @@ export const useInvoiceCreation = (subscriberId?: string) => {
     if (!validateInvoiceData()) return;
 
     try {
-      const invoiceData = {
+      const invoiceData: Invoice = {
         customer_id: selectedCustomer!,
         status,
         due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         total: calculateTotal(),
         template_id: activeTemplate?.id,
         subscriber_id: subscriberId,
+        items: items
       };
 
       const invoice = await createInvoice(invoiceData);
