@@ -5,25 +5,23 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
+interface PlanFeatures {
+  max_users: number;
+  max_invoices: number;
+  max_products: number;
+  max_customers: number;
+  logo_replace: boolean;
+  invoice_templates: boolean;
+  ai_translations: boolean;
+  disk_space: number;
+}
+
 interface Plan {
   id: string;
   name: string;
   description: string;
   price_monthly: number;
-  price_semiannual: number;
-  price_annual: number;
-  discount_semiannual: number;
-  discount_annual: number;
-  features: {
-    max_users: number;
-    max_invoices: number;
-    max_products: number;
-    max_customers: number;
-    logo_replace: boolean;
-    invoice_templates: boolean;
-    ai_translations: boolean;
-    disk_space: number;
-  };
+  features: PlanFeatures;
   status: string;
 }
 
@@ -85,31 +83,39 @@ export function PlanSelection() {
         return;
       }
 
-      // Verificar se o usuário já tem uma assinatura
-      const { data: customer } = await supabase
+      // Buscar ou criar o customer baseado no usuário logado
+      const { data: existingCustomer } = await supabase
         .from("customers")
         .select("id")
         .eq("email", user.email)
         .maybeSingle();
 
-      if (!customer) {
-        toast({
-          title: "Error",
-          description: "Customer not found",
-          variant: "destructive",
-        });
-        return;
+      let customerId;
+      if (existingCustomer) {
+        customerId = existingCustomer.id;
+      } else {
+        const { data: newCustomer, error: createError } = await supabase
+          .from("customers")
+          .insert({
+            email: user.email,
+            name: user.user_metadata?.full_name || user.email,
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        customerId = newCustomer.id;
       }
 
       // Atualizar ou criar nova assinatura
       const { error: subscriptionError } = await supabase
         .from("subscriptions")
         .upsert({
-          customer_id: customer.id,
+          customer_id: customerId,
           plan_id: selectedPlan.id,
           status: "active",
           start_date: new Date().toISOString(),
-          billing_period: "monthly", // Padrão inicial
+          billing_period: "monthly",
           renewal_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         });
 
@@ -139,7 +145,7 @@ export function PlanSelection() {
     }).format(value);
   };
 
-  const renderFeatureValue = (key: string, value: any) => {
+  const renderFeatureValue = (key: keyof PlanFeatures, value: any) => {
     if (key === "disk_space") {
       return value === -1 ? "Unlimited" : `${value}GB`;
     }
@@ -151,7 +157,7 @@ export function PlanSelection() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
+      <div className="flex justify-center items-center min-h-[200px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
@@ -159,7 +165,7 @@ export function PlanSelection() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {plans?.map((plan) => {
           const isCurrentPlan = currentSubscription?.plan_id === plan.id;
           const isUpgrade = currentSubscription && 
@@ -170,7 +176,7 @@ export function PlanSelection() {
           return (
             <Card 
               key={plan.id} 
-              className={`p-6 relative ${
+              className={`p-4 relative ${
                 isCurrentPlan ? "border-2 border-primary" : ""
               }`}
             >
@@ -179,31 +185,31 @@ export function PlanSelection() {
                   Current Plan
                 </div>
               )}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <h3 className="text-xl font-semibold">{plan.name}</h3>
+                  <h3 className="text-lg font-semibold">{plan.name}</h3>
                   <p className="text-sm text-gray-500">{plan.description}</p>
                 </div>
 
-                <div className="text-3xl font-bold text-primary">
+                <div className="text-2xl font-bold text-primary">
                   {formatCurrency(plan.price_monthly)}
                   <span className="text-sm font-normal text-gray-500">/month</span>
                 </div>
 
-                <div className="space-y-2">
-                  {Object.entries(plan.features).map(([key, value]) => (
+                <div className="space-y-2 text-sm">
+                  {Object.entries(plan.features as PlanFeatures).map(([key, value]) => (
                     <div key={key} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary" />
-                      <span className="text-sm">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <span>
                         {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: {" "}
-                        {renderFeatureValue(key, value)}
+                        {renderFeatureValue(key as keyof PlanFeatures, value)}
                       </span>
                     </div>
                   ))}
                 </div>
 
                 <Button
-                  className="w-full"
+                  className="w-full mt-4"
                   variant={isCurrentPlan ? "outline" : "default"}
                   onClick={() => handlePlanSelection(plan)}
                   disabled={isCurrentPlan}
