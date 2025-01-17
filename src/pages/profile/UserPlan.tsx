@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlanSelection } from "./components/plan/PlanSelection";
 import { useAuth } from "@/components/auth/AuthProvider";
 
@@ -117,9 +117,12 @@ const UserPlan = () => {
         </Card>
       ) : (
         <Card className="p-8 text-center bg-white shadow-sm mb-8">
-          <Alert className="mb-6">
-            <AlertDescription>
-              {t('profile.plan.no_active_plan')}
+          <Alert className="mb-6 bg-accent border-primary/20">
+            <AlertTitle className="text-lg font-semibold text-gray-900 mb-2">
+              {t('profile.plan.no_active_plan_title')}
+            </AlertTitle>
+            <AlertDescription className="text-gray-600">
+              {t('profile.plan.no_active_plan_description')}
             </AlertDescription>
           </Alert>
         </Card>
