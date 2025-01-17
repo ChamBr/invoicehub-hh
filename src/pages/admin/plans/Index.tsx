@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PlansHeader } from "./components/PlansHeader";
 import { PlanCard } from "./components/PlanCard";
 import { EditPlanDialog } from "./components/EditPlanDialog";
-import { Plan, PlanFeatures } from "@/pages/profile/components/plan/types";
+import { Plan } from "@/pages/profile/components/plan/types";
 
 export function PlansManagement() {
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
@@ -21,7 +21,9 @@ export function PlansManagement() {
       
       return data?.map(plan => ({
         ...plan,
-        features: plan.features as PlanFeatures
+        features: typeof plan.features === 'string' 
+          ? JSON.parse(plan.features) 
+          : plan.features
       })) as Plan[];
     },
   });
@@ -41,7 +43,9 @@ export function PlansManagement() {
       
       return {
         ...data,
-        features: data.features as PlanFeatures
+        features: typeof data.features === 'string' 
+          ? JSON.parse(data.features) 
+          : data.features
       } as Plan;
     },
     enabled: !!selectedPlanId,
