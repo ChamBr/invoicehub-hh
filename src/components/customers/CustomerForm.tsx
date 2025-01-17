@@ -1,12 +1,14 @@
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { CustomerFormValues } from "./types";
+import { CustomerFormValues, customerFormSchema } from "./types";
 import { CustomerTypeSelect } from "./CustomerTypeSelect";
 import { CustomerBasicInfo } from "./form/CustomerBasicInfo";
 import { CustomerContactForm } from "./form/CustomerContactForm";
 import { CustomerTaxForm } from "./form/CustomerTaxForm";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
 
 interface CustomerFormProps {
   onSuccess: () => void;
@@ -17,14 +19,18 @@ interface CustomerFormProps {
 
 export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }: CustomerFormProps) {
   const { toast } = useToast();
-  const [type, setType] = useState<"personal" | "company">("personal");
-  const [formData, setFormData] = useState<Partial<CustomerFormValues>>(
-    initialData || { type: "personal", status: "active" }
-  );
+  
+  const form = useForm<CustomerFormValues>({
+    resolver: zodResolver(customerFormSchema),
+    defaultValues: initialData || {
+      type: "personal",
+      status: "active",
+      country: "US",
+      taxExempt: false
+    }
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (data: CustomerFormValues) => {
     if (!subscriberId) {
       toast({
         variant: "destructive",
@@ -36,19 +42,19 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
 
     try {
       const customerData = {
-        name: formData.name,
-        type: formData.type,
-        contact_name: formData.contactName,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        zip_code: formData.zipCode,
-        tax_exempt: formData.taxExempt,
-        tax_id: formData.taxId,
-        notes: formData.notes,
-        status: formData.status,
+        name: data.name,
+        type: data.type,
+        contact_name: data.contactName,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        city: data.city,
+        state: data.state,
+        zip_code: data.zipCode,
+        tax_exempt: data.taxExempt,
+        tax_id: data.taxId,
+        notes: data.notes,
+        status: data.status,
         subscriber_id: subscriberId,
       };
 
@@ -86,19 +92,21 @@ export function CustomerForm({ onSuccess, onCancel, initialData, subscriberId }:
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CustomerTypeSelect value={type} onChange={setType} />
-      <CustomerBasicInfo formData={formData} setFormData={setFormData} />
-      <CustomerContactForm formData={formData} setFormData={setFormData} />
-      <CustomerTaxForm formData={formData} setFormData={setFormData} />
-      <div className="flex justify-end mt-4">
-        <Button variant="outline" onClick={onCancel}>
-          Cancelar
-        </Button>
-        <Button type="submit" className="ml-2">
-          Salvar
-        </Button>
-      </div>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <CustomerTypeSelect form={form} />
+        <CustomerBasicInfo form={form} />
+        <CustomerContactForm form={form} />
+        <CustomerTaxForm form={form} />
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onCancel}>
+            Cancelar
+          </Button>
+          <Button type="submit">
+            Salvar
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }
