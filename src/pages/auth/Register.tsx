@@ -108,10 +108,7 @@ const Register = () => {
                   backgroundColor: '#10B981',
                   color: 'white',
                   transition: 'background-color 0.2s ease',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: '#065F46'
-                  }
+                  cursor: 'pointer'
                 },
                 input: {
                   borderRadius: '0.5rem',
@@ -141,7 +138,7 @@ const Register = () => {
             }}
             theme="custom"
             providers={[]}
-            redirectTo={`${window.location.origin}/dashboard`}
+            redirectTo={window.location.origin + "/dashboard"}
             localization={{
               variables: {
                 sign_up: {
