@@ -21,13 +21,13 @@ const Login = () => {
         console.log("User signed in, redirecting...");
         toast({
           title: "Login realizado com sucesso",
-          description: "Redirecionando para a página inicial...",
+          description: "Redirecionando para o Dashboard...",
         });
-        navigate("/");
+        navigate("/dashboard");
       }
 
-      if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
-        console.log("User signed out or deleted");
+      if (event === 'SIGNED_OUT') {
+        console.log("User signed out");
         navigate("/login");
       }
     });
@@ -38,11 +38,11 @@ const Login = () => {
   useEffect(() => {
     if (session) {
       console.log("Session exists, redirecting...");
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [session, navigate]);
 
-  const handleAuthError = (error: any) => {
+  const handleAuthError = (error: Error) => {
     console.error("Auth error:", error);
     let errorMessage = "Ocorreu um erro durante o login";
 
@@ -93,6 +93,7 @@ const Login = () => {
 
           <Auth
             supabaseClient={supabase}
+            view="sign_in"
             appearance={{
               theme: ThemeSupa,
               variables: {
@@ -147,7 +148,6 @@ const Login = () => {
             }}
             theme="custom"
             providers={[]}
-            onError={handleAuthError}
             localization={{
               variables: {
                 sign_in: {
@@ -156,7 +156,8 @@ const Login = () => {
                   button_label: 'Entrar',
                   loading_button_label: 'Entrando...',
                   email_input_placeholder: 'Seu e-mail',
-                  password_input_placeholder: 'Sua senha'
+                  password_input_placeholder: 'Sua senha',
+                  link_text: 'Não tem uma conta? Cadastre-se'
                 }
               }
             }}

@@ -21,9 +21,9 @@ const Register = () => {
         console.log("User signed in, redirecting...");
         toast({
           title: "Cadastro realizado com sucesso",
-          description: "Redirecionando para a página inicial...",
+          description: "Redirecionando para o Dashboard...",
         });
-        navigate("/");
+        navigate("/dashboard");
       }
     });
 
@@ -33,7 +33,7 @@ const Register = () => {
   useEffect(() => {
     if (session) {
       console.log("Session exists, redirecting...");
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [session, navigate]);
 
@@ -126,6 +126,12 @@ const Register = () => {
             }}
             theme="custom"
             providers={[]}
+            options={{
+              emailRedirectTo: `${window.location.origin}/dashboard`,
+              data: {
+                full_name: '',
+              }
+            }}
             localization={{
               variables: {
                 sign_up: {
@@ -135,6 +141,8 @@ const Register = () => {
                   loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
                   password_input_placeholder: 'Sua senha',
+                  full_name_label: 'Nome completo',
+                  full_name_placeholder: 'Digite seu nome completo',
                   link_text: 'Já tem uma conta? Entre'
                 }
               }
