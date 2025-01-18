@@ -57,6 +57,10 @@ const Login = () => {
     );
   }
 
+  const handleAuthEvent = () => {
+    setHasInteracted(true);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gray-50/50">
       <div className="p-4">
@@ -138,7 +142,7 @@ const Login = () => {
             }}
             theme="custom"
             providers={[]}
-            redirectTo={window.location.origin + "/dashboard"}
+            redirectTo="https://lovable.dev/projects/6da9d077-2ba7-49f4-b3cc-e8187014400b/dashboard"
             localization={{
               variables: {
                 sign_in: {
@@ -152,7 +156,6 @@ const Login = () => {
                 }
               }
             }}
-            onSubmit={() => setHasInteracted(true)}
           />
 
           {showError && hasInteracted && (
