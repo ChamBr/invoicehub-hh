@@ -25,9 +25,17 @@ const SimulatedLogin = () => {
         .from("subscribers")
         .select("id, company_name, owner_id")
         .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (subscriberError) throw subscriberError;
+      if (subscriberError) {
+        console.error("Error fetching subscriber:", subscriberError);
+        throw subscriberError;
+      }
+
+      // Se não houver dados do subscriber, retornar null
+      if (!subscriberData) {
+        return null;
+      }
 
       // Se não houver owner_id, retornar apenas os dados do subscriber
       if (!subscriberData?.owner_id) {
@@ -62,6 +70,7 @@ const SimulatedLogin = () => {
         }
       };
     },
+    retry: false
   });
 
   const exitSimulation = async () => {
@@ -81,6 +90,7 @@ const SimulatedLogin = () => {
     }
   };
 
+  // Se não houver dados de login simulado ou não houver owner, não renderizar nada
   if (!simulatedLogin?.owner?.id) return null;
 
   return (
