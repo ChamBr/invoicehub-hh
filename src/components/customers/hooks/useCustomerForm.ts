@@ -23,7 +23,10 @@ export function useCustomerForm(
         .eq("user_id", session.user.id)
         .maybeSingle();
 
-      if (subscriberUserError) throw subscriberUserError;
+      if (subscriberUserError) {
+        console.error("Erro ao buscar subscriber_user:", subscriberUserError);
+        throw subscriberUserError;
+      }
 
       // Se já existe um subscriber_user, retornar o subscriber_id
       if (subscriberUser?.subscriber_id) {
@@ -39,9 +42,16 @@ export function useCustomerForm(
           status: "active"
         })
         .select()
-        .single();
+        .maybeSingle();
 
-      if (subscriberError) throw subscriberError;
+      if (subscriberError) {
+        console.error("Erro ao criar subscriber:", subscriberError);
+        throw subscriberError;
+      }
+
+      if (!newSubscriber) {
+        throw new Error("Falha ao criar novo subscriber");
+      }
 
       // Criar subscriber_user associação
       const { error: linkError } = await supabase
@@ -53,7 +63,10 @@ export function useCustomerForm(
           status: "active"
         });
 
-      if (linkError) throw linkError;
+      if (linkError) {
+        console.error("Erro ao criar subscriber_user:", linkError);
+        throw linkError;
+      }
 
       return { subscriber_id: newSubscriber.id };
     },
