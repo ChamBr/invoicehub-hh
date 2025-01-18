@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
@@ -167,6 +167,16 @@ const Login = () => {
               </Alert>
             </div>
           )}
+
+          <div className="mt-4 text-center">
+            <Button
+              variant="link"
+              onClick={() => navigate("/register")}
+              className="text-primary hover:text-primary-dark"
+            >
+              Não tem uma conta? Cadastre-se
+            </Button>
+          </div>
         </div>
       </div>
     </div>

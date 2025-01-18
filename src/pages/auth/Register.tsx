@@ -66,11 +66,11 @@ const Register = () => {
       <div className="p-4">
         <Button
           variant="ghost"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />
-          Voltar para página inicial
+          Voltar para login
         </Button>
       </div>
 
@@ -172,6 +172,16 @@ const Register = () => {
               </Alert>
             </div>
           )}
+
+          <div className="mt-4 text-center">
+            <Button
+              variant="link"
+              onClick={() => navigate("/login")}
+              className="text-primary hover:text-primary-dark"
+            >
+              Já tem uma conta? Entre aqui
+            </Button>
+          </div>
         </div>
       </div>
     </div>
