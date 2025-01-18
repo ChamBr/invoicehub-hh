@@ -9,7 +9,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface MetricSettingsProps {
   metrics: Array<{
@@ -23,6 +23,7 @@ interface MetricSettingsProps {
 export function MetricSettings({ metrics, onUpdate }: MetricSettingsProps) {
   const [localMetrics, setLocalMetrics] = useState(metrics);
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleToggle = (id: string) => {
     const enabledCount = localMetrics.filter((m) => m.isEnabled).length;
