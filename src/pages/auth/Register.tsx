@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -13,10 +13,12 @@ const Register = () => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showError, setShowError] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event, session);
+      if (!hasInteracted) return;
       
       if (event === 'SIGNED_IN' && session) {
         toast({
@@ -28,6 +30,7 @@ const Register = () => {
       }
 
       if (event === 'SIGNED_OUT') {
+        setShowError(true);
         toast({
           title: "Erro no cadastro",
           description: "Verifique os dados informados e tente novamente.",
@@ -37,7 +40,7 @@ const Register = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [navigate, toast, hasInteracted]);
 
   useEffect(() => {
     if (session) {
@@ -105,7 +108,10 @@ const Register = () => {
                   backgroundColor: '#10B981',
                   color: 'white',
                   transition: 'background-color 0.2s ease',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: '#065F46'
+                  }
                 },
                 input: {
                   borderRadius: '0.5rem',
@@ -144,20 +150,23 @@ const Register = () => {
                   button_label: 'Criar conta',
                   loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
-                  password_input_placeholder: 'Sua senha (mínimo 6 caracteres)',
+                  password_input_placeholder: 'Sua senha',
                   link_text: 'Já tem uma conta? Entre'
                 }
               }
             }}
+            onSubmit={() => setHasInteracted(true)}
           />
 
-          <div className="mt-4">
-            <Alert variant="default" className="bg-gray-50 border-gray-200">
-              <AlertDescription>
-                A senha deve ter no mínimo 6 caracteres.
-              </AlertDescription>
-            </Alert>
-          </div>
+          {showError && hasInteracted && (
+            <div className="mt-4">
+              <Alert variant="default" className="bg-gray-50 border-gray-200">
+                <AlertDescription>
+                  A senha deve ter no mínimo 6 caracteres.
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
         </div>
       </div>
     </div>
