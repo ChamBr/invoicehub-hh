@@ -595,6 +595,48 @@ export type Database = {
           },
         ]
       }
+      landing_page_content: {
+        Row: {
+          button_link: string | null
+          button_text: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          order_index: number
+          section: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          button_link?: string | null
+          button_text?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          order_index?: number
+          section: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          button_link?: string | null
+          button_text?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          order_index?: number
+          section?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_integrations: {
         Row: {
           config: Json | null
@@ -922,6 +964,48 @@ export type Database = {
           feature_key?: string
           id?: string
           is_enabled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          company: string | null
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string
+          rating: number | null
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name: string
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name?: string
+          rating?: number | null
+          role?: string | null
           updated_at?: string
         }
         Relationships: []
