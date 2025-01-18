@@ -1,6 +1,8 @@
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { CustomerFormValues } from "../types";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function useCustomerForm(
   onSuccess: () => void, 
@@ -8,10 +10,62 @@ export function useCustomerForm(
   subscriberId?: string
 ) {
   const { toast } = useToast();
-  const isLoadingSubscriber = false;
+  const { session } = useAuth();
+  const { data: currentSubscriber, isLoading: isLoadingSubscriber } = useQuery({
+    queryKey: ["current-subscriber"],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+
+      // Primeiro, tentar encontrar um subscriber_user existente
+      const { data: subscriberUser, error: subscriberUserError } = await supabase
+        .from("subscriber_users")
+        .select("subscriber_id")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (subscriberUserError) throw subscriberUserError;
+
+      // Se já existe um subscriber_user, retornar o subscriber_id
+      if (subscriberUser?.subscriber_id) {
+        return { subscriber_id: subscriberUser.subscriber_id };
+      }
+
+      // Se não existe, criar um novo subscriber
+      const { data: newSubscriber, error: subscriberError } = await supabase
+        .from("subscribers")
+        .insert({
+          company_name: `Company of ${session.user.email}`,
+          owner_id: session.user.id,
+          status: "active"
+        })
+        .select()
+        .single();
+
+      if (subscriberError) throw subscriberError;
+
+      // Criar subscriber_user associação
+      const { error: linkError } = await supabase
+        .from("subscriber_users")
+        .insert({
+          subscriber_id: newSubscriber.id,
+          user_id: session.user.id,
+          role: "admin",
+          status: "active"
+        });
+
+      if (linkError) throw linkError;
+
+      return { subscriber_id: newSubscriber.id };
+    },
+    enabled: !!session?.user?.id,
+  });
 
   const handleSubmit = async (data: CustomerFormValues) => {
     try {
+      if (!currentSubscriber?.subscriber_id) {
+        throw new Error("Subscriber não encontrado");
+      }
+
       const customerData = {
         name: data.name,
         type: data.type,
@@ -26,7 +80,7 @@ export function useCustomerForm(
         tax_id: data.taxId,
         notes: data.notes,
         status: data.status,
-        subscriber_id: subscriberId,
+        subscriber_id: currentSubscriber.subscriber_id,
       };
 
       if (initialData?.id) {
