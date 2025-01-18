@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-const Login = () => {
+const Register = () => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -20,7 +20,7 @@ const Login = () => {
       if (event === 'SIGNED_IN' && session) {
         console.log("User signed in, redirecting...");
         toast({
-          title: "Login realizado com sucesso",
+          title: "Cadastro realizado com sucesso",
           description: "Redirecionando para a página inicial...",
         });
         navigate("/");
@@ -65,12 +65,13 @@ const Login = () => {
               InvoiceHub
             </h1>
             <h2 className="text-2xl font-semibold text-gray-900">
-              Entrar na sua conta
+              Criar nova conta
             </h2>
           </div>
 
           <Auth
             supabaseClient={supabase}
+            view="sign_up"
             appearance={{
               theme: ThemeSupa,
               variables: {
@@ -127,13 +128,14 @@ const Login = () => {
             providers={[]}
             localization={{
               variables: {
-                sign_in: {
+                sign_up: {
                   email_label: 'E-mail',
                   password_label: 'Senha',
-                  button_label: 'Entrar',
-                  loading_button_label: 'Entrando...',
+                  button_label: 'Criar conta',
+                  loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
-                  password_input_placeholder: 'Sua senha'
+                  password_input_placeholder: 'Sua senha',
+                  link_text: 'Já tem uma conta? Entre'
                 }
               }
             }}
@@ -141,10 +143,10 @@ const Login = () => {
 
           <div className="mt-4 text-center">
             <Link 
-              to="/register"
+              to="/login"
               className="text-sm text-primary hover:text-primary-dark transition-colors"
             >
-              Não tem uma conta? Cadastre-se aqui
+              Já tem uma conta? Entre aqui
             </Link>
           </div>
         </div>
@@ -153,4 +155,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -10,6 +10,7 @@ import Sidebar from "./components/layout/Sidebar";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import Dashboard from "./pages/Dashboard";
 import CustomersIndex from "./pages/customers/Index";
 import ProductsIndex from "./pages/products/Index";
@@ -31,7 +32,7 @@ const queryClient = new QueryClient();
 
 const AppLayout = () => {
   const location = useLocation();
-  const isPublicRoute = ["/", "/login"].includes(location.pathname);
+  const isPublicRoute = ["/", "/login", "/register"].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,6 +72,7 @@ const AppLayout = () => {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </main>
       )}
