@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Register = () => {
   const { session, isLoading } = useAuth();
@@ -17,13 +18,24 @@ const Register = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session);
       
+      if (event === 'SIGNED_UP') {
+        toast({
+          title: "Conta criada com sucesso",
+          description: "Bem-vindo ao InvoiceHub!",
+        });
+      }
+
       if (event === 'SIGNED_IN' && session) {
         console.log("User signed in, redirecting...");
-        toast({
-          title: "Cadastro realizado com sucesso",
-          description: "Redirecionando para o Dashboard...",
-        });
         navigate("/dashboard");
+      }
+
+      if (event === 'USER_ERROR') {
+        toast({
+          title: "Erro no cadastro",
+          description: "Verifique os dados informados e tente novamente.",
+          variant: "destructive",
+        });
       }
     });
 
@@ -135,20 +147,19 @@ const Register = () => {
                   button_label: 'Criar conta',
                   loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
-                  password_input_placeholder: 'Sua senha',
+                  password_input_placeholder: 'Sua senha (mínimo 6 caracteres)',
                   link_text: 'Já tem uma conta? Entre'
                 }
               }
             }}
           />
 
-          <div className="mt-4 text-center">
-            <Link 
-              to="/login"
-              className="text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              Já tem uma conta? Entre aqui
-            </Link>
+          <div className="mt-4">
+            <Alert variant="default" className="bg-gray-50 border-gray-200">
+              <AlertDescription>
+                A senha deve ter no mínimo 6 caracteres.
+              </AlertDescription>
+            </Alert>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Login = () => {
   const { session, isLoading } = useAuth();
@@ -26,9 +27,12 @@ const Login = () => {
         navigate("/dashboard");
       }
 
-      if (event === 'SIGNED_OUT') {
-        console.log("User signed out");
-        navigate("/login");
+      if (event === 'USER_ERROR') {
+        toast({
+          title: "Erro de autenticação",
+          description: "Credenciais inválidas. Por favor, verifique seu email e senha.",
+          variant: "destructive",
+        });
       }
     });
 
@@ -41,29 +45,6 @@ const Login = () => {
       navigate("/dashboard");
     }
   }, [session, navigate]);
-
-  const handleAuthError = (error: Error) => {
-    console.error("Auth error:", error);
-    let errorMessage = "Ocorreu um erro durante o login";
-
-    if (error.message.includes("Invalid login credentials")) {
-      errorMessage = "Email ou senha incorretos";
-    } else if (error.message.includes("Email not confirmed")) {
-      errorMessage = "Por favor, confirme seu email antes de fazer login";
-    } else if (error.message.includes("Invalid email")) {
-      errorMessage = "Email inválido";
-    } else if (error.message.includes("missing email")) {
-      errorMessage = "Por favor, insira seu email";
-    } else if (error.message.includes("missing password")) {
-      errorMessage = "Por favor, insira sua senha";
-    }
-
-    toast({
-      title: "Erro de autenticação",
-      description: errorMessage,
-      variant: "destructive",
-    });
-  };
 
   if (isLoading) {
     return (
@@ -154,6 +135,7 @@ const Login = () => {
             }}
             theme="custom"
             providers={[]}
+            redirectTo={`${window.location.origin}/dashboard`}
             localization={{
               variables: {
                 sign_in: {
@@ -162,12 +144,20 @@ const Login = () => {
                   button_label: 'Entrar',
                   loading_button_label: 'Entrando...',
                   email_input_placeholder: 'Seu e-mail',
-                  password_input_placeholder: 'Sua senha',
+                  password_input_placeholder: 'Sua senha (mínimo 6 caracteres)',
                   link_text: 'Não tem uma conta? Cadastre-se'
                 }
               }
             }}
           />
+
+          <div className="mt-4">
+            <Alert variant="default" className="bg-gray-50 border-gray-200">
+              <AlertDescription>
+                A senha deve ter no mínimo 6 caracteres.
+              </AlertDescription>
+            </Alert>
+          </div>
         </div>
       </div>
     </div>
