@@ -18,19 +18,16 @@ const Register = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session);
       
-      if (event === 'SIGNED_UP') {
+      if (event === 'SIGNED_IN' && session) {
         toast({
           title: "Conta criada com sucesso",
           description: "Bem-vindo ao InvoiceHub!",
         });
-      }
-
-      if (event === 'SIGNED_IN' && session) {
         console.log("User signed in, redirecting...");
         navigate("/dashboard");
       }
 
-      if (event === 'USER_ERROR') {
+      if (event === 'SIGNED_OUT') {
         toast({
           title: "Erro no cadastro",
           description: "Verifique os dados informados e tente novamente.",

@@ -27,7 +27,7 @@ const Login = () => {
         navigate("/dashboard");
       }
 
-      if (event === 'USER_ERROR') {
+      if (event === 'SIGNED_OUT') {
         toast({
           title: "Erro de autenticação",
           description: "Credenciais inválidas. Por favor, verifique seu email e senha.",
