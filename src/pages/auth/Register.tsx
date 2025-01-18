@@ -152,8 +152,15 @@ const Register = () => {
                   loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
                   password_input_placeholder: 'Sua senha',
-                  link_text: 'Já tem uma conta? Entre'
+                  link_text: 'Já tem uma conta? Entre',
+                  confirmation_text: 'Ao criar uma conta, você concorda com nossos termos de serviço',
                 }
+              }
+            }}
+            options={{
+              emailRedirectTo: "https://lovable.dev/projects/6da9d077-2ba7-49f4-b3cc-e8187014400b/dashboard",
+              data: {
+                full_name: ''
               }
             }}
           />
