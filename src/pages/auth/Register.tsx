@@ -81,8 +81,11 @@ const Register = () => {
               InvoiceHub
             </h1>
             <h2 className="text-2xl font-semibold text-gray-900">
-              Criar nova conta
+              Criar sua conta
             </h2>
+            <p className="text-sm text-gray-600">
+              Preencha os dados abaixo para começar a usar o InvoiceHub
+            </p>
           </div>
 
           <Auth
@@ -152,7 +155,7 @@ const Register = () => {
                   loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
                   password_input_placeholder: 'Sua senha',
-                  link_text: 'Já tem uma conta? Entre',
+                  link_text: 'Já tem uma conta? Entre aqui',
                   confirmation_text: 'Ao criar uma conta, você concorda com nossos termos de serviço',
                 }
               }
