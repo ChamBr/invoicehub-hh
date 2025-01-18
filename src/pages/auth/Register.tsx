@@ -126,12 +126,7 @@ const Register = () => {
             }}
             theme="custom"
             providers={[]}
-            options={{
-              emailRedirectTo: `${window.location.origin}/dashboard`,
-              data: {
-                full_name: '',
-              }
-            }}
+            redirectTo={`${window.location.origin}/dashboard`}
             localization={{
               variables: {
                 sign_up: {
