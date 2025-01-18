@@ -25,6 +25,11 @@ const Login = () => {
         });
         navigate("/");
       }
+
+      if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+        console.log("User signed out or deleted");
+        navigate("/login");
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -36,6 +41,23 @@ const Login = () => {
       navigate("/");
     }
   }, [session, navigate]);
+
+  const handleAuthError = (error: any) => {
+    console.error("Auth error:", error);
+    let errorMessage = "Ocorreu um erro durante o login";
+
+    if (error.message.includes("missing email")) {
+      errorMessage = "Por favor, insira seu email";
+    } else if (error.message.includes("invalid credentials")) {
+      errorMessage = "Email ou senha inválidos";
+    }
+
+    toast({
+      title: "Erro de autenticação",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  };
 
   if (isLoading) {
     return (
@@ -125,6 +147,7 @@ const Login = () => {
             }}
             theme="custom"
             providers={[]}
+            onError={handleAuthError}
             localization={{
               variables: {
                 sign_in: {

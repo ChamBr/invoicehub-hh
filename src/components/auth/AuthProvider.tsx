@@ -44,6 +44,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (error) {
           console.error('Erro ao recuperar sessão:', error);
+          toast({
+            title: "Erro de autenticação",
+            description: "Não foi possível recuperar sua sessão",
+            variant: "destructive",
+          });
           return;
         }
 
@@ -55,6 +60,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       } catch (error) {
         console.error('Erro ao inicializar autenticação:', error);
+        toast({
+          title: "Erro de inicialização",
+          description: "Ocorreu um erro ao inicializar a autenticação",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -91,6 +101,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (newSession) {
             setSession(newSession);
           }
+          break;
+
+        case 'USER_DELETED':
+          await clearSession();
           break;
       }
       
