@@ -46,10 +46,16 @@ const Login = () => {
     console.error("Auth error:", error);
     let errorMessage = "Ocorreu um erro durante o login";
 
-    if (error.message.includes("missing email")) {
+    if (error.message.includes("Invalid login credentials")) {
+      errorMessage = "Email ou senha incorretos";
+    } else if (error.message.includes("Email not confirmed")) {
+      errorMessage = "Por favor, confirme seu email antes de fazer login";
+    } else if (error.message.includes("Invalid email")) {
+      errorMessage = "Email inválido";
+    } else if (error.message.includes("missing email")) {
       errorMessage = "Por favor, insira seu email";
-    } else if (error.message.includes("invalid credentials")) {
-      errorMessage = "Email ou senha inválidos";
+    } else if (error.message.includes("missing password")) {
+      errorMessage = "Por favor, insira sua senha";
     }
 
     toast({
@@ -162,15 +168,6 @@ const Login = () => {
               }
             }}
           />
-
-          <div className="mt-4 text-center">
-            <Link 
-              to="/register"
-              className="text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              Não tem uma conta? Cadastre-se aqui
-            </Link>
-          </div>
         </div>
       </div>
     </div>

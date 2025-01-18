@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Session } from "@supabase/supabase-js";
+import { Session, AuthChangeEvent } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionManagement } from "@/hooks/use-session";
 import { useToast } from "@/hooks/use-toast";
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, newSession) => {
       console.log('Estado de autenticação alterado:', event);
       
       switch (event) {
@@ -101,10 +101,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (newSession) {
             setSession(newSession);
           }
-          break;
-
-        case 'USER_DELETED':
-          await clearSession();
           break;
       }
       
