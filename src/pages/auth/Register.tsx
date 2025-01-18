@@ -141,8 +141,6 @@ const Register = () => {
                   loading_button_label: 'Criando conta...',
                   email_input_placeholder: 'Seu e-mail',
                   password_input_placeholder: 'Sua senha',
-                  full_name_label: 'Nome completo',
-                  full_name_placeholder: 'Digite seu nome completo',
                   link_text: 'Já tem uma conta? Entre'
                 }
               }
