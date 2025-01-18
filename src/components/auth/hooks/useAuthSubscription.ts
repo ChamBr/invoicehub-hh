@@ -1,50 +1,52 @@
 import { useEffect } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { Session, AuthChangeEvent } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 export const useAuthSubscription = (
   setSession: (session: Session | null) => void,
-  handleSessionEnd: (message: string) => void
+  setIsLoading: (loading: boolean) => void
 ) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
-        console.log('Auth state changed:', event);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, newSession) => {
+      console.log('Estado de autenticação alterado:', event);
+      
+      switch (event) {
+        case 'SIGNED_IN':
+          if (newSession?.refresh_token) {
+            setSession(newSession);
+            toast({
+              title: "Login realizado",
+              description: "Bem-vindo ao sistema",
+            });
+          }
+          break;
         
-        switch (event) {
-          case "SIGNED_OUT":
-            setSession(null);
-            handleSessionEnd("Você foi desconectado.");
-            break;
-          
-          case "SIGNED_IN":
-            if (newSession) {
-              setSession(newSession);
-              toast({
-                title: "Login realizado",
-                description: "Bem-vindo ao sistema",
-              });
-            }
-            break;
-          
-          case "TOKEN_REFRESHED":
-            if (newSession) {
-              console.log("Token atualizado com sucesso");
-              setSession(newSession);
-            }
-            break;
-          
-          default:
-            break;
-        }
+        case 'SIGNED_OUT':
+          setSession(null);
+          break;
+        
+        case 'TOKEN_REFRESHED':
+          if (newSession?.refresh_token) {
+            console.log('Token atualizado com sucesso');
+            setSession(newSession);
+          }
+          break;
+        
+        case 'USER_UPDATED':
+          if (newSession) {
+            setSession(newSession);
+          }
+          break;
       }
-    );
+      
+      setIsLoading(false);
+    });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [setSession, handleSessionEnd, toast]);
+  }, [setSession, setIsLoading, toast]);
 };

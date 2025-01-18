@@ -6,12 +6,12 @@ export const useSessionCheck = (
   checkValidity: () => Promise<void>
 ) => {
   useEffect(() => {
-    if (!session) return;
+    if (session?.refresh_token) {
+      const interval = setInterval(async () => {
+        await checkValidity();
+      }, 4 * 60 * 1000); // Verifica a cada 4 minutos
 
-    const checkInterval = setInterval(() => {
-      checkValidity();
-    }, 4 * 60 * 1000); // Verifica a cada 4 minutos
-
-    return () => clearInterval(checkInterval);
+      return () => clearInterval(interval);
+    }
   }, [session, checkValidity]);
 };

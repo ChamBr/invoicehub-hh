@@ -1,8 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Session, AuthChangeEvent } from "@supabase/supabase-js";
+import { createContext, useContext } from "react";
+import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useSessionManagement } from "@/hooks/use-session";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthState } from "./hooks/useAuthState";
+import { useAuthInitialization } from "./hooks/useAuthInitialization";
+import { useAuthSubscription } from "./hooks/useAuthSubscription";
+import { useSessionCheck } from "./hooks/useSessionCheck";
 
 interface AuthContextType {
   session: Session | null;
@@ -17,8 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { session, setSession, isLoading, setIsLoading } = useAuthState();
   const { toast } = useToast();
   const { checkSessionValidity } = useSessionManagement(session, setSession);
 
@@ -37,90 +40,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Erro ao recuperar sessão:', error);
-          toast({
-            title: "Erro de autenticação",
-            description: "Não foi possível recuperar sua sessão",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (currentSession?.refresh_token) {
-          setSession(currentSession);
-        } else {
-          console.log('Nenhuma sessão válida encontrada');
-          await clearSession();
-        }
-      } catch (error) {
-        console.error('Erro ao inicializar autenticação:', error);
-        toast({
-          title: "Erro de inicialização",
-          description: "Ocorreu um erro ao inicializar a autenticação",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, newSession) => {
-      console.log('Estado de autenticação alterado:', event);
-      
-      switch (event) {
-        case 'SIGNED_IN':
-          if (newSession?.refresh_token) {
-            setSession(newSession);
-            toast({
-              title: "Login realizado",
-              description: "Bem-vindo ao sistema",
-            });
-          }
-          break;
-        
-        case 'SIGNED_OUT':
-          setSession(null);
-          break;
-        
-        case 'TOKEN_REFRESHED':
-          if (newSession?.refresh_token) {
-            console.log('Token atualizado com sucesso');
-            setSession(newSession);
-          }
-          break;
-        
-        case 'USER_UPDATED':
-          if (newSession) {
-            setSession(newSession);
-          }
-          break;
-      }
-      
-      setIsLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [toast]);
-
-  useEffect(() => {
-    if (session?.refresh_token) {
-      const interval = setInterval(async () => {
-        await checkSessionValidity();
-      }, 4 * 60 * 1000); // Verifica a cada 4 minutos
-
-      return () => clearInterval(interval);
-    }
-  }, [session, checkSessionValidity]);
+  useAuthInitialization(setSession, setIsLoading, clearSession);
+  useAuthSubscription(setSession, setIsLoading);
+  useSessionCheck(session, checkSessionValidity);
 
   return (
     <AuthContext.Provider value={{ session, isLoading, clearSession }}>
