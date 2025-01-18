@@ -157,12 +157,7 @@ const Register = () => {
                 }
               }
             }}
-            options={{
-              emailRedirectTo: "https://lovable.dev/projects/6da9d077-2ba7-49f4-b3cc-e8187014400b/dashboard",
-              data: {
-                full_name: ''
-              }
-            }}
+            magicLink={false}
           />
 
           {showError && hasInteracted && (
