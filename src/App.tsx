@@ -57,11 +57,11 @@ const AppLayout = () => {
                 <Route path="/profile/invoice-settings" element={<ProtectedRoute><InvoiceSettings /></ProtectedRoute>} />
                 
                 {/* Rotas administrativas */}
-                <Route path="/admin/subscribers" element={<ProtectedRoute><AdminSubscribers /></ProtectedRoute>} />
-                <Route path="/admin/plans" element={<ProtectedRoute><AdminPlans /></ProtectedRoute>} />
-                <Route path="/admin/integrations" element={<ProtectedRoute><AdminIntegrations /></ProtectedRoute>} />
-                <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>} />
-                <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+                <Route path="/admin/subscribers" element={<ProtectedRoute requiresAdmin><AdminSubscribers /></ProtectedRoute>} />
+                <Route path="/admin/plans" element={<ProtectedRoute requiresAdmin><AdminPlans /></ProtectedRoute>} />
+                <Route path="/admin/integrations" element={<ProtectedRoute requiresAdmin><AdminIntegrations /></ProtectedRoute>} />
+                <Route path="/admin/reports" element={<ProtectedRoute requiresAdmin><AdminReports /></ProtectedRoute>} />
+                <Route path="/admin/settings" element={<ProtectedRoute requiresAdmin><AdminSettings /></ProtectedRoute>} />
               </Routes>
             </main>
             <Footer />

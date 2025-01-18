@@ -7,11 +7,37 @@ import { cn } from "@/lib/utils";
 import MenuGroup from "./sidebar/MenuGroup";
 import { createMenuItems } from "./sidebar/menuItems";
 import AdminModeSwitch from "./navbar/AdminModeSwitch";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { t } = useTranslation();
+  const { session } = useAuth();
   const menuItems = createMenuItems(t);
+
+  // Buscar o perfil do usuário para verificar a role
+  const { data: profile } = useQuery({
+    queryKey: ['profile', session?.user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session?.user?.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Erro ao buscar perfil:', error);
+        return null;
+      }
+
+      return data;
+    },
+    enabled: !!session?.user?.id
+  });
+
+  const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
 
   return (
     <div
@@ -41,16 +67,18 @@ const Sidebar = () => {
         <MenuGroup title={t('navigation.user')} items={menuItems.user} collapsed={collapsed} />
       </div>
       
-      <div className="mt-auto border-t border-gray-200 bg-gray-50 p-4">
-        {!collapsed && (
-          <div className="mb-4">
-            <AdminModeSwitch />
+      {isAdmin && (
+        <div className="mt-auto border-t border-gray-200 bg-gray-50 p-4">
+          {!collapsed && (
+            <div className="mb-4">
+              <AdminModeSwitch />
+            </div>
+          )}
+          <div className="py-2">
+            <MenuGroup title="Administração" items={menuItems.admin} collapsed={collapsed} />
           </div>
-        )}
-        <div className="py-2">
-          <MenuGroup title="Administração" items={menuItems.admin} collapsed={collapsed} />
         </div>
-      </div>
+      )}
     </div>
   );
 };
