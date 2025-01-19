@@ -81,34 +81,33 @@ export function usePlanManagement() {
 
     setIsLoading(true);
     try {
-      // Primeiro, verificar se o usuário já tem um customer
-      const { data: existingCustomer, error: customerQueryError } = await supabase
-        .from("customers")
+      // Primeiro, verificar se o usuário já tem um subscriber
+      const { data: existingSubscriber, error: subscriberQueryError } = await supabase
+        .from("subscribers")
         .select("*")
-        .eq("subscriber_id", session.user.id)
+        .eq("owner_id", session.user.id)
         .maybeSingle();
 
-      if (customerQueryError) throw customerQueryError;
+      if (subscriberQueryError) throw subscriberQueryError;
 
-      let customerId;
+      let subscriberId;
 
-      if (!existingCustomer) {
-        // Criar um novo customer se não existir
-        const { data: newCustomer, error: createCustomerError } = await supabase
-          .from("customers")
+      if (!existingSubscriber) {
+        // Criar um novo subscriber se não existir
+        const { data: newSubscriber, error: createSubscriberError } = await supabase
+          .from("subscribers")
           .insert({
-            name: session.user.email,
-            email: session.user.email,
-            subscriber_id: session.user.id,
-            status: "active"
+            owner_id: session.user.id,
+            status: "active",
+            company_name: session.user.email?.split('@')[0] || 'My Company'
           })
           .select()
           .single();
 
-        if (createCustomerError) throw createCustomerError;
-        customerId = newCustomer.id;
+        if (createSubscriberError) throw createSubscriberError;
+        subscriberId = newSubscriber.id;
       } else {
-        customerId = existingCustomer.id;
+        subscriberId = existingSubscriber.id;
       }
 
       // Verificar se já existe uma assinatura ativa
@@ -136,7 +135,6 @@ export function usePlanManagement() {
           .from("subscriptions")
           .insert({
             user_id: session.user.id,
-            customer_id: customerId,
             plan_id: newPlan.id,
             status: "active",
             billing_period: "monthly",
@@ -145,6 +143,14 @@ export function usePlanManagement() {
 
         if (error) throw error;
       }
+
+      // Atualizar o subscriber com o plano selecionado
+      const { error: updateSubscriberError } = await supabase
+        .from("subscribers")
+        .update({ plan_id: newPlan.id })
+        .eq("id", subscriberId);
+
+      if (updateSubscriberError) throw updateSubscriberError;
 
       toast({
         title: t("profile.plan.change_success"),
