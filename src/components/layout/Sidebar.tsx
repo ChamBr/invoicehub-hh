@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { AlignLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,75 +8,19 @@ import MenuGroup from "./sidebar/MenuGroup";
 import { createMenuItems } from "./sidebar/menuItems";
 import AdminModeSwitch from "./navbar/AdminModeSwitch";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useProfile } from "@/hooks/use-profile";
+import { useSubscription } from "@/hooks/use-subscription";
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { t } = useTranslation();
   const { session } = useAuth();
+  const { isAdmin } = useProfile();
+  const { hasActiveSubscription } = useSubscription();
   const menuItems = createMenuItems(t);
-
-  // Buscar o perfil do usuário para verificar a role
-  const { data: profile } = useQuery({
-    queryKey: ['profile', session?.user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session?.user?.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Erro ao buscar perfil:', error);
-        return null;
-      }
-
-      return data;
-    },
-    enabled: !!session?.user?.id
-  });
-
-  // Verificar se o usuário tem uma assinatura ativa
-  const { data: hasActiveSubscription } = useQuery({
-    queryKey: ['active-subscription', session?.user?.id],
-    queryFn: async () => {
-      if (!session?.user?.id) return false;
-
-      // Primeiro, verificar se o usuário está vinculado a algum subscriber
-      const { data: subscriberUser, error } = await supabase
-        .from('subscriber_users')
-        .select(`
-          subscriber:subscribers(
-            id,
-            status,
-            plan_id
-          )
-        `)
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Erro ao buscar assinatura:', error);
-        return false;
-      }
-
-      console.log('Subscriber data:', subscriberUser);
-      
-      // Verificar se há um subscriber e se ele tem um plano associado
-      const hasPlan = !!subscriberUser?.subscriber?.plan_id;
-      console.log('Has plan:', hasPlan);
-      
-      return hasPlan;
-    },
-    enabled: !!session?.user?.id,
-  });
-
-  const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
 
   // Filtrar os itens do menu com base na assinatura
   const filterMenuItems = (items: any[]) => {
-    console.log('Has active subscription:', hasActiveSubscription);
     return items.filter(item => !item.requiresSubscription || hasActiveSubscription);
   };
 
