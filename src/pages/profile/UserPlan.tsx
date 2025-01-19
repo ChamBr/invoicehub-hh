@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslation } from "react-i18next";
-import PlanSelection from "./components/plan/PlanSelection";
+import { PlanSelection } from "./components/plan/PlanSelection";
 
 const UserPlan = () => {
   const location = useLocation();
