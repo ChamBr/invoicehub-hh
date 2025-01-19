@@ -26,11 +26,11 @@ export const UserPlan = () => {
 
   return (
     <div className="space-y-8">
-      {requiresSubscription && (
+      {(requiresSubscription || !currentPlan) && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {t('plan.subscription_required')}
+            {t('plan.no_subscription')}
           </AlertDescription>
         </Alert>
       )}

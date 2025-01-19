@@ -30,8 +30,9 @@ export function usePlanManagement() {
     },
   });
 
+  // Buscar a assinatura ativa do usuário
   const { data: currentSubscription } = useQuery({
-    queryKey: ["current-subscription"],
+    queryKey: ["current-subscription", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return null;
 
@@ -42,7 +43,8 @@ export function usePlanManagement() {
           plan:plans(*)
         `)
         .eq("user_id", session.user.id)
-        .eq("status", "active");
+        .eq("status", "active")
+        .maybeSingle();
 
       if (error) {
         console.error("Error fetching subscription:", error);
@@ -54,23 +56,15 @@ export function usePlanManagement() {
         throw error;
       }
 
-      if (!data || data.length === 0) {
-        return null;
-      }
+      if (!data) return null;
 
-      const subscription = data[0];
-      
-      if (subscription?.plan) {
-        return {
-          ...subscription,
-          plan: {
-            ...subscription.plan,
-            features: subscription.plan.features as unknown as PlanFeatures
-          }
-        };
-      }
-      
-      return subscription;
+      return {
+        ...data,
+        plan: data.plan ? {
+          ...data.plan,
+          features: data.plan.features as unknown as PlanFeatures
+        } : null
+      };
     },
     enabled: !!session?.user?.id,
   });
@@ -87,43 +81,34 @@ export function usePlanManagement() {
 
     setIsLoading(true);
     try {
+      // Verificar se já existe uma assinatura ativa
       const { data: existingSubscription } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('status', 'active');
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .eq("status", "active")
+        .maybeSingle();
 
-      if (existingSubscription && existingSubscription.length > 0) {
+      if (existingSubscription) {
+        // Atualizar assinatura existente
         const { error } = await supabase
-          .from('subscriptions')
+          .from("subscriptions")
           .update({ 
             plan_id: newPlan.id,
             updated_at: new Date().toISOString()
           })
-          .eq('id', existingSubscription[0].id);
+          .eq("id", existingSubscription.id);
 
         if (error) throw error;
       } else {
-        // Criar uma entrada fictícia de customer para satisfazer a restrição de foreign key
-        const { data: customerData, error: customerError } = await supabase
-          .from('customers')
-          .insert({
-            name: session.user.email,
-            subscriber_id: session.user.id
-          })
-          .select()
-          .single();
-
-        if (customerError) throw customerError;
-
+        // Criar nova assinatura
         const { error } = await supabase
-          .from('subscriptions')
+          .from("subscriptions")
           .insert({
             user_id: session.user.id,
-            customer_id: customerData.id, // Usando o customer_id criado
             plan_id: newPlan.id,
-            status: 'active',
-            billing_period: 'monthly',
+            status: "active",
+            billing_period: "monthly",
             start_date: new Date().toISOString(),
           });
 
@@ -131,15 +116,15 @@ export function usePlanManagement() {
       }
 
       toast({
-        title: t('profile.plan.change_success'),
-        description: t('profile.plan.change_success_description'),
+        title: t("profile.plan.change_success"),
+        description: t("profile.plan.change_success_description"),
       });
     } catch (error) {
-      console.error('Error changing plan:', error);
+      console.error("Error changing plan:", error);
       toast({
         variant: "destructive",
-        title: t('profile.plan.change_error'),
-        description: t('profile.plan.change_error_description'),
+        title: t("profile.plan.change_error"),
+        description: t("profile.plan.change_error_description"),
       });
     } finally {
       setIsLoading(false);
