@@ -890,60 +890,6 @@ export type Database = {
           },
         ]
       }
-      subscriptions: {
-        Row: {
-          billing_period: string
-          created_at: string
-          customer_id: string
-          end_date: string | null
-          id: string
-          plan_id: string
-          renewal_date: string | null
-          start_date: string
-          status: string | null
-          user_id: string | null
-        }
-        Insert: {
-          billing_period: string
-          created_at?: string
-          customer_id: string
-          end_date?: string | null
-          id?: string
-          plan_id: string
-          renewal_date?: string | null
-          start_date?: string
-          status?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          billing_period?: string
-          created_at?: string
-          customer_id?: string
-          end_date?: string | null
-          id?: string
-          plan_id?: string
-          renewal_date?: string | null
-          start_date?: string
-          status?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subscriptions_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "subscriptions_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plans"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       system_settings: {
         Row: {
           created_at: string
