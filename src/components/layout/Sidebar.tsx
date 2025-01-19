@@ -54,8 +54,9 @@ const Sidebar = () => {
         `)
         .eq('user_id', session.user.id)
         .eq('subscribers.status', 'active')
-        .maybeSingle();
+        .single();
 
+      console.log('Subscriber data:', subscriberUser); // Debug log
       return !!subscriberUser?.subscriber?.plan_id;
     },
     enabled: !!session?.user?.id,
@@ -65,6 +66,7 @@ const Sidebar = () => {
 
   // Filtrar os itens do menu com base na assinatura
   const filterMenuItems = (items: any[]) => {
+    console.log('Has active subscription:', hasActiveSubscription); // Debug log
     return items.filter(item => !item.requiresSubscription || hasActiveSubscription);
   };
 
