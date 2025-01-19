@@ -7,17 +7,20 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
     {
       to: "/customers",
       icon: createElement(Users, { className: "h-4 w-4" }),
-      label: t('navigation.customers')
+      label: t('navigation.customers'),
+      requiresSubscription: true
     },
     {
       to: "/products",
       icon: createElement(Package, { className: "h-4 w-4" }),
-      label: t('navigation.products')
+      label: t('navigation.products'),
+      requiresSubscription: true
     },
     {
       to: "/invoices",
       icon: createElement(FileText, { className: "h-4 w-4" }),
-      label: t('navigation.invoices')
+      label: t('navigation.invoices'),
+      requiresSubscription: true
     }
   ],
   user: [
@@ -39,7 +42,8 @@ export const createMenuItems = (t: (key: string) => string): MenuItems => ({
     {
       to: "/profile/invoice-settings",
       icon: createElement(Receipt, { className: "h-4 w-4" }),
-      label: t('navigation.invoice_settings')
+      label: t('navigation.invoice_settings'),
+      requiresSubscription: true
     },
     {
       to: "/feedback",

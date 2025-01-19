@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { AlignLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,36 @@ const Sidebar = () => {
     enabled: !!session?.user?.id
   });
 
+  // Verificar se o usuário tem uma assinatura ativa
+  const { data: hasActiveSubscription } = useQuery({
+    queryKey: ['active-subscription', session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return false;
+
+      const { data: subscriberUser } = await supabase
+        .from('subscriber_users')
+        .select(`
+          subscriber:subscribers!inner(
+            id,
+            status,
+            plan_id
+          )
+        `)
+        .eq('user_id', session.user.id)
+        .eq('subscribers.status', 'active')
+        .maybeSingle();
+
+      return !!subscriberUser?.subscriber?.plan_id;
+    },
+    enabled: !!session?.user?.id,
+  });
+
   const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
+
+  // Filtrar os itens do menu com base na assinatura
+  const filterMenuItems = (items: any[]) => {
+    return items.filter(item => !item.requiresSubscription || hasActiveSubscription);
+  };
 
   return (
     <div
@@ -63,8 +92,16 @@ const Sidebar = () => {
       </div>
 
       <div className="flex-1 py-6 space-y-6 overflow-y-auto">
-        <MenuGroup title={t('navigation.records')} items={menuItems.records} collapsed={collapsed} />
-        <MenuGroup title={t('navigation.user')} items={menuItems.user} collapsed={collapsed} />
+        <MenuGroup 
+          title={t('navigation.records')} 
+          items={filterMenuItems(menuItems.records)} 
+          collapsed={collapsed} 
+        />
+        <MenuGroup 
+          title={t('navigation.user')} 
+          items={filterMenuItems(menuItems.user)} 
+          collapsed={collapsed} 
+        />
       </div>
       
       {isAdmin && (

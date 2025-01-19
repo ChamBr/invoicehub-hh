@@ -4,6 +4,7 @@ export interface MenuItem {
   to: string;
   icon: ReactNode;
   label: string;
+  requiresSubscription?: boolean;
 }
 
 export interface MenuItems {
