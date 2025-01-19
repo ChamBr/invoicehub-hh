@@ -43,21 +43,31 @@ const Sidebar = () => {
     queryFn: async () => {
       if (!session?.user?.id) return false;
 
-      const { data: subscriberUser } = await supabase
+      // Primeiro, verificar se o usuário está vinculado a algum subscriber
+      const { data: subscriberUser, error } = await supabase
         .from('subscriber_users')
         .select(`
-          subscriber:subscribers!inner(
+          subscriber:subscribers(
             id,
             status,
             plan_id
           )
         `)
         .eq('user_id', session.user.id)
-        .eq('subscribers.status', 'active')
-        .single();
+        .maybeSingle();
 
-      console.log('Subscriber data:', subscriberUser); // Debug log
-      return !!subscriberUser?.subscriber?.plan_id;
+      if (error) {
+        console.error('Erro ao buscar assinatura:', error);
+        return false;
+      }
+
+      console.log('Subscriber data:', subscriberUser);
+      
+      // Verificar se há um subscriber e se ele tem um plano associado
+      const hasPlan = !!subscriberUser?.subscriber?.plan_id;
+      console.log('Has plan:', hasPlan);
+      
+      return hasPlan;
     },
     enabled: !!session?.user?.id,
   });
@@ -66,7 +76,7 @@ const Sidebar = () => {
 
   // Filtrar os itens do menu com base na assinatura
   const filterMenuItems = (items: any[]) => {
-    console.log('Has active subscription:', hasActiveSubscription); // Debug log
+    console.log('Has active subscription:', hasActiveSubscription);
     return items.filter(item => !item.requiresSubscription || hasActiveSubscription);
   };
 
