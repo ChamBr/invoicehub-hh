@@ -22,18 +22,23 @@ const UserProfile = () => {
     enabled: !!session?.user?.id,
   });
 
-  const { data: userSubscription } = useQuery({
-    queryKey: ['userSubscription'],
+  const { data: subscriberData } = useQuery({
+    queryKey: ['userSubscriber'],
     queryFn: async () => {
       if (!session?.user?.id) return null;
       const { data, error } = await supabase
-        .from('subscriptions')
+        .from('subscriber_users')
         .select(`
-          *,
-          plan:plans(name)
+          subscriber:subscribers!inner(
+            id,
+            status,
+            plan:plans(
+              name
+            )
+          )
         `)
         .eq('user_id', session.user.id)
-        .eq('status', 'active')
+        .eq('subscribers.status', 'active')
         .maybeSingle();
       
       if (error) throw error;
@@ -55,9 +60,9 @@ const UserProfile = () => {
       )}
       <span className={`${isSuperAdmin ? 'text-role-superadmin' : 'text-primary'}`}>
         {session.user.email}
-        {userSubscription?.plan?.name && (
+        {subscriberData?.subscriber?.plan?.name && (
           <span className="ml-2 text-sm text-gray-500">
-            (PLAN: {userSubscription.plan.name})
+            (PLAN: {subscriberData.subscriber.plan.name})
           </span>
         )}
       </span>

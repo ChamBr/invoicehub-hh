@@ -43,30 +43,57 @@ export function PlanSelection({
         return;
       }
 
-      const { data: customer, error: customerError } = await supabase
-        .from("customers")
-        .insert({
-          name: session.user.email,
-          email: session.user.email,
-        })
-        .select()
-        .single();
+      // Verificar se o usuário já tem um subscriber
+      const { data: existingSubscriber, error: subscriberError } = await supabase
+        .from("subscribers")
+        .select("*")
+        .eq("owner_id", session.user.id)
+        .maybeSingle();
 
-      if (customerError) throw customerError;
+      if (subscriberError) throw subscriberError;
 
-      const { error: subscriptionError } = await supabase
-        .from("subscriptions")
-        .upsert({
-          user_id: session.user.id,
-          customer_id: customer.id,
-          plan_id: selectedPlan.id,
-          status: "active",
-          start_date: new Date().toISOString(),
-          billing_period: "monthly",
-          renewal_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        });
+      let subscriberId;
 
-      if (subscriptionError) throw subscriptionError;
+      if (!existingSubscriber) {
+        // Criar um novo subscriber se não existir
+        const { data: newSubscriber, error: createError } = await supabase
+          .from("subscribers")
+          .insert({
+            owner_id: session.user.id,
+            status: "active",
+            company_name: session.user.email?.split('@')[0] || 'My Company',
+            plan_id: selectedPlan.id
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        subscriberId = newSubscriber.id;
+
+        // Criar vínculo subscriber_user
+        const { error: linkError } = await supabase
+          .from("subscriber_users")
+          .insert({
+            subscriber_id: subscriberId,
+            user_id: session.user.id,
+            role: 'admin'
+          });
+
+        if (linkError) throw linkError;
+      } else {
+        subscriberId = existingSubscriber.id;
+        
+        // Atualizar o plano do subscriber existente
+        const { error: updateError } = await supabase
+          .from("subscribers")
+          .update({ 
+            plan_id: selectedPlan.id,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", subscriberId);
+
+        if (updateError) throw updateError;
+      }
 
       toast({
         title: "Sucesso",
