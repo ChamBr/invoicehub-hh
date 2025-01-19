@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import "@/i18n/config";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import SubscriptionProtectedRoute from "./components/auth/SubscriptionProtectedRoute";
 import Sidebar from "./components/layout/Sidebar";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -44,9 +45,27 @@ const AppLayout = () => {
             <main className="flex-1 overflow-y-auto bg-gray-50 px-4 py-8">
               <Routes>
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                <Route path="/customers" element={<ProtectedRoute><CustomersIndex /></ProtectedRoute>} />
-                <Route path="/products" element={<ProtectedRoute><ProductsIndex /></ProtectedRoute>} />
-                <Route path="/invoices" element={<ProtectedRoute><InvoicesIndex /></ProtectedRoute>} />
+                <Route path="/customers" element={
+                  <ProtectedRoute>
+                    <SubscriptionProtectedRoute>
+                      <CustomersIndex />
+                    </SubscriptionProtectedRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/products" element={
+                  <ProtectedRoute>
+                    <SubscriptionProtectedRoute>
+                      <ProductsIndex />
+                    </SubscriptionProtectedRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/invoices" element={
+                  <ProtectedRoute>
+                    <SubscriptionProtectedRoute>
+                      <InvoicesIndex />
+                    </SubscriptionProtectedRoute>
+                  </ProtectedRoute>
+                } />
                 <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
                 <Route path="/feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
                 
@@ -54,7 +73,13 @@ const AppLayout = () => {
                 <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
                 <Route path="/profile/company" element={<ProtectedRoute><CompanyDetails /></ProtectedRoute>} />
                 <Route path="/profile/plan" element={<ProtectedRoute><UserPlan /></ProtectedRoute>} />
-                <Route path="/profile/invoice-settings" element={<ProtectedRoute><InvoiceSettings /></ProtectedRoute>} />
+                <Route path="/profile/invoice-settings" element={
+                  <ProtectedRoute>
+                    <SubscriptionProtectedRoute>
+                      <InvoiceSettings />
+                    </SubscriptionProtectedRoute>
+                  </ProtectedRoute>
+                } />
                 
                 {/* Rotas administrativas */}
                 <Route path="/admin/subscribers" element={<ProtectedRoute requiresAdmin><AdminSubscribers /></ProtectedRoute>} />

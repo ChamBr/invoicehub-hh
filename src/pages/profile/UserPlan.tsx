@@ -4,9 +4,14 @@ import { AvailablePlans } from "./components/plan/AvailablePlans";
 import { LoadingState } from "./components/plan/LoadingState";
 import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useLocation } from "react-router-dom";
+import { AlertCircle } from "lucide-react";
 
 export const UserPlan = () => {
   const { t } = useTranslation('profile');
+  const location = useLocation();
+  const requiresSubscription = location.state?.requiresSubscription;
+
   const {
     plans,
     currentPlan,
@@ -21,6 +26,15 @@ export const UserPlan = () => {
 
   return (
     <div className="space-y-8">
+      {requiresSubscription && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {t('plan.subscription_required')}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {!currentPlan && (
         <Alert variant="default" className="bg-muted">
           <AlertDescription>
