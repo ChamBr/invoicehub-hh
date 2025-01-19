@@ -13,6 +13,7 @@ export const useSessionManagement = (
   const clearSession = () => {
     setSession(null);
     localStorage.removeItem('supabase.auth.token');
+    localStorage.removeItem('supabase.auth.refreshToken');
   };
 
   const handleSessionEnd = (message: string) => {
@@ -32,6 +33,10 @@ export const useSessionManagement = (
       
       if (error) {
         console.error("Erro ao atualizar sessão:", error);
+        if (error.message.includes('refresh_token_not_found')) {
+          handleSessionEnd("Sua sessão expirou. Por favor, faça login novamente.");
+          return false;
+        }
         handleSessionEnd("Erro ao atualizar sua sessão. Por favor, faça login novamente.");
         return false;
       }
@@ -56,7 +61,6 @@ export const useSessionManagement = (
     const now = new Date();
     const timeUntilExpiration = expirationTime.getTime() - now.getTime();
 
-    // Se a sessão já expirou
     if (timeUntilExpiration <= 0) {
       const refreshSuccessful = await refreshSession(session);
       if (!refreshSuccessful) {
@@ -65,7 +69,6 @@ export const useSessionManagement = (
       return;
     }
 
-    // Se a sessão vai expirar em menos de 5 minutos, tenta renovar
     if (timeUntilExpiration < 5 * 60 * 1000) {
       const refreshSuccessful = await refreshSession(session);
       if (!refreshSuccessful) {

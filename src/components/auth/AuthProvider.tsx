@@ -23,13 +23,13 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { session, setSession, isLoading, setIsLoading } = useAuthState();
   const { toast } = useToast();
-  const { checkSessionValidity } = useSessionManagement(session, setSession);
 
   const clearSession = async () => {
     try {
       await supabase.auth.signOut();
       setSession(null);
       localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('supabase.auth.refreshToken');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
       toast({
@@ -39,6 +39,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   };
+
+  const { checkSessionValidity } = useSessionManagement(session, setSession);
 
   useAuthInitialization(setSession, setIsLoading, clearSession);
   useAuthSubscription(setSession, setIsLoading);
