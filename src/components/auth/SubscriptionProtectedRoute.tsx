@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 interface SubscriptionProtectedRouteProps {
   children: React.ReactNode;
@@ -50,6 +51,17 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
     enabled: !!session?.user?.id,
   });
 
+  useEffect(() => {
+    if (!isLoading && !hasActiveSubscription) {
+      toast({
+        title: t('subscription.required.title', 'Plano necessário'),
+        description: t('subscription.required.description', 'Para acessar esta funcionalidade, você precisa selecionar um plano.'),
+        variant: "default",
+        duration: 5000,
+      });
+    }
+  }, [hasActiveSubscription, isLoading, toast, t]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -59,15 +71,6 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
   }
 
   if (!hasActiveSubscription) {
-    // Mostrar toast informando que precisa de um plano ativo
-    toast({
-      title: t('subscription.required.title', 'Plano necessário'),
-      description: t('subscription.required.description', 'Para acessar esta funcionalidade, você precisa selecionar um plano.'),
-      variant: "default",
-      duration: 5000,
-    });
-
-    // Redirecionar para a página de planos com state
     return (
       <Navigate 
         to="/profile/plan" 
