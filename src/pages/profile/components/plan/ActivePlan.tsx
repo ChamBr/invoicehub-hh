@@ -2,14 +2,12 @@ import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { Plan } from "./types";
-import { format } from "date-fns";
 
 interface ActivePlanProps {
   plan: Plan;
-  nextBillingDate?: string;
 }
 
-export function ActivePlan({ plan, nextBillingDate }: ActivePlanProps) {
+export function ActivePlan({ plan }: ActivePlanProps) {
   const { t } = useTranslation('profile');
 
   const formatFeatureValue = (key: string, value: any) => {
@@ -47,11 +45,6 @@ export function ActivePlan({ plan, nextBillingDate }: ActivePlanProps) {
             ${plan.price_monthly}
             <span className="text-sm font-normal text-muted-foreground">/{t('plan.monthly')}</span>
           </div>
-          {nextBillingDate && (
-            <p className="text-sm text-muted-foreground mt-1">
-              {t('plan.next_billing')}: {format(new Date(nextBillingDate), 'MM/dd/yyyy')}
-            </p>
-          )}
         </div>
       </div>
 
