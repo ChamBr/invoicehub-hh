@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface SimulatedLoginData {
   owner: {
@@ -15,10 +16,28 @@ interface SimulatedLoginData {
 
 export const useSimulatedLogin = () => {
   const { toast } = useToast();
+  const { session } = useAuth();
 
   const { data: simulatedLogin, isLoading } = useQuery<SimulatedLoginData | null>({
     queryKey: ["simulated-login"],
     queryFn: async () => {
+      // Primeiro verificar se o usuário é admin
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session?.user?.id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+        return null;
+      }
+
+      // Se não for admin, não buscar dados de simulação
+      if (profileData?.role !== 'admin' && profileData?.role !== 'superadmin') {
+        return null;
+      }
+
       const { data: subscriberData, error: subscriberError } = await supabase
         .from("subscribers")
         .select("id, company_name, owner_id")
@@ -27,7 +46,7 @@ export const useSimulatedLogin = () => {
 
       if (subscriberError) {
         console.error("Error fetching subscriber:", subscriberError);
-        throw subscriberError;
+        return null;
       }
 
       if (!subscriberData) {
@@ -52,7 +71,7 @@ export const useSimulatedLogin = () => {
 
       if (ownerError) {
         console.error("Error fetching owner:", ownerError);
-        throw ownerError;
+        return null;
       }
 
       return {
@@ -66,7 +85,7 @@ export const useSimulatedLogin = () => {
         },
       };
     },
-    retry: false,
+    enabled: !!session?.user?.id,
   });
 
   const exitSimulation = async () => {
