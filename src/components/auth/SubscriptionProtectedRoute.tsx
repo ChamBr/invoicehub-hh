@@ -39,20 +39,20 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
           subscriber:subscribers!inner(
             id,
             status,
-            plan_id
+            plan:plans(*)
           )
         `)
         .eq('user_id', session.user.id)
         .eq('subscribers.status', 'active')
         .maybeSingle();
 
-      return !!subscriberUser?.subscriber?.plan_id;
+      return !!subscriberUser?.subscriber?.plan;
     },
     enabled: !!session?.user?.id,
   });
 
   useEffect(() => {
-    if (!isLoading && !hasActiveSubscription) {
+    if (!isLoading && !hasActiveSubscription && location.pathname !== '/profile/plan') {
       toast({
         title: t('subscription.required.title', 'Plano necessário'),
         description: t('subscription.required.description', 'Para acessar esta funcionalidade, você precisa selecionar um plano.'),
@@ -60,7 +60,7 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
         duration: 5000,
       });
     }
-  }, [hasActiveSubscription, isLoading, toast, t]);
+  }, [hasActiveSubscription, isLoading, toast, t, location.pathname]);
 
   if (isLoading) {
     return (
@@ -70,7 +70,7 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
     );
   }
 
-  if (!hasActiveSubscription) {
+  if (!hasActiveSubscription && location.pathname !== '/profile/plan') {
     return (
       <Navigate 
         to="/profile/plan" 

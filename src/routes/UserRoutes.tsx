@@ -12,27 +12,27 @@ import UserPlan from "@/pages/profile/UserPlan";
 import CompanyDetails from "@/pages/profile/CompanyDetails";
 import InvoiceSettings from "@/pages/profile/InvoiceSettings";
 
-export const UserRoutes = () => {
+const UserRoutes = () => {
   return (
     <Routes>
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       
       {/* Rotas que requerem assinatura */}
-      <Route path="/customers" element={
+      <Route path="customers" element={
         <ProtectedRoute>
           <SubscriptionProtectedRoute>
             <CustomersIndex />
           </SubscriptionProtectedRoute>
         </ProtectedRoute>
       } />
-      <Route path="/products" element={
+      <Route path="products" element={
         <ProtectedRoute>
           <SubscriptionProtectedRoute>
             <ProductsIndex />
           </SubscriptionProtectedRoute>
         </ProtectedRoute>
       } />
-      <Route path="/invoices" element={
+      <Route path="invoices" element={
         <ProtectedRoute>
           <SubscriptionProtectedRoute>
             <InvoicesIndex />
@@ -41,12 +41,12 @@ export const UserRoutes = () => {
       } />
       
       {/* Rotas de usuário */}
-      <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
-      <Route path="/feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-      <Route path="/profile/company" element={<ProtectedRoute><CompanyDetails /></ProtectedRoute>} />
-      <Route path="/profile/plan" element={<ProtectedRoute><UserPlan /></ProtectedRoute>} />
-      <Route path="/profile/invoice-settings" element={
+      <Route path="plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
+      <Route path="feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
+      <Route path="profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+      <Route path="profile/company" element={<ProtectedRoute><CompanyDetails /></ProtectedRoute>} />
+      <Route path="profile/plan" element={<ProtectedRoute><UserPlan /></ProtectedRoute>} />
+      <Route path="profile/invoice-settings" element={
         <ProtectedRoute>
           <SubscriptionProtectedRoute>
             <InvoiceSettings />
@@ -56,3 +56,5 @@ export const UserRoutes = () => {
     </Routes>
   );
 };
+
+export default UserRoutes;
