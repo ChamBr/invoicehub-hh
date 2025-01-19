@@ -35,14 +35,6 @@ export const UserPlan = () => {
         </Alert>
       )}
 
-      {!currentPlan && (
-        <Alert variant="default" className="bg-muted">
-          <AlertDescription>
-            {t('plan.no_plan_message')}
-          </AlertDescription>
-        </Alert>
-      )}
-
       {currentPlan && (
         <ActivePlan 
           plan={currentPlan} 
