@@ -1,4 +1,4 @@
-import { Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SubscriptionProtectedRoute from "@/components/auth/SubscriptionProtectedRoute";
 import Dashboard from "@/pages/Dashboard";
@@ -14,7 +14,7 @@ import InvoiceSettings from "@/pages/profile/InvoiceSettings";
 
 export const UserRoutes = () => {
   return (
-    <>
+    <Routes>
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       
       {/* Rotas que requerem assinatura */}
@@ -53,6 +53,6 @@ export const UserRoutes = () => {
           </SubscriptionProtectedRoute>
         </ProtectedRoute>
       } />
-    </>
+    </Routes>
   );
 };

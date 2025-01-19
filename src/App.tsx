@@ -7,8 +7,6 @@ import "@/i18n/config";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { AuthenticatedLayout } from "./layouts/AuthenticatedLayout";
 import { PublicLayout } from "./layouts/PublicLayout";
-import { AdminRoutes } from "./routes/AdminRoutes";
-import { UserRoutes } from "./routes/UserRoutes";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -32,8 +30,8 @@ const AppLayout = () => {
       ) : (
         <AuthenticatedLayout>
           <Routes>
-            <UserRoutes />
-            <AdminRoutes />
+            <Route path="/*" element={<UserRoutes />} />
+            <Route path="/admin/*" element={<AdminRoutes />} />
           </Routes>
         </AuthenticatedLayout>
       )}
