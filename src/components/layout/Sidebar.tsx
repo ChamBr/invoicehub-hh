@@ -21,6 +21,7 @@ const Sidebar = () => {
 
   // Filtrar os itens do menu com base na assinatura
   const filterMenuItems = (items: any[]) => {
+    if (isAdmin) return items; // Admins veem todos os itens
     return items.filter(item => !item.requiresSubscription || hasActiveSubscription);
   };
 
