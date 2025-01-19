@@ -5,6 +5,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { Plan, PlanFeatures, PlanSelectionProps } from "./types";
 import { PlanCard } from "./PlanCard";
+import { useQuery } from "@tanstack/react-query";
 
 export function PlanSelection({ 
   onClose, 
