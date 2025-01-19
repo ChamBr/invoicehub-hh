@@ -9,21 +9,13 @@ import { createMenuItems } from "./sidebar/menuItems";
 import AdminModeSwitch from "./navbar/AdminModeSwitch";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useProfile } from "@/hooks/use-profile";
-import { useSubscription } from "@/hooks/use-subscription";
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { t } = useTranslation();
   const { session } = useAuth();
   const { isAdmin } = useProfile();
-  const { hasActiveSubscription } = useSubscription();
   const menuItems = createMenuItems(t);
-
-  // Filtrar os itens do menu com base na assinatura
-  const filterMenuItems = (items: any[]) => {
-    if (isAdmin) return items; // Admins veem todos os itens
-    return items.filter(item => !item.requiresSubscription || hasActiveSubscription);
-  };
 
   return (
     <div
@@ -51,12 +43,12 @@ const Sidebar = () => {
       <div className="flex-1 py-6 space-y-6 overflow-y-auto">
         <MenuGroup 
           title={t('navigation.records')} 
-          items={filterMenuItems(menuItems.records)} 
+          items={menuItems.records} 
           collapsed={collapsed} 
         />
         <MenuGroup 
           title={t('navigation.user')} 
-          items={filterMenuItems(menuItems.user)} 
+          items={menuItems.user} 
           collapsed={collapsed} 
         />
       </div>
