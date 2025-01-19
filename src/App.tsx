@@ -45,6 +45,8 @@ const AppLayout = () => {
             <main className="flex-1 overflow-y-auto bg-gray-50 px-4 py-8">
               <Routes>
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                
+                {/* Rotas que requerem assinatura */}
                 <Route path="/customers" element={
                   <ProtectedRoute>
                     <SubscriptionProtectedRoute>
@@ -66,10 +68,10 @@ const AppLayout = () => {
                     </SubscriptionProtectedRoute>
                   </ProtectedRoute>
                 } />
+                
+                {/* Rotas de usuário */}
                 <Route path="/plans" element={<ProtectedRoute><PlansIndex /></ProtectedRoute>} />
                 <Route path="/feedback" element={<ProtectedRoute><FeedbackIndex /></ProtectedRoute>} />
-                
-                {/* Rotas de perfil */}
                 <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
                 <Route path="/profile/company" element={<ProtectedRoute><CompanyDetails /></ProtectedRoute>} />
                 <Route path="/profile/plan" element={<ProtectedRoute><UserPlan /></ProtectedRoute>} />

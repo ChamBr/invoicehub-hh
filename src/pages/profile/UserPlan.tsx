@@ -1,51 +1,36 @@
-import { usePlanManagement } from "./components/plan/usePlanManagement";
-import { ActivePlan } from "./components/plan/ActivePlan";
-import { AvailablePlans } from "./components/plan/AvailablePlans";
-import { LoadingState } from "./components/plan/LoadingState";
-import { useTranslation } from "react-i18next";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLocation } from "react-router-dom";
-import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useTranslation } from "react-i18next";
+import PlanSelection from "./components/plan/PlanSelection";
 
-export const UserPlan = () => {
-  const { t } = useTranslation('profile');
+const UserPlan = () => {
   const location = useLocation();
+  const { t } = useTranslation();
   const requiresSubscription = location.state?.requiresSubscription;
-
-  const {
-    plans,
-    currentPlan,
-    currentSubscription,
-    isLoading,
-    handlePlanChange,
-  } = usePlanManagement();
-
-  if (isLoading) {
-    return <LoadingState />;
-  }
+  const fromPath = location.state?.from;
 
   return (
-    <div className="space-y-8">
-      {requiresSubscription && !currentSubscription && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            {t('plan.no_subscription')}
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      {requiresSubscription && (
+        <Alert className="mb-6 bg-emerald-50 border-emerald-200">
+          <AlertDescription className="text-emerald-800">
+            {fromPath ? (
+              t(
+                'subscription.required.specific',
+                'Para acessar {{path}}, você precisa selecionar um plano abaixo.',
+                { path: fromPath }
+              )
+            ) : (
+              t(
+                'subscription.required.generic',
+                'Para acessar recursos premium, selecione um plano abaixo.'
+              )
+            )}
           </AlertDescription>
         </Alert>
       )}
-
-      {currentPlan && (
-        <ActivePlan 
-          plan={currentPlan} 
-        />
-      )}
-
-      <AvailablePlans
-        plans={plans}
-        currentPlan={currentPlan}
-        onPlanChange={handlePlanChange}
-      />
+      
+      <PlanSelection />
     </div>
   );
 };
