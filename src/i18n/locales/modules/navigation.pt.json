@@ -10,7 +10,7 @@
   "plan": "Meu Plano",
   "invoice_settings": "Personalizar Fatura",
   "admin": {
-    "subscribers": "Base de Usuários",
+    "subscribers": "Assinantes",
     "plans": "Planos",
     "integrations": "Integrações",
     "reports": "Relatórios",
