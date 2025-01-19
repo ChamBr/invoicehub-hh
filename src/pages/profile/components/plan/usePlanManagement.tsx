@@ -81,6 +81,36 @@ export function usePlanManagement() {
 
     setIsLoading(true);
     try {
+      // Primeiro, verificar se o usuário já tem um customer
+      const { data: existingCustomer, error: customerQueryError } = await supabase
+        .from("customers")
+        .select("*")
+        .eq("subscriber_id", session.user.id)
+        .maybeSingle();
+
+      if (customerQueryError) throw customerQueryError;
+
+      let customerId;
+
+      if (!existingCustomer) {
+        // Criar um novo customer se não existir
+        const { data: newCustomer, error: createCustomerError } = await supabase
+          .from("customers")
+          .insert({
+            name: session.user.email,
+            email: session.user.email,
+            subscriber_id: session.user.id,
+            status: "active"
+          })
+          .select()
+          .single();
+
+        if (createCustomerError) throw createCustomerError;
+        customerId = newCustomer.id;
+      } else {
+        customerId = existingCustomer.id;
+      }
+
       // Verificar se já existe uma assinatura ativa
       const { data: existingSubscription } = await supabase
         .from("subscriptions")
@@ -106,6 +136,7 @@ export function usePlanManagement() {
           .from("subscriptions")
           .insert({
             user_id: session.user.id,
+            customer_id: customerId,
             plan_id: newPlan.id,
             status: "active",
             billing_period: "monthly",
