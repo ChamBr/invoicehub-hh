@@ -24,11 +24,14 @@ export function useCustomerForm(
 
   const handleSubmit = async (data: CustomerFormValues) => {
     try {
-      if (!currentSubscriber?.subscriber_id) {
+      // Se já temos um subscriberId passado como prop, usamos ele
+      const effectiveSubscriberId = subscriberId || currentSubscriber?.subscriber_id;
+      
+      if (!effectiveSubscriberId) {
         throw new Error("Subscriber não encontrado");
       }
 
-      const action = await saveCustomer(data, currentSubscriber.subscriber_id, initialData);
+      const action = await saveCustomer(data, effectiveSubscriberId, initialData);
 
       toast({
         title: "Sucesso",
