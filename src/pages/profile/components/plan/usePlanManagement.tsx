@@ -36,33 +36,33 @@ export function usePlanManagement() {
     queryFn: async () => {
       if (!session?.user?.id) return null;
 
-      const { data, error } = await supabase
-        .from("subscriptions")
+      const { data: subscriber, error: subscriberError } = await supabase
+        .from("subscribers")
         .select(`
           *,
           plan:plans(*)
         `)
-        .eq("user_id", session.user.id)
+        .eq("owner_id", session.user.id)
         .eq("status", "active")
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching subscription:", error);
+      if (subscriberError) {
+        console.error("Error fetching subscriber:", subscriberError);
         toast({
           variant: "destructive",
           title: t("errors.subscription_fetch_failed"),
           description: t("errors.please_try_again"),
         });
-        throw error;
+        throw subscriberError;
       }
 
-      if (!data) return null;
+      if (!subscriber) return null;
 
       return {
-        ...data,
-        plan: data.plan ? {
-          ...data.plan,
-          features: data.plan.features as unknown as PlanFeatures
+        ...subscriber,
+        plan: subscriber.plan ? {
+          ...subscriber.plan,
+          features: subscriber.plan.features as unknown as PlanFeatures
         } : null
       };
     },
@@ -99,7 +99,8 @@ export function usePlanManagement() {
           .insert({
             owner_id: session.user.id,
             status: "active",
-            company_name: session.user.email?.split('@')[0] || 'My Company'
+            company_name: session.user.email?.split('@')[0] || 'My Company',
+            plan_id: newPlan.id
           })
           .select()
           .single();
@@ -108,49 +109,18 @@ export function usePlanManagement() {
         subscriberId = newSubscriber.id;
       } else {
         subscriberId = existingSubscriber.id;
-      }
-
-      // Verificar se já existe uma assinatura ativa
-      const { data: existingSubscription } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .eq("status", "active")
-        .maybeSingle();
-
-      if (existingSubscription) {
-        // Atualizar assinatura existente
-        const { error } = await supabase
-          .from("subscriptions")
+        
+        // Atualizar o subscriber existente com o novo plano
+        const { error: updateSubscriberError } = await supabase
+          .from("subscribers")
           .update({ 
             plan_id: newPlan.id,
             updated_at: new Date().toISOString()
           })
-          .eq("id", existingSubscription.id);
+          .eq("id", subscriberId);
 
-        if (error) throw error;
-      } else {
-        // Criar nova assinatura
-        const { error } = await supabase
-          .from("subscriptions")
-          .insert({
-            user_id: session.user.id,
-            plan_id: newPlan.id,
-            status: "active",
-            billing_period: "monthly",
-            start_date: new Date().toISOString(),
-          });
-
-        if (error) throw error;
+        if (updateSubscriberError) throw updateSubscriberError;
       }
-
-      // Atualizar o subscriber com o plano selecionado
-      const { error: updateSubscriberError } = await supabase
-        .from("subscribers")
-        .update({ plan_id: newPlan.id })
-        .eq("id", subscriberId);
-
-      if (updateSubscriberError) throw updateSubscriberError;
 
       toast({
         title: t("profile.plan.change_success"),
