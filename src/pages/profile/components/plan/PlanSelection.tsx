@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
 import { Plan, PlanFeatures, PlanSelectionProps } from "./types";
 import { PlanCard } from "./PlanCard";
-import { useAuth } from "@/components/auth/AuthProvider";
 
 export function PlanSelection({ 
   onClose, 
@@ -11,10 +12,12 @@ export function PlanSelection({
   currentPlan,
   showUpgradeOnly 
 }: PlanSelectionProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { session } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { data: plans, isLoading } = useQuery({
+  const { data: plans, isLoading: plansLoading } = useQuery({
     queryKey: ["available-plans"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -118,7 +121,7 @@ export function PlanSelection({
     }
   };
 
-  if (isLoading) {
+  if (plansLoading) {
     return (
       <div className="flex justify-center items-center min-h-[200px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
