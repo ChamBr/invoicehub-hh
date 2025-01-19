@@ -16,33 +16,21 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
     queryFn: async () => {
       if (!session?.user?.id) return false;
 
-      // Primeiro, verificar se o usuário tem uma assinatura direta
-      const { data: directSubscription } = await supabase
-        .from('subscriptions')
-        .select('id, status')
-        .eq('user_id', session.user.id)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      if (directSubscription) return true;
-
-      // Se não tiver assinatura direta, verificar através do subscriber
+      // Verificar se o usuário está vinculado a um subscriber ativo com plano
       const { data: subscriberUser } = await supabase
         .from('subscriber_users')
-        .select('subscriber_id')
+        .select(`
+          subscriber:subscribers!inner(
+            id,
+            status,
+            plan_id
+          )
+        `)
         .eq('user_id', session.user.id)
+        .eq('subscribers.status', 'active')
         .maybeSingle();
 
-      if (!subscriberUser?.subscriber_id) return false;
-
-      const { data: subscriber } = await supabase
-        .from('subscribers')
-        .select('plan_id, status')
-        .eq('id', subscriberUser.subscriber_id)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      return !!subscriber?.plan_id;
+      return !!subscriberUser?.subscriber?.plan_id;
     },
     enabled: !!session?.user?.id,
   });
