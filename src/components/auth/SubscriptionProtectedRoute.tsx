@@ -11,24 +11,38 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
   const { session } = useAuth();
   const location = useLocation();
 
-  const { data: activeSubscription, isLoading } = useQuery({
+  const { data: hasActiveSubscription, isLoading } = useQuery({
     queryKey: ['active-subscription', session?.user?.id],
     queryFn: async () => {
-      if (!session?.user?.id) return null;
+      if (!session?.user?.id) return false;
 
-      const { data, error } = await supabase
+      // Primeiro, verificar se o usuário tem uma assinatura direta
+      const { data: directSubscription } = await supabase
         .from('subscriptions')
-        .select('id, status, plan_id')
+        .select('id, status')
         .eq('user_id', session.user.id)
         .eq('status', 'active')
         .maybeSingle();
 
-      if (error) {
-        console.error('Erro ao verificar assinatura:', error);
-        return null;
-      }
+      if (directSubscription) return true;
 
-      return data;
+      // Se não tiver assinatura direta, verificar através do subscriber
+      const { data: subscriberUser } = await supabase
+        .from('subscriber_users')
+        .select('subscriber_id')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+
+      if (!subscriberUser?.subscriber_id) return false;
+
+      const { data: subscriber } = await supabase
+        .from('subscribers')
+        .select('plan_id, status')
+        .eq('id', subscriberUser.subscriber_id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      return !!subscriber?.plan_id;
     },
     enabled: !!session?.user?.id,
   });
@@ -41,7 +55,7 @@ const SubscriptionProtectedRoute = ({ children }: SubscriptionProtectedRouteProp
     );
   }
 
-  if (!activeSubscription) {
+  if (!hasActiveSubscription) {
     return <Navigate to="/profile/plan" state={{ from: location, requiresSubscription: true }} replace />;
   }
 
