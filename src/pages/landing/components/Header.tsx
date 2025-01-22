@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 
 export const Header = () => {
   return (
@@ -13,10 +13,10 @@ export const Header = () => {
             <Button variant="ghost">Login</Button>
           </Link>
           <Link to="/login">
-            <Button>Começar Grátis</Button>
+            <Button>Começar Grátis Agora</Button>
           </Link>
         </div>
       </nav>
     </header>
-  );
-};
+  )
+}
