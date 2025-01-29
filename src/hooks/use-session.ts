@@ -1,3 +1,4 @@
+
 import { Session } from "@supabase/supabase-js";
 import { useToast } from "./use-toast";
 import { useNavigate } from "react-router-dom";
@@ -27,9 +28,12 @@ export const useSessionManagement = (
 
   const refreshSession = async (currentSession: Session) => {
     try {
-      const { data: { session: newSession }, error } = await supabase.auth.refreshSession({
-        refresh_token: currentSession.refresh_token,
-      });
+      if (!currentSession?.refresh_token) {
+        handleSessionEnd("Sua sessão expirou. Por favor, faça login novamente.");
+        return false;
+      }
+
+      const { data: { session: newSession }, error } = await supabase.auth.refreshSession();
       
       if (error) {
         console.error("Erro ao atualizar sessão:", error);
@@ -61,7 +65,9 @@ export const useSessionManagement = (
     const now = new Date();
     const timeUntilExpiration = expirationTime.getTime() - now.getTime();
 
+    // Se a sessão já expirou
     if (timeUntilExpiration <= 0) {
+      console.log("Sessão expirada, tentando renovar...");
       const refreshSuccessful = await refreshSession(session);
       if (!refreshSuccessful) {
         handleSessionEnd("Sua sessão expirou. Por favor, faça login novamente.");
@@ -69,7 +75,9 @@ export const useSessionManagement = (
       return;
     }
 
+    // Se a sessão vai expirar em menos de 5 minutos
     if (timeUntilExpiration < 5 * 60 * 1000) {
+      console.log("Sessão próxima de expirar, tentando renovar...");
       const refreshSuccessful = await refreshSession(session);
       if (!refreshSuccessful) {
         toast({

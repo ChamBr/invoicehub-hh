@@ -1,3 +1,4 @@
+
 import { useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,10 +23,12 @@ export const useAuthInitialization = (
             description: "Não foi possível recuperar sua sessão",
             variant: "destructive",
           });
+          await clearSession();
           return;
         }
 
         if (currentSession?.refresh_token) {
+          console.log('Sessão existente encontrada');
           setSession(currentSession);
         } else {
           console.log('Nenhuma sessão válida encontrada');
@@ -38,6 +41,7 @@ export const useAuthInitialization = (
           description: "Ocorreu um erro ao inicializar a autenticação",
           variant: "destructive",
         });
+        await clearSession();
       } finally {
         setIsLoading(false);
       }
